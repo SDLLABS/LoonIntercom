@@ -1,0 +1,68 @@
+# Intercom bell computer on the Waveshare ESP32-S3-ETH (W5500 Ethernet over SPI, 16 MB flash,
+# optional plug-on "PoE Module (B)"). Stage 1 firmware (2026-09-30).
+# Why this board: the WT32-ETH01 starts in download mode because its oscillator holds IO0 low
+# (see wt32eth-intercom-bell.yaml). The W5500 needs no clock on a strapping pin, and the board has
+# native USB-C, so no adapter and no boot bridge are needed.
+# Name per scheme <board>-<system>-<role>. The bell logic itself lives in bell-core.yaml.
+# Pins: Waveshare wiki ESP32-S3-ETH (W5500 MISO 12, MOSI 11, SCLK 13, CS 14, INT 10, RST 9;
+# GPIO33-37 are taken by the PSRAM).
+
+substitutions:
+  # Keep "false" until the supervised line is wired (floating ADC = phantom presses).
+  line_installed: "true"            # line wired on the bench 2026-09-30
+  line_pin: GPIO1           # ADC1_CH0, header "IO1" (5th hole from the end opposite USB-C)
+  line_pin_idf: GPIO_NUM_1      # same pin, ESP-IDF name (for the pull-up)
+  th_pressed: "1.30"        # below = pressed (bench: firm 0.36-0.45 V, weak 0.6-0.9 V, idle 2.03 V)
+  th_released: "1.60"       # above = released again (hysteresis)
+  th_cut: "2.60"
+  dip_level: "1.90"            # log every touch below this (idle ~2.03 V with the internal pull-up)
+  line_voltage_report: 1s          # bench: live; set 30s for the real door
+
+esphome:
+  name: s3poeeth-intercom-bell
+  friendly_name: S3POEETH Intercom Bell
+  project:
+    name: aikos-home.intercom-bell
+    version: "0.2.0"
+
+# Direct ring path: unicast to each RoomKey's fixed address (addresses live in secrets.yaml, never in the repo).
+udp:
+  addresses:
+    - !secret ring_target_1
+    - !secret ring_target_2
+
+esp32:
+  board: esp32-s3-devkitc-1
+  variant: esp32s3
+  flash_size: 16MB
+  framework:
+    type: esp-idf
+
+ethernet:
+  type: W5500
+  clk_pin: GPIO13
+  mosi_pin: GPIO11
+  miso_pin: GPIO12
+  cs_pin: GPIO14
+  interrupt_pin: GPIO10
+  reset_pin: GPIO9
+
+logger:
+  level: INFO
+  hardware_uart: USB_SERIAL_JTAG
+
+api:
+  encryption:
+    key: !secret s3bell_api_key
+  # Don't reboot when Home Assistant is away: a restart cannot bring HA back and costs presses.
+  reboot_timeout: 0s
+  # Send every state change at once. The default 100 ms batch merges fast presses (storm ringing
+  # showed 2 of 5 on/off pairs in HA) and adds up to 100 ms of delay.
+  batch_delay: 0ms
+
+ota:
+  - platform: esphome
+    password: !secret s3bell_ota_password
+
+packages:
+  bell: !include bell-core.yaml

@@ -1,0 +1,234 @@
+# Klingelbox bell logic, shared by every board that plays the bell computer (2026-09-30).
+# The board file provides: substitutions line_installed, line_pin, th_pressed, th_cut; the network
+# (ethernet:), logger, api and ota. This file is only the behaviour, so it stays identical across boards.
+# Contract: the HA binary sensor with object id doorbell_button (rename the ESPHome entity once in the
+# HA entity registry).
+
+globals:
+  - id: line_samples
+    type: uint32_t
+    initial_value: "0"
+  - id: press_ms
+    type: uint32_t
+    initial_value: "0"
+  - id: boot_id_value
+    type: uint32_t
+    initial_value: "0"
+  - id: press_count
+    type: uint32_t
+    initial_value: "0"
+
+# A signal wire that falls off must look like "cable cut", never like a press: a floating ADC pin
+# reads near 0 V (= pressed). The chip's weak internal pull-up (~45 kΩ, parallel to the 10 kΩ) pulls
+# a loose pin to 3.3 V instead. The ADC driver resets the pad, so switch it on after setup.
+# Shifts the levels a little (idle ~1.9 V, pressed ~0.36 V); the thresholds keep wide margins.
+esphome:
+  on_boot:
+    priority: -100
+    then:
+      - lambda: |-
+          gpio_pullup_en(${line_pin_idf});
+          // Press identity for the direct ring path: (boot_id, press number). 24 bits, because
+          // packet_transport carries values as 32-bit floats (integers exact only up to 2^24).
+          uint32_t b = esp_random() & 0xFFFFFF;
+          id(boot_id_value) = b ? b : 1;
+          id(boot_id).publish_state(id(boot_id_value));
+          id(presses).publish_state(0);
+          id(ringing).publish_state(false);
+
+interval:
+  - interval: 10s
+    then:
+      - lambda: |-
+          id(line_rate).publish_state(id(line_samples) / 10.0f);
+          id(line_samples) = 0;
+
+# ── The line, sampled every millisecond. Each sample drives the button directly (no polling in
+#    between), so a press is seen within ~1 ms, and even a very brief contact is caught.
+sensor:
+  - platform: adc
+    pin: ${line_pin}
+    id: line_v
+    internal: true
+    attenuation: 12db
+    update_interval: 1ms
+    # No median: the 100 nF on the line already smooths noise, and a median would swallow a contact
+    # shorter than ~10 ms (bench 2026-09-30: fast storm presses can close that briefly).
+    on_value:
+      then:
+        - lambda: |-
+            id(line_samples)++;
+            // Bench diagnostic: one log line per dip below ${dip_level} V (every touch, even one that
+            // stays above the press threshold), with its lowest voltage and its length.
+            static bool in_dip = false;
+            static float dip_min = 9.0f;
+            static uint32_t dip_start = 0;
+            if (x < ${dip_level}) {
+              if (!in_dip) { in_dip = true; dip_min = x; dip_start = millis(); }
+              else if (x < dip_min) dip_min = x;
+            } else if (in_dip) {
+              in_dip = false;
+              ESP_LOGI("bell", "dip: lowest %.2f V, %u ms", dip_min, (unsigned) (millis() - dip_start));
+            }
+            if (!${line_installed}) return;
+            // Hysteresis: a half-closed brass contact hovers around 0.6-0.9 V; with one threshold that
+            // counted one press twice. Pressed below th_pressed, released only above th_released.
+            static bool pressed = false;
+            pressed = pressed ? (x < ${th_released}) : (x < ${th_pressed});
+            id(doorbell_button).publish_state(pressed);
+            id(line_cut).publish_state(x > ${th_cut});
+            id(line_shorted).publish_state(pressed);
+
+  # Throttled copy for tuning the thresholds against the real cable.
+  - platform: copy
+    source_id: line_v
+    name: Line voltage
+    unit_of_measurement: V
+    accuracy_decimals: 2
+    entity_category: diagnostic
+    filters:
+      - throttle: ${line_voltage_report}
+
+  # Presses since boot, counted here. HA counts on its side too; equal numbers = no press lost.
+  - platform: template
+    id: presses
+    name: Presses since boot
+    icon: mdi:counter
+    state_class: total_increasing
+    accuracy_decimals: 0
+    lambda: return {};
+    update_interval: never
+
+  # How often the line is really sampled (target ~1000/s). Too low = short presses can slip through.
+  - platform: template
+    id: line_rate
+    name: Line samples per second
+    unit_of_measurement: "1/s"
+    accuracy_decimals: 0
+    entity_category: diagnostic
+    lambda: return {};
+    update_interval: never
+
+  - platform: template
+    id: boot_id
+    name: Boot ID
+    icon: mdi:identifier
+    accuracy_decimals: 0
+    entity_category: diagnostic
+    lambda: return {};
+    update_interval: never
+
+  - platform: uptime
+    name: Uptime
+    entity_category: diagnostic
+
+binary_sensor:
+  - platform: template
+    id: doorbell_button
+    name: Doorbell button
+    icon: mdi:doorbell
+    filters:
+      - delayed_off: 20ms   # ride through contact chatter; short, so fast presses stay separate
+    on_press:
+      - lambda: |-
+          id(press_ms) = millis();
+          id(presses).publish_state(++id(press_count));
+          id(ringing).publish_state(true);
+          ESP_LOGI("bell", "press #%u (line %.2f V)", (unsigned) id(press_count), id(line_v).state);
+      - script.execute: ring_cap
+      - event.trigger:
+          id: doorbell
+          event_type: pressed
+    on_release:
+      - script.stop: ring_cap
+      - lambda: |-
+          id(ringing).publish_state(false);
+          ESP_LOGI("bell", "release after %u ms (line %.2f V)", (unsigned) (millis() - id(press_ms)), id(line_v).state);
+
+  # "The gong should sound now": on at a press, off on release or after the maximum duration, whichever comes
+  # first (holding = one continuous gong, like a school bell, with an adjustable maximum).
+  - platform: template
+    id: ringing
+    name: Ringing
+    icon: mdi:bell-ring
+
+  # Cable cut, button torn off, terminal loose: without this the bell would just go silent.
+  - platform: template
+    id: line_cut
+    name: Line cut
+    device_class: problem
+    entity_category: diagnostic
+    filters:
+      - delayed_on: 10s
+      - delayed_off: 5s
+
+  # Wires bridged (rain) or the button stuck: presses can't be detected while this is on.
+  - platform: template
+    id: line_shorted
+    name: Line shorted
+    device_class: problem
+    entity_category: diagnostic
+    filters:
+      - delayed_on: 60s
+      - delayed_off: 5s
+
+# One HA event per press, standard doorbell semantics for notifications.
+event:
+  - platform: template
+    id: doorbell
+    name: Doorbell
+    device_class: doorbell
+    event_types:
+      - pressed
+
+text_sensor:
+  - platform: ethernet_info
+    ip_address:
+      name: IP address
+      entity_category: diagnostic
+
+button:
+  - platform: restart
+    name: Restart
+    entity_category: diagnostic
+
+number:
+  - platform: template
+    id: max_ring_duration
+    name: Maximum ring duration
+    icon: mdi:timer-outline
+    unit_of_measurement: s
+    min_value: 1
+    max_value: 300
+    step: 1
+    initial_value: 30
+    optimistic: true
+    restore_value: true
+    mode: box
+    entity_category: config
+
+script:
+  - id: ring_cap
+    mode: restart
+    then:
+      - delay: !lambda return (uint32_t) (id(max_ring_duration).state * 1000);
+      - lambda: id(ringing).publish_state(false);
+      - logger.log:
+          format: "ringing capped after the maximum duration"
+          level: INFO
+          tag: bell
+
+# Direct ring path to the RoomKeys, in addition to Home Assistant (so the gong works while HA is down). The board file defines the
+# udp component with the keys' addresses (unicast, from secrets). Every packet carries all three values, on each
+# change and every second; encrypted, with a rolling code against replays.
+packet_transport:
+  - platform: udp
+    update_interval: 1s
+    encryption:
+      key: !secret ring_transport_key
+    rolling_code_enable: true
+    sensors:
+      - boot_id
+      - presses
+    binary_sensors:
+      - ringing

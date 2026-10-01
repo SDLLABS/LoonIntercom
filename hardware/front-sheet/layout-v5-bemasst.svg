@@ -1,0 +1,233 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="360mm" height="380mm" viewBox="-40 -70 360 380" font-family="Arial, sans-serif">
+<defs><marker id="a" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="4" markerHeight="4" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#333"/></marker></defs>
+<rect x="-40" y="-70" width="360" height="380" fill="white"/>
+<rect x="0" y="0" width="100" height="260" stroke="#222" stroke-width="0.3" fill="#f3e6c8"/>
+<rect x="4" y="4" width="92" height="252" stroke="#555" stroke-width="0.3" stroke-dasharray="2 1.2" fill="none"/>
+<rect x="0" y="-2.00" width="100" height="13.26" stroke="#222" stroke-width="0.3" fill="#e2cf9f"/>
+<rect x="29.0" y="8" width="18.0" height="6" stroke="#222" stroke-width="0.3" fill="#444"/>
+<rect x="53.0" y="8" width="18.0" height="6" stroke="#222" stroke-width="0.3" fill="#444"/>
+<rect x="15.0" y="9.7" width="10.0" height="2.6" stroke="#222" stroke-width="0.3" fill="#444"/>
+<rect x="75.0" y="9.7" width="10.0" height="2.6" stroke="#222" stroke-width="0.3" fill="#444"/>
+<path stroke="#c66" stroke-width="0.3" stroke-dasharray="3 1.5 0.6 1.5" fill="none" d="M13,-2 V18 H87 V-2"/>
+<circle cx="8" cy="26" r="3.0" stroke="#222" stroke-width="0.3" fill="#e8d6a8"/>
+<circle cx="8" cy="26" r="1.6" fill="#444"/>
+<circle cx="92" cy="26" r="3.0" stroke="#222" stroke-width="0.3" fill="#e8d6a8"/>
+<circle cx="92" cy="26" r="1.6" fill="#444"/>
+<circle cx="8" cy="252" r="3.0" stroke="#222" stroke-width="0.3" fill="#e8d6a8"/>
+<circle cx="8" cy="252" r="1.6" fill="#444"/>
+<circle cx="92" cy="252" r="3.0" stroke="#222" stroke-width="0.3" fill="#e8d6a8"/>
+<circle cx="92" cy="252" r="1.6" fill="#444"/>
+<circle cx="50" cy="225" r="24.25" stroke="#222" stroke-width="0.3" fill="#e2cf9f"/>
+<circle cx="50" cy="225" r="11.0" stroke="#222" stroke-width="0.3" fill="#444"/>
+<circle cx="82" cy="221" r="0.6" fill="#222"/>
+<circle cx="82" cy="229" r="0.6" fill="#222"/>
+<path fill="#222" transform="translate(20.636 182.200) scale(0.00194 -0.00194)" d="M1650 0H1483V962Q1483 1076 1497 1241H1493Q1469 1144 1450 1102L960 0H878L389 1094Q368 1142 346 1241H342Q350 1155 350 960V0H188V1434H410L850 434Q901 319 916 262H922Q965 380 991 438L1440 1434H1650Z"/>
+<path fill="#222" transform="translate(24.558 182.200) scale(0.00194 -0.00194)" d="M1298 0H1112L960 402H352L209 0H22L572 1434H746ZM905 553 680 1164Q669 1194 658 1260H654Q644 1199 631 1164L408 553Z"/>
+<path fill="#222" transform="translate(27.476 182.200) scale(0.00194 -0.00194)" d="M1178 0H973L643 549Q628 574 610 620H606Q596 597 572 549L232 0H26L506 721L64 1434H270L563 930Q592 880 614 830H618Q650 896 674 934L979 1434H1172L721 723Z"/>
+<path fill="#222" transform="translate(31.966 182.017) scale(0.00194 -0.00194)" d="M223 510Q177 510 144.5 543.0Q112 576 112 622Q112 669 144.5 702.0Q177 735 223 735Q270 735 303.0 702.0Q336 669 336 622Q336 576 303.0 543.0Q270 510 223 510Z"/>
+<path fill="#222" transform="translate(34.677 182.200) scale(0.00194 -0.00194)" d="M948 0H188V1434H916V1282H356V805H874V654H356V152H948Z"/>
+<path fill="#222" transform="translate(37.042 182.200) scale(0.00194 -0.00194)" d="M1216 0H1016L776 402Q743 458 712.0 497.5Q681 537 648.5 562.0Q616 587 578.5 598.5Q541 610 494 610H356V0H188V1434H616Q710 1434 789.5 1410.5Q869 1387 927.5 1339.0Q986 1291 1019.0 1219.5Q1052 1148 1052 1052Q1052 977 1029.5 914.5Q1007 852 965.5 803.0Q924 754 865.5 719.5Q807 685 734 666V662Q770 646 796.5 625.5Q823 605 847.0 577.0Q871 549 894.5 513.5Q918 478 947 431ZM356 1282V762H584Q647 762 700.5 781.0Q754 800 793.0 835.5Q832 871 854.0 922.5Q876 974 876 1038Q876 1153 801.5 1217.5Q727 1282 586 1282Z"/>
+<path fill="#222" transform="translate(39.774 182.200) scale(0.00194 -0.00194)" d="M356 0H188V1434H356Z"/>
+<path fill="#222" transform="translate(41.188 182.200) scale(0.00194 -0.00194)" d="M1186 0H952L398 656Q367 693 360 706H356V0H188V1434H356V760H360Q374 782 398 809L934 1434H1143L528 746Z"/>
+<path fill="#222" transform="translate(43.848 182.200) scale(0.00194 -0.00194)" d="M1298 0H1112L960 402H352L209 0H22L572 1434H746ZM905 553 680 1164Q669 1194 658 1260H654Q644 1199 631 1164L408 553Z"/>
+<path fill="#222" transform="translate(48.571 182.017) scale(0.00194 -0.00194)" d="M223 510Q177 510 144.5 543.0Q112 576 112 622Q112 669 144.5 702.0Q177 735 223 735Q270 735 303.0 702.0Q336 669 336 622Q336 576 303.0 543.0Q270 510 223 510Z"/>
+<path fill="#222" transform="translate(51.604 182.200) scale(0.00194 -0.00194)" d="M1298 0H1112L960 402H352L209 0H22L572 1434H746ZM905 553 680 1164Q669 1194 658 1260H654Q644 1199 631 1164L408 553Z"/>
+<path fill="#222" transform="translate(54.522 182.200) scale(0.00194 -0.00194)" d="M1344 0H1138L400 1143Q372 1186 354 1233H348Q356 1187 356 1036V0H188V1434H406L1124 309Q1169 239 1182 213H1186Q1176 275 1176 424V1434H1344Z"/>
+<path fill="#222" transform="translate(57.849 182.200) scale(0.00194 -0.00194)" d="M1344 0H1138L400 1143Q372 1186 354 1233H348Q356 1187 356 1036V0H188V1434H406L1124 309Q1169 239 1182 213H1186Q1176 275 1176 424V1434H1344Z"/>
+<path fill="#222" transform="translate(61.176 182.200) scale(0.00194 -0.00194)" d="M1298 0H1112L960 402H352L209 0H22L572 1434H746ZM905 553 680 1164Q669 1194 658 1260H654Q644 1199 631 1164L408 553Z"/>
+<path fill="#222" transform="translate(65.899 182.017) scale(0.00194 -0.00194)" d="M223 510Q177 510 144.5 543.0Q112 576 112 622Q112 669 144.5 702.0Q177 735 223 735Q270 735 303.0 702.0Q336 669 336 622Q336 576 303.0 543.0Q270 510 223 510Z"/>
+<path fill="#222" transform="translate(68.610 182.200) scale(0.00194 -0.00194)" d="M356 542V0H188V1434H582Q812 1434 938.5 1322.0Q1065 1210 1065 1006Q1065 802 924.5 672.0Q784 542 545 542ZM356 1282V694H532Q706 694 797.5 773.5Q889 853 889 998Q889 1282 553 1282Z"/>
+<path fill="#222" transform="translate(71.190 182.200) scale(0.00194 -0.00194)" d="M1298 0H1112L960 402H352L209 0H22L572 1434H746ZM905 553 680 1164Q669 1194 658 1260H654Q644 1199 631 1164L408 553Z"/>
+<path fill="#222" transform="translate(74.108 182.200) scale(0.00194 -0.00194)" d="M1237 580Q1237 -24 692 -24Q170 -24 170 557V1434H338V568Q338 127 710 127Q1069 127 1069 553V1434H1237Z"/>
+<path fill="#222" transform="translate(77.193 182.200) scale(0.00194 -0.00194)" d="M932 0H188V1434H356V152H932Z"/>
+<path fill="#222" transform="translate(20.272 193.500) scale(0.00387 -0.00387)" d="M1650 0H1483V962Q1483 1076 1497 1241H1493Q1469 1144 1450 1102L960 0H878L389 1094Q368 1142 346 1241H342Q350 1155 350 960V0H188V1434H410L850 434Q901 319 916 262H922Q965 380 991 438L1440 1434H1650Z"/>
+<path fill="#222" transform="translate(28.022 193.500) scale(0.00387 -0.00387)" d="M1237 580Q1237 -24 692 -24Q170 -24 170 557V1434H338V568Q338 127 710 127Q1069 127 1069 553V1434H1237Z"/>
+<path fill="#222" transform="translate(34.100 193.500) scale(0.00387 -0.00387)" d="M121 58V256Q155 226 202.5 202.0Q250 178 302.5 161.5Q355 145 408.0 136.0Q461 127 506 127Q661 127 737.5 184.5Q814 242 814 350Q814 408 788.5 451.0Q763 494 718.0 529.5Q673 565 611.5 597.5Q550 630 479 666Q404 704 339.0 743.0Q274 782 226.0 829.0Q178 876 150.5 935.5Q123 995 123 1075Q123 1173 166.0 1245.5Q209 1318 279.0 1365.0Q349 1412 438.5 1435.0Q528 1458 621 1458Q833 1458 930 1407V1218Q803 1306 604 1306Q549 1306 494.0 1294.5Q439 1283 396.0 1257.0Q353 1231 326.0 1190.0Q299 1149 299 1090Q299 1035 319.5 995.0Q340 955 380.0 922.0Q420 889 477.5 858.0Q535 827 610 790Q687 752 756.0 710.0Q825 668 877.0 617.0Q929 566 959.5 504.0Q990 442 990 362Q990 256 948.5 182.5Q907 109 836.5 63.0Q766 17 674.0 -3.5Q582 -24 480 -24Q446 -24 396.0 -18.5Q346 -13 294.0 -2.5Q242 8 195.5 23.5Q149 39 121 58Z"/>
+<path fill="#222" transform="translate(38.943 193.500) scale(0.00387 -0.00387)" d="M1036 1282H622V0H454V1282H41V1434H1036Z"/>
+<path fill="#222" transform="translate(43.728 193.500) scale(0.00387 -0.00387)" d="M948 0H188V1434H916V1282H356V805H874V654H356V152H948Z"/>
+<path fill="#222" transform="translate(48.369 193.500) scale(0.00387 -0.00387)" d="M1216 0H1016L776 402Q743 458 712.0 497.5Q681 537 648.5 562.0Q616 587 578.5 598.5Q541 610 494 610H356V0H188V1434H616Q710 1434 789.5 1410.5Q869 1387 927.5 1339.0Q986 1291 1019.0 1219.5Q1052 1148 1052 1052Q1052 977 1029.5 914.5Q1007 852 965.5 803.0Q924 754 865.5 719.5Q807 685 734 666V662Q770 646 796.5 625.5Q823 605 847.0 577.0Q871 549 894.5 513.5Q918 478 947 431ZM356 1282V762H584Q647 762 700.5 781.0Q754 800 793.0 835.5Q832 871 854.0 922.5Q876 974 876 1038Q876 1153 801.5 1217.5Q727 1282 586 1282Z"/>
+<path fill="#222" transform="translate(53.743 193.500) scale(0.00387 -0.00387)" d="M1650 0H1483V962Q1483 1076 1497 1241H1493Q1469 1144 1450 1102L960 0H878L389 1094Q368 1142 346 1241H342Q350 1155 350 960V0H188V1434H410L850 434Q901 319 916 262H922Q965 380 991 438L1440 1434H1650Z"/>
+<path fill="#222" transform="translate(61.492 193.500) scale(0.00387 -0.00387)" d="M1298 0H1112L960 402H352L209 0H22L572 1434H746ZM905 553 680 1164Q669 1194 658 1260H654Q644 1199 631 1164L408 553Z"/>
+<path fill="#222" transform="translate(67.237 193.500) scale(0.00387 -0.00387)" d="M1344 0H1138L400 1143Q372 1186 354 1233H348Q356 1187 356 1036V0H188V1434H406L1124 309Q1169 239 1182 213H1186Q1176 275 1176 424V1434H1344Z"/>
+<path fill="#222" transform="translate(73.798 193.500) scale(0.00387 -0.00387)" d="M1344 0H1138L400 1143Q372 1186 354 1233H348Q356 1187 356 1036V0H188V1434H406L1124 309Q1169 239 1182 213H1186Q1176 275 1176 424V1434H1344Z"/>
+<rect x="21" y="64" width="58" height="104" stroke="#222" stroke-width="0.3" fill="#e4e3dd"/>
+<polygon fill="#444" points="21.00,25.00 22.60,25.00 24.42,20.00 22.82,20.00"/>
+<polygon fill="#444" points="24.21,25.00 25.81,25.00 27.63,20.00 26.03,20.00"/>
+<polygon fill="#444" points="27.42,25.00 29.02,25.00 30.84,20.00 29.24,20.00"/>
+<polygon fill="#444" points="30.63,25.00 32.23,25.00 34.05,20.00 32.45,20.00"/>
+<polygon fill="#444" points="33.84,25.00 35.44,25.00 37.26,20.00 35.66,20.00"/>
+<polygon fill="#444" points="37.05,25.00 38.65,25.00 40.47,20.00 38.87,20.00"/>
+<polygon fill="#444" points="40.26,25.00 41.86,25.00 43.68,20.00 42.08,20.00"/>
+<polygon fill="#444" points="43.48,25.00 45.07,25.00 46.89,20.00 45.30,20.00"/>
+<polygon fill="#444" points="46.69,25.00 48.28,25.00 50.10,20.00 48.51,20.00"/>
+<polygon fill="#444" points="49.90,25.00 51.49,25.00 53.31,20.00 51.72,20.00"/>
+<polygon fill="#444" points="53.11,25.00 54.70,25.00 56.52,20.00 54.93,20.00"/>
+<polygon fill="#444" points="56.32,25.00 57.92,25.00 59.74,20.00 58.14,20.00"/>
+<polygon fill="#444" points="59.53,25.00 61.13,25.00 62.95,20.00 61.35,20.00"/>
+<polygon fill="#444" points="62.74,25.00 64.34,25.00 66.16,20.00 64.56,20.00"/>
+<polygon fill="#444" points="65.95,25.00 67.55,25.00 69.37,20.00 67.77,20.00"/>
+<polygon fill="#444" points="69.16,25.00 70.76,25.00 72.58,20.00 70.98,20.00"/>
+<polygon fill="#444" points="72.37,25.00 73.97,25.00 75.79,20.00 74.19,20.00"/>
+<polygon fill="#444" points="75.58,25.00 77.18,25.00 79.00,20.00 77.40,20.00"/>
+<polygon fill="#444" points="21.00,32.00 22.60,32.00 24.42,27.00 22.82,27.00"/>
+<polygon fill="#444" points="24.21,32.00 25.81,32.00 27.63,27.00 26.03,27.00"/>
+<polygon fill="#444" points="27.42,32.00 29.02,32.00 30.84,27.00 29.24,27.00"/>
+<polygon fill="#444" points="30.63,32.00 32.23,32.00 34.05,27.00 32.45,27.00"/>
+<polygon fill="#444" points="33.84,32.00 35.44,32.00 37.26,27.00 35.66,27.00"/>
+<polygon fill="#444" points="37.05,32.00 38.65,32.00 40.47,27.00 38.87,27.00"/>
+<polygon fill="#444" points="40.26,32.00 41.86,32.00 43.68,27.00 42.08,27.00"/>
+<polygon fill="#444" points="43.48,32.00 45.07,32.00 46.89,27.00 45.30,27.00"/>
+<polygon fill="#444" points="46.69,32.00 48.28,32.00 50.10,27.00 48.51,27.00"/>
+<polygon fill="#444" points="49.90,32.00 51.49,32.00 53.31,27.00 51.72,27.00"/>
+<polygon fill="#444" points="53.11,32.00 54.70,32.00 56.52,27.00 54.93,27.00"/>
+<polygon fill="#444" points="56.32,32.00 57.92,32.00 59.74,27.00 58.14,27.00"/>
+<polygon fill="#444" points="59.53,32.00 61.13,32.00 62.95,27.00 61.35,27.00"/>
+<polygon fill="#444" points="62.74,32.00 64.34,32.00 66.16,27.00 64.56,27.00"/>
+<polygon fill="#444" points="65.95,32.00 67.55,32.00 69.37,27.00 67.77,27.00"/>
+<polygon fill="#444" points="69.16,32.00 70.76,32.00 72.58,27.00 70.98,27.00"/>
+<polygon fill="#444" points="72.37,32.00 73.97,32.00 75.79,27.00 74.19,27.00"/>
+<polygon fill="#444" points="75.58,32.00 77.18,32.00 79.00,27.00 77.40,27.00"/>
+<polygon fill="#444" points="21.00,39.00 22.60,39.00 24.42,34.00 22.82,34.00"/>
+<polygon fill="#444" points="24.21,39.00 25.81,39.00 27.63,34.00 26.03,34.00"/>
+<polygon fill="#444" points="27.42,39.00 29.02,39.00 30.84,34.00 29.24,34.00"/>
+<polygon fill="#444" points="30.63,39.00 32.23,39.00 34.05,34.00 32.45,34.00"/>
+<polygon fill="#444" points="33.84,39.00 35.44,39.00 37.26,34.00 35.66,34.00"/>
+<polygon fill="#444" points="37.05,39.00 38.65,39.00 40.47,34.00 38.87,34.00"/>
+<polygon fill="#444" points="40.26,39.00 41.86,39.00 43.68,34.00 42.08,34.00"/>
+<polygon fill="#444" points="43.48,39.00 45.07,39.00 46.89,34.00 45.30,34.00"/>
+<polygon fill="#444" points="46.69,39.00 48.28,39.00 50.10,34.00 48.51,34.00"/>
+<polygon fill="#444" points="49.90,39.00 51.49,39.00 53.31,34.00 51.72,34.00"/>
+<polygon fill="#444" points="53.11,39.00 54.70,39.00 56.52,34.00 54.93,34.00"/>
+<polygon fill="#444" points="56.32,39.00 57.92,39.00 59.74,34.00 58.14,34.00"/>
+<polygon fill="#444" points="59.53,39.00 61.13,39.00 62.95,34.00 61.35,34.00"/>
+<polygon fill="#444" points="62.74,39.00 64.34,39.00 66.16,34.00 64.56,34.00"/>
+<polygon fill="#444" points="65.95,39.00 67.55,39.00 69.37,34.00 67.77,34.00"/>
+<polygon fill="#444" points="69.16,39.00 70.76,39.00 72.58,34.00 70.98,34.00"/>
+<polygon fill="#444" points="72.37,39.00 73.97,39.00 75.79,34.00 74.19,34.00"/>
+<polygon fill="#444" points="75.58,39.00 77.18,39.00 79.00,34.00 77.40,34.00"/>
+<polygon fill="#444" points="21.00,46.00 22.60,46.00 24.42,41.00 22.82,41.00"/>
+<polygon fill="#444" points="24.21,46.00 25.81,46.00 27.63,41.00 26.03,41.00"/>
+<polygon fill="#444" points="27.42,46.00 29.02,46.00 30.84,41.00 29.24,41.00"/>
+<polygon fill="#444" points="30.63,46.00 32.23,46.00 34.05,41.00 32.45,41.00"/>
+<polygon fill="#444" points="33.84,46.00 35.44,46.00 37.26,41.00 35.66,41.00"/>
+<polygon fill="#444" points="37.05,46.00 38.65,46.00 40.47,41.00 38.87,41.00"/>
+<polygon fill="#444" points="40.26,46.00 41.86,46.00 43.68,41.00 42.08,41.00"/>
+<polygon fill="#444" points="43.48,46.00 45.07,46.00 46.89,41.00 45.30,41.00"/>
+<polygon fill="#444" points="46.69,46.00 48.28,46.00 50.10,41.00 48.51,41.00"/>
+<polygon fill="#444" points="49.90,46.00 51.49,46.00 53.31,41.00 51.72,41.00"/>
+<polygon fill="#444" points="53.11,46.00 54.70,46.00 56.52,41.00 54.93,41.00"/>
+<polygon fill="#444" points="56.32,46.00 57.92,46.00 59.74,41.00 58.14,41.00"/>
+<polygon fill="#444" points="59.53,46.00 61.13,46.00 62.95,41.00 61.35,41.00"/>
+<polygon fill="#444" points="62.74,46.00 64.34,46.00 66.16,41.00 64.56,41.00"/>
+<polygon fill="#444" points="65.95,46.00 67.55,46.00 69.37,41.00 67.77,41.00"/>
+<polygon fill="#444" points="69.16,46.00 70.76,46.00 72.58,41.00 70.98,41.00"/>
+<polygon fill="#444" points="72.37,46.00 73.97,46.00 75.79,41.00 74.19,41.00"/>
+<polygon fill="#444" points="75.58,46.00 77.18,46.00 79.00,41.00 77.40,41.00"/>
+<polygon fill="#444" points="21.00,53.00 22.60,53.00 24.42,48.00 22.82,48.00"/>
+<polygon fill="#444" points="24.21,53.00 25.81,53.00 27.63,48.00 26.03,48.00"/>
+<polygon fill="#444" points="27.42,53.00 29.02,53.00 30.84,48.00 29.24,48.00"/>
+<polygon fill="#444" points="30.63,53.00 32.23,53.00 34.05,48.00 32.45,48.00"/>
+<polygon fill="#444" points="33.84,53.00 35.44,53.00 37.26,48.00 35.66,48.00"/>
+<polygon fill="#444" points="37.05,53.00 38.65,53.00 40.47,48.00 38.87,48.00"/>
+<polygon fill="#444" points="40.26,53.00 41.86,53.00 43.68,48.00 42.08,48.00"/>
+<polygon fill="#444" points="43.48,53.00 45.07,53.00 46.89,48.00 45.30,48.00"/>
+<polygon fill="#444" points="46.69,53.00 48.28,53.00 50.10,48.00 48.51,48.00"/>
+<polygon fill="#444" points="49.90,53.00 51.49,53.00 53.31,48.00 51.72,48.00"/>
+<polygon fill="#444" points="53.11,53.00 54.70,53.00 56.52,48.00 54.93,48.00"/>
+<polygon fill="#444" points="56.32,53.00 57.92,53.00 59.74,48.00 58.14,48.00"/>
+<polygon fill="#444" points="59.53,53.00 61.13,53.00 62.95,48.00 61.35,48.00"/>
+<polygon fill="#444" points="62.74,53.00 64.34,53.00 66.16,48.00 64.56,48.00"/>
+<polygon fill="#444" points="65.95,53.00 67.55,53.00 69.37,48.00 67.77,48.00"/>
+<polygon fill="#444" points="69.16,53.00 70.76,53.00 72.58,48.00 70.98,48.00"/>
+<polygon fill="#444" points="72.37,53.00 73.97,53.00 75.79,48.00 74.19,48.00"/>
+<polygon fill="#444" points="75.58,53.00 77.18,53.00 79.00,48.00 77.40,48.00"/>
+<line x1="-10" y1="0" x2="-10" y2="260" stroke="#333" stroke-width="0.25" marker-start="url(#a)" marker-end="url(#a)"/>
+<text x="-12" y="130.0" font-size="3.4" text-anchor="middle" transform="rotate(-90 -12 130.0)">260</text>
+<line x1="0" y1="270" x2="100" y2="270" stroke="#333" stroke-width="0.25" marker-start="url(#a)" marker-end="url(#a)"/>
+<text x="50.0" y="268.5" font-size="3.4" text-anchor="middle">100</text>
+<line x1="0" y1="-16" x2="15.0" y2="-16" stroke="#333" stroke-width="0.25" marker-start="url(#a)" marker-end="url(#a)"/>
+<text x="7.5" y="-17" font-size="2.6" text-anchor="middle">15</text>
+<line x1="15.0" y1="-16" x2="25.0" y2="-16" stroke="#333" stroke-width="0.25" marker-start="url(#a)" marker-end="url(#a)"/>
+<text x="20.0" y="-17" font-size="2.6" text-anchor="middle">10</text>
+<line x1="25.0" y1="-16" x2="29.0" y2="-16" stroke="#333" stroke-width="0.25" marker-start="url(#a)" marker-end="url(#a)"/>
+<text x="27.0" y="-17" font-size="2.6" text-anchor="middle">4</text>
+<line x1="29.0" y1="-16" x2="47.0" y2="-16" stroke="#333" stroke-width="0.25" marker-start="url(#a)" marker-end="url(#a)"/>
+<text x="38.0" y="-17" font-size="2.6" text-anchor="middle">18</text>
+<line x1="47.0" y1="-16" x2="53.0" y2="-16" stroke="#333" stroke-width="0.25" marker-start="url(#a)" marker-end="url(#a)"/>
+<text x="50.0" y="-17" font-size="2.6" text-anchor="middle">6</text>
+<line x1="53.0" y1="-16" x2="71.0" y2="-16" stroke="#333" stroke-width="0.25" marker-start="url(#a)" marker-end="url(#a)"/>
+<text x="62.0" y="-17" font-size="2.6" text-anchor="middle">18</text>
+<line x1="71.0" y1="-16" x2="75.0" y2="-16" stroke="#333" stroke-width="0.25" marker-start="url(#a)" marker-end="url(#a)"/>
+<text x="73.0" y="-17" font-size="2.6" text-anchor="middle">4</text>
+<line x1="75.0" y1="-16" x2="85.0" y2="-16" stroke="#333" stroke-width="0.25" marker-start="url(#a)" marker-end="url(#a)"/>
+<text x="80.0" y="-17" font-size="2.6" text-anchor="middle">10</text>
+<line x1="85.0" y1="-16" x2="100" y2="-16" stroke="#333" stroke-width="0.25" marker-start="url(#a)" marker-end="url(#a)"/>
+<text x="92.5" y="-17" font-size="2.6" text-anchor="middle">15</text>
+<line x1="100" y1="-2.00" x2="108" y2="-8.00" stroke="#999" stroke-width="0.2"/>
+<text x="109" y="-6.90" font-size="3" fill="#333">y = -2 Oberkante Dach (an der Wand)</text>
+<line x1="100" y1="0.00" x2="108" y2="10.00" stroke="#999" stroke-width="0.2"/>
+<text x="109" y="11.10" font-size="3" fill="#333">y = 0 Biegekante / Oberkante Front</text>
+<line x1="100" y1="11.26" x2="108" y2="28.00" stroke="#999" stroke-width="0.2"/>
+<text x="109" y="29.10" font-size="3" fill="#333">y = 11.3 Unterkante Tropfkante</text>
+<line x1="100" y1="8.00" x2="108" y2="46.00" stroke="#999" stroke-width="0.2"/>
+<text x="109" y="47.10" font-size="3" fill="#333">y = 8 LED-Fenster oben (18 × 6, 2 ×)</text>
+<line x1="100" y1="11.00" x2="108" y2="64.00" stroke="#999" stroke-width="0.2"/>
+<text x="109" y="65.10" font-size="3" fill="#333">y = 11 Mitte Laschenschlitze (10 × 2.6, 2 ×)</text>
+<line x1="100" y1="18.00" x2="108" y2="82.00" stroke="#999" stroke-width="0.2"/>
+<text x="109" y="83.10" font-size="3" fill="#333">y = 18 Unterkante Diffusor (Viertelrund, x 13–87)</text>
+<line x1="100" y1="26.00" x2="108" y2="100.00" stroke="#999" stroke-width="0.2"/>
+<text x="109" y="101.10" font-size="3" fill="#333">y = 26 obere Schrauben (x = 8 / 92)</text>
+<line x1="100" y1="20.00" x2="108" y2="118.00" stroke="#999" stroke-width="0.2"/>
+<text x="109" y="119.10" font-size="3" fill="#333">y = 20 Gitter oben</text>
+<line x1="100" y1="53.00" x2="108" y2="136.00" stroke="#999" stroke-width="0.2"/>
+<text x="109" y="137.10" font-size="3" fill="#333">y = 53 Gitter unten</text>
+<line x1="100" y1="64.00" x2="108" y2="154.00" stroke="#999" stroke-width="0.2"/>
+<text x="109" y="155.10" font-size="3" fill="#333">y = 64 Display oben</text>
+<line x1="100" y1="168.00" x2="108" y2="172.00" stroke="#999" stroke-width="0.2"/>
+<text x="109" y="173.10" font-size="3" fill="#333">y = 168 Display unten</text>
+<line x1="100" y1="182.20" x2="108" y2="190.00" stroke="#999" stroke-width="0.2"/>
+<text x="109" y="191.10" font-size="3" fill="#333">y = 182.2 Grundlinie Vornamen (2.8 hoch)</text>
+<line x1="100" y1="193.50" x2="108" y2="208.00" stroke="#999" stroke-width="0.2"/>
+<text x="109" y="209.10" font-size="3" fill="#333">y = 193.5 Grundlinie MUSTERMANN (8 hoch)</text>
+<line x1="100" y1="225.00" x2="108" y2="226.00" stroke="#999" stroke-width="0.2"/>
+<text x="109" y="227.10" font-size="3" fill="#333">y = 225 Knopfmitte (Ring Ø40, Loch Ø22 = Platzhalter)</text>
+<line x1="100" y1="252.00" x2="108" y2="244.00" stroke="#999" stroke-width="0.2"/>
+<text x="109" y="245.10" font-size="3" fill="#333">y = 252 untere Schrauben (x = 8 / 92)</text>
+<line x1="100" y1="260.00" x2="108" y2="262.00" stroke="#999" stroke-width="0.2"/>
+<text x="109" y="263.10" font-size="3" fill="#333">y = 260 Unterkante Front</text>
+<g transform="translate(250 0)">
+<rect x="-60" y="-40" width="60" height="320" fill="#efe9d8"/>
+<line x1="0" y1="-40" x2="0" y2="280" stroke="#555" stroke-width="0.8"/>
+<rect x="-50" y="4" width="50" height="252" fill="#222"/>
+<polygon stroke="#222" stroke-width="0.3" fill="#c9a861" points="0.00,260.00 0.00,2.00 0.06,1.07 0.25,0.27 0.56,-0.39 1.00,-0.91 1.56,-1.30 2.25,-1.55 3.06,-1.67 4.00,-1.65 60.00,3.25 60.00,11.26 58.00,11.26 58.00,5.08 4.00,0.36 3.53,0.35 3.12,0.41 2.78,0.53 2.50,0.73 2.28,0.99 2.12,1.32 2.03,1.72 2.00,2.18 2.00,260.00"/>
+<polygon stroke="#222" stroke-width="0.3" fill="#fbf7ec" points="2.00,18.18 2.00,18.18 3.76,18.10 5.51,17.84 7.23,17.41 8.89,16.81 10.49,16.06 12.00,15.15 13.42,14.10 14.73,12.91 15.91,11.60 16.97,10.18 17.87,8.67 18.63,7.07 19.22,5.41 19.65,3.69 19.91,1.95 20.00,0.18 2.00,0.18"/>
+<rect x="-7" y="9.7" width="9.0" height="2.6" stroke="#222" stroke-width="0.3" fill="#888"/>
+<rect x="2.0" y="6" width="1.4" height="10" stroke="#222" stroke-width="0.3" fill="#4a524a"/>
+<rect x="-12" y="25.2" width="12.4" height="1.6" fill="#777"/>
+<polygon fill="#d9bb7a" stroke="#222" stroke-width="0.2" points="2.0,23 2.0,29 0.30000000000000004,27.5 0.30000000000000004,24.5"/>
+<rect x="-12" y="251.2" width="12.4" height="1.6" fill="#777"/>
+<polygon fill="#d9bb7a" stroke="#222" stroke-width="0.2" points="2.0,249 2.0,255 0.30000000000000004,253.5 0.30000000000000004,250.5"/>
+<rect x="2.0" y="215.0" width="4" height="20" rx="1.5" stroke="#222" stroke-width="0.3" fill="#e8d6a8"/>
+<line x1="0" y1="-20" x2="60" y2="-20" stroke="#333" stroke-width="0.25" marker-start="url(#a)" marker-end="url(#a)"/>
+<text x="30.0" y="-21.5" font-size="3.4" text-anchor="middle">Dach 60 ab Wand</text>
+<line x1="-50" y1="-32" x2="0" y2="-32" stroke="#333" stroke-width="0.25" marker-start="url(#a)" marker-end="url(#a)"/>
+<text x="-25.0" y="-33.5" font-size="3.2" text-anchor="middle">50 (Platzhalter)</text>
+<text x="20" y="20" font-size="3.2" fill="#c33">85° (5° Gefälle), Innenradius 2</text>
+<text x="62.0" y="9.3" font-size="3" fill="#444">Tropfkante 6</text>
+<text x="22.0" y="6.0" font-size="3" fill="#444">Diffusor Viertelrund R18, Enden rund, ABS/PLA weiß</text>
+<text x="22.0" y="10.5" font-size="3" fill="#444">Silikonfuge rundum → Fenster und Schlitze sind dicht</text>
+<text x="5.0" y="21.0" font-size="3" fill="#444">LED-Streifen durchs Fenster nach vorn, liegt in der Ecke</text>
+<text x="-38.0" y="100.0" font-size="3" fill="#ddd">Kasten (Unterputz)</text>
+<text x="-58.0" y="60.0" font-size="3" fill="#ddd">Putz / Dämmung</text>
+<text x="-38.0" y="19.0" font-size="3" fill="#444">Lasche hinter dem Blech gesichert (Rastnase/Schraube)</text>
+<text x="6.0" y="80.0" font-size="3" fill="#444">Front + Dach = EIN Blech, 2 mm</text>
+<text x="-58.0" y="130.0" font-size="3" fill="#ddd">Kabelweg: offen</text>
+<text x="4.0" y="-6.0" font-size="3" fill="#444">Silikonfuge Dach/Wand; unten offen lassen (Drainage)</text>
+</g>
+<text x="-38" y="-60" font-size="4.4" font-weight="bold">Hausklingel – Unterputz, Front + Dach aus einem Blech, LED-Band in der Kantung, Entwurf v5 (2026-09-17) · Maße in mm</text>
+<text x="-38" y="-54.0" font-size="3" fill="#555">Schrift Segoe UI Regular · Vornamen und MUSTERMANN exakt 58 mm breit, bündig mit Display und Gitter</text>
+<text x="-38" y="-49.6" font-size="3" fill="#555">Gitter 5 × 18 Schrägschlitze 1.5 × 5, 70°, Teilung 3.21, Steg 1.52</text>
+<text x="-38" y="-45.2" font-size="3" fill="#555">Schrauben: 4 × M3 Senkkopf Messing, ein Schlitz (DIN 963), senkrecht; Loch Ø3.2 + 90°-Senkung auf Ø6; Gewindeeinsätze im Kasten</text>
+<text x="-38" y="-40.8" font-size="3" fill="#555">LED-Band: 2 Fenster 18 × 6 (Steg 6), außen 2 Schlitze 10 × 2.6 für die Diffusor-Laschen, je 15 mm (15 %) Abstand zur Seite</text>
+<text x="-38" y="-36.4" font-size="3" fill="#555">Kasten außen 92 × 252 (4 mm unter der Front verdeckt), Tiefe offen; Kabelweg in den Kasten offen (kein Rohr)</text>
+</svg>

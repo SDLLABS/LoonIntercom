@@ -1,0 +1,21 @@
+menu "SDLLABS P4 bench board"
+    choice P4_BENCH_BOARD
+        prompt "Bench board profile"
+        default P4_BOARD_FUNCTION_EV_V152
+
+        config P4_BOARD_FUNCTION_EV_V152
+            bool "Espressif Function EV v1.5.2 (EOL bench reference)"
+
+        config P4_BOARD_WAVESHARE_ESP32_P4_ETH_32086
+            bool "Waveshare ESP32-P4-ETH SKU 32086 (bench target)"
+    endchoice
+
+    config P4_WAVESHARE_REVISION_RECORDED
+        bool "Waveshare SKU 32086 chip revision checked and matching overlay selected"
+        depends on P4_BOARD_WAVESHARE_ESP32_P4_ETH_32086
+        default n
+        help
+            Set only after reading the fitted ESP32-P4 chip marking or boot log
+            and choosing the corresponding revision overlay. Never bypass a
+            flashing revision mismatch.
+endmenu

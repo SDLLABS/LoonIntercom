@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="37.8mm" height="40.3mm" viewBox="-10 -10 37.8 40.3" font-family="Arial, sans-serif">
+<rect x="0" y="0" width="17.8" height="20.3" rx="0" stroke="#222" stroke-width="0.25" fill="none"/>
+<circle cx="2.2" cy="2.2" r="1.09" stroke="#222" stroke-width="0.25" fill="none"/>
+<circle cx="15.6" cy="18.1" r="1.09" stroke="#222" stroke-width="0.25" fill="none"/>
+<text x="0" y="-3" font-size="3" fill="#444">Pololu D30V30F5 · Step-down 12 V → 5 V, 3,4 A (2 ×: Kabel 1 und Kabel 2)</text>
+</svg>

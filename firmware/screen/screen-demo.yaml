@@ -1,0 +1,363 @@
+# Klingelbox screen computer: what the screen can do (bench demo, 2026-09-29).
+# Seven pages: drawing, photo, vector graphic + icons, QR codes, text sizes, grey levels, animation.
+# No real UI: this is to judge how things look and feel before designing the door pages.
+# Bottom bar: left = back, right = next (both TRUE PAGE CHANGES: short flash), middle = cycle the style
+# (flash / short flash / deep clean) and apply it to this page.
+# Needs make_demo_assets.py to have run (demo-assets/ and local-assets/).
+
+esphome:
+  name: klingel-screen-demo
+  friendly_name: Klingelbox Bildschirm Demo
+  min_version: 2026.3.0
+  includes:
+    - demo/demo.h
+
+esp32:
+  board: esp32-s3-devkitc-1
+  variant: esp32s3
+  cpu_frequency: 240MHz
+  flash_size: 16MB
+  framework:
+    type: arduino
+
+psram:
+  mode: octal
+  speed: 80MHz
+
+i2c:
+  id: lilygo_t5_47_plus_i2c
+  sda: GPIO18
+  scl: GPIO17
+  frequency: 400kHz
+
+external_components:
+  - source:
+      type: local
+      path: components
+    components: [lilygo_t5_47_plus]
+
+logger:
+  hardware_uart: USB_SERIAL_JTAG
+
+globals:
+  - {id: page, type: int, initial_value: "0"}
+  - {id: last_touch, type: uint32_t, initial_value: "0"}
+  - {id: cleaned, type: bool, initial_value: "true"}   # idle clean-up done since the last touch
+  - {id: pc_style, type: int, initial_value: "1"}   # page change: 0 flash, 1 short flash (the page change), 2 deep clean
+  - {id: dirty, type: bool, initial_value: "true"}
+  - {id: stroke, type: bool, initial_value: "false"}
+  - {id: last_x, type: int, initial_value: "0"}
+  - {id: last_y, type: int, initial_value: "0"}
+  - {id: anim_mode, type: int, initial_value: "0"}
+  - {id: anim_frame, type: int, initial_value: "0"}
+  - {id: anim_left, type: int, initial_value: "0"}   # frames still to run: animations stop by themselves (DC balance)
+  - {id: anim_last, type: uint32_t, initial_value: "0"}
+  - {id: anim_fps, type: float, initial_value: "0"}
+  - {id: fps_shown, type: float, initial_value: "0"}
+  - {id: bx, type: int, initial_value: "120"}
+  - {id: by, type: int, initial_value: "300"}
+  - {id: vx, type: int, initial_value: "37"}
+  - {id: vy, type: int, initial_value: "29"}
+
+font:
+  - {file: "gfonts://Roboto@500", id: f_title, size: 30, bpp: 4, glyphs: &G " !%()+,-./0123456789:;?ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyzäöüÄÖÜß·–°×‹›"}
+  - {file: "gfonts://Roboto", id: f_nav, size: 24, bpp: 4, glyphs: *G}
+  - {file: "gfonts://Roboto", id: f_label, size: 18, bpp: 4, glyphs: *G}
+  - {file: "gfonts://Roboto", id: t10, size: 10, bpp: 4, glyphs: *G}
+  - {file: "gfonts://Roboto", id: t12, size: 12, bpp: 4, glyphs: *G}
+  - {file: "gfonts://Roboto", id: t14, size: 14, bpp: 4, glyphs: *G}
+  - {file: "gfonts://Roboto", id: t16, size: 16, bpp: 4, glyphs: *G}
+  - {file: "gfonts://Roboto", id: t18, size: 18, bpp: 4, glyphs: *G}
+  - {file: "gfonts://Roboto", id: t20, size: 20, bpp: 4, glyphs: *G}
+  - {file: "gfonts://Roboto", id: t24, size: 24, bpp: 4, glyphs: *G}
+  - {file: "gfonts://Roboto", id: t28, size: 28, bpp: 4, glyphs: *G}
+  - {file: "gfonts://Roboto", id: t32, size: 32, bpp: 4, glyphs: *G}
+  - {file: "gfonts://Roboto", id: t40, size: 40, bpp: 4, glyphs: *G}
+  - {file: "gfonts://Roboto", id: t48, size: 48, bpp: 4, glyphs: *G}
+  - {file: "gfonts://Roboto", id: t14_1bit, size: 14, bpp: 1, glyphs: *G}
+  - {file: "gfonts://Roboto", id: t20_1bit, size: 20, bpp: 1, glyphs: *G}
+  - {file: "gfonts://Roboto@700", id: t16b, size: 16, bpp: 4, glyphs: *G}
+  - {file: "gfonts://Roboto@700", id: t24b, size: 24, bpp: 4, glyphs: *G}
+  # Material Symbols: notifications, home, lock, local_shipping, mic, call, check_circle, person, wifi, qr_code
+  - file: "gfonts://Material+Symbols+Outlined"
+    id: i32
+    size: 32
+    bpp: 4
+    glyphs: &I ["\U0000e7f4", "\U0000e88a", "\U0000e897", "\U0000e558", "\U0000e029", "\U0000e0b0", "\U0000e86c", "\U0000e7fd", "\U0000e63e", "\U0000ef6b"]
+  - {file: "gfonts://Material+Symbols+Outlined", id: i48, size: 48, bpp: 4, glyphs: *I}
+  - {file: "gfonts://Material+Symbols+Outlined", id: i72, size: 72, bpp: 4, glyphs: *I}
+  - {file: "gfonts://Material+Symbols+Outlined", id: i96, size: 96, bpp: 4, glyphs: *I}
+
+# all pictures are stored as negatives (the driver draws COLOR_ON = white as black ink)
+image:
+  - {file: local-assets/photo_plain.png, id: img_plain, type: GRAYSCALE}
+  - {file: local-assets/photo_dither.png, id: img_dither, type: GRAYSCALE}
+  - {file: demo-assets/front.png, id: img_front, type: GRAYSCALE}
+  - {file: local-assets/p2_forest_plain.png, id: p2a0, type: GRAYSCALE}
+  - {file: local-assets/p2_forest_dither.png, id: p2b0, type: GRAYSCALE}
+  - {file: local-assets/p2_dark_plain.png, id: p2a1, type: GRAYSCALE}
+  - {file: local-assets/p2_dark_dither.png, id: p2b1, type: GRAYSCALE}
+  - {file: local-assets/p2_soft_plain.png, id: p2a2, type: GRAYSCALE}
+  - {file: local-assets/p2_soft_dither.png, id: p2b2, type: GRAYSCALE}
+  - {file: local-assets/p2_board_plain.png, id: p2a3, type: GRAYSCALE}
+  - {file: local-assets/p2_board_dither.png, id: p2b3, type: GRAYSCALE}
+
+animation:
+  - {file: demo-assets/spinner.gif, id: anim_spinner, type: GRAYSCALE}
+  - {file: demo-assets/bell.gif, id: anim_bell, type: GRAYSCALE}
+  - {file: local-assets/video.gif, id: anim_video, type: GRAYSCALE}
+
+qr_code:
+  - id: qr_repo
+    value: https://github.com/martinkadauke/intercom
+    ecc: LOW
+
+display:
+  - platform: lilygo_t5_47_plus
+    id: epaper
+    rotation: 270
+    update_interval: never
+    partial_updating: true
+    full_update_every: 100     # safety net; the middle of the bottom bar cleans up by hand
+    max_partial_percent: 100   # page switches without the flash too
+    lambda: |-
+      static const char *const NAMES[8] = {"Zeichnen", "Foto", "Grafik und Symbole", "QR-Codes", "Schrift",
+                                           "Graustufen", "Animation", "Fotos 2"};
+      const int P = id(page);
+      it.fill(COLOR_OFF);
+      it.print(15, 14, id(f_title), COLOR_ON, TextAlign::TOP_LEFT, NAMES[P]);
+
+      if (P == 0) {  // ---------------------------------------------------------------- drawing
+        it.rectangle(390, 12, 135, 50, COLOR_ON);
+        it.print(457, 37, id(f_nav), COLOR_ON, TextAlign::CENTER, "Löschen");
+        it.print(15, 66, id(f_label), COLOR_ON, TextAlign::TOP_LEFT, "mit dem Finger zeichnen");
+        it.line(10, 92, 530, 92, COLOR_ON);
+        demo::canvas_draw(it, 95, 870);
+
+      } else if (P == 1) {  // ------------------------------------------------------------ photo
+        it.print(15, 62, id(f_label), COLOR_ON, TextAlign::TOP_LEFT, "16 Graustufen, ohne Rastern");
+        it.image(10, 88, id(img_plain));
+        it.print(15, 428, id(f_label), COLOR_ON, TextAlign::TOP_LEFT, "16 Graustufen, mit Fehlerstreuung gerastert");
+        it.image(10, 454, id(img_dither));
+
+      } else if (P == 2) {  // ---------------------------------------------- vector graphic, icons
+        it.image(10, 60, id(img_front));
+        it.print(15, 622, id(f_label), COLOR_ON, TextAlign::TOP_LEFT, "Symbole 96, 72, 48 und 32 px");
+        it.print(15, 650, id(i96), COLOR_ON, TextAlign::TOP_LEFT, "\U0000e7f4");
+        it.print(125, 662, id(i72), COLOR_ON, TextAlign::TOP_LEFT, "\U0000e88a");
+        it.print(215, 674, id(i48), COLOR_ON, TextAlign::TOP_LEFT, "\U0000e897");
+        it.print(280, 682, id(i32), COLOR_ON, TextAlign::TOP_LEFT, "\U0000e558");
+        static const char *const ICONS[10] = {"\U0000e7f4", "\U0000e88a", "\U0000e897", "\U0000e558", "\U0000e029",
+                                              "\U0000e0b0", "\U0000e86c", "\U0000e7fd", "\U0000e63e", "\U0000ef6b"};
+        for (int k = 0; k < 10; k++)
+          it.print(15 + k * 51, 780, id(i48), COLOR_ON, TextAlign::TOP_LEFT, ICONS[k]);
+
+      } else if (P == 3) {  // ---------------------------------------------------------- QR codes
+        it.print(15, 62, id(f_label), COLOR_ON, TextAlign::TOP_LEFT, "github.com/martinkadauke/intercom");
+        const int n = id(qr_repo).get_size();
+        const int scales[5] = {2, 3, 4, 6, 8};
+        const int xs[5] = {20, 130, 290, 20, 250};
+        const int ys[5] = {110, 110, 110, 400, 400};
+        for (int k = 0; k < 5; k++) {
+          const int s = scales[k];
+          it.qr_code(xs[k], ys[k], id(qr_repo), COLOR_ON, s);
+          it.printf(xs[k], ys[k] + n * s + 8, id(t16), COLOR_ON, TextAlign::TOP_LEFT, "Punkt %.2f mm", s * 0.108f);
+          it.printf(xs[k], ys[k] + n * s + 28, id(t16), COLOR_ON, TextAlign::TOP_LEFT, "Code %.1f mm", n * s * 0.108f);
+        }
+
+      } else if (P == 4) {  // -------------------------------------------------------------- text
+        static const char *const S = "Zwölf Boxkämpfer jagen Viktor quer über den großen Sylter Deich.";
+        esphome::font::Font *fonts[11] = {id(t10), id(t12), id(t14), id(t16), id(t18), id(t20),
+                                          id(t24), id(t28), id(t32), id(t40), id(t48)};
+        const int sizes[11] = {10, 12, 14, 16, 18, 20, 24, 28, 32, 40, 48};
+        int y = 60;
+        for (int k = 0; k < 11; k++) {
+          it.printf(12, y, fonts[k], COLOR_ON, TextAlign::TOP_LEFT, "%d px (%.1f mm): %s", sizes[k],
+                    sizes[k] * 0.108f, S);
+          y += sizes[k] * 4 / 3 + 4;
+        }
+        y += 8;
+        it.print(12, y, id(t14_1bit), COLOR_ON, TextAlign::TOP_LEFT, "14 px ohne Kantenglättung: Zwölf Boxkämpfer");
+        it.print(12, y + 20, id(t14), COLOR_ON, TextAlign::TOP_LEFT, "14 px mit Kantenglättung: Zwölf Boxkämpfer");
+        it.print(12, y + 44, id(t20_1bit), COLOR_ON, TextAlign::TOP_LEFT, "20 px ohne Glättung: Zwölf Boxkämpfer");
+        it.print(12, y + 72, id(t20), COLOR_ON, TextAlign::TOP_LEFT, "20 px mit Glättung: Zwölf Boxkämpfer");
+        it.print(12, y + 104, id(t16b), COLOR_ON, TextAlign::TOP_LEFT, "16 px fett: Zwölf Boxkämpfer jagen Viktor");
+        it.print(12, y + 128, id(t24b), COLOR_ON, TextAlign::TOP_LEFT, "24 px fett: Zwölf Boxkämpfer");
+        it.filled_rectangle(10, y + 166, 520, 44, COLOR_ON);
+        it.print(20, y + 176, id(t20), COLOR_OFF, TextAlign::TOP_LEFT, "Weiß auf Schwarz, 20 px: Zwölf Boxkämpfer");
+        it.print(12, y + 224, id(t16), COLOR_ON, TextAlign::TOP_LEFT, "Ein Absatz in 16 px, so klein wie ein Hinweis");
+        it.print(12, y + 246, id(t16), COLOR_ON, TextAlign::TOP_LEFT, "unter einem Knopf. Lesbar aus einem halben Meter?");
+
+      } else if (P == 5) {  // ------------------------------------------------------ grey levels
+        it.print(15, 62, id(f_label), COLOR_ON, TextAlign::TOP_LEFT, "die 16 Graustufen des Panels");
+        for (int k = 0; k < 16; k++) {
+          it.filled_rectangle(14 + k * 32, 90, 32, 170, demo::paper(k * 17));
+          it.printf(30 + k * 32, 266, id(t12), COLOR_ON, TextAlign::TOP_CENTER, "%d", k);
+        }
+        it.rectangle(14, 90, 512, 170, COLOR_ON);
+        it.print(15, 300, id(f_label), COLOR_ON, TextAlign::TOP_LEFT, "Verlauf, nur 16 Stufen");
+        for (int x = 0; x < 512; x++)
+          it.line(14 + x, 326, 14 + x, 436, demo::paper((x * 16 / 512) * 17));
+        it.print(15, 452, id(f_label), COLOR_ON, TextAlign::TOP_LEFT, "Verlauf, gerastert (Bayer 4x4)");
+        for (int y = 478; y < 588; y++) {
+          for (int x = 0; x < 512; x++) {
+            const int g = x * 255 / 511;
+            int l = g / 17;
+            if ((g % 17) * 16 / 17 > demo::bayer4(x, y) && l < 15)
+              l++;
+            it.draw_pixel_at(14 + x, y, demo::paper(l * 17));
+          }
+        }
+        it.print(15, 604, id(f_label), COLOR_ON, TextAlign::TOP_LEFT, "feine Muster: Linien 1 px, 2 px, Schachbrett");
+        for (int y = 630; y < 850; y++) {
+          for (int x = 0; x < 160; x++) {
+            if (y % 2 == 0)
+              it.draw_pixel_at(14 + x, y, COLOR_ON);
+            if ((y / 2) % 2 == 0)
+              it.draw_pixel_at(190 + x, y, COLOR_ON);
+            if ((x + y) % 2 == 0)
+              it.draw_pixel_at(366 + x, y, COLOR_ON);
+          }
+        }
+
+      } else if (P == 6) {  // --------------------------------------------------------- animation
+        static const char *const MODES[4] = {"klein, 96 px", "mittel, 200 px", "groß, Ball auf 500 x 600 px",
+                                             "Video, 360 x 240 px"};
+        it.printf(15, 62, id(f_label), COLOR_ON, TextAlign::TOP_LEFT, "Modus %d von 4: %s", id(anim_mode) + 1,
+                  MODES[id(anim_mode)]);
+        it.print(15, 86, id(f_label), COLOR_ON, TextAlign::TOP_LEFT,
+                 id(anim_left) > 0 ? "läuft 20 Bilder, antippen: nächster Modus" : "angehalten, antippen: 20 weitere Bilder");
+        if (id(fps_shown) > 0)
+          it.printf(15, 110, id(f_label), COLOR_ON, TextAlign::TOP_LEFT, "%.1f Bilder pro Sekunde", id(fps_shown));
+        switch (id(anim_mode)) {
+          case 0: it.image(222, 420, id(anim_spinner)); break;
+          case 1: it.image(170, 360, id(anim_bell)); break;
+          case 2:
+            it.rectangle(20, 200, 500, 600, COLOR_ON);
+            it.filled_circle(id(bx), id(by), 30, COLOR_ON);
+            break;
+          case 3: it.image(90, 360, id(anim_video)); break;
+        }
+      }
+
+      if (P == 7) {  // ------------------------------------------------------------ more photos
+        it.print(12, 60, id(f_label), COLOR_ON, TextAlign::TOP_LEFT, "links ohne Rastern, rechts gerastert");
+        esphome::image::Image *a[4] = {id(p2a0), id(p2a1), id(p2a2), id(p2a3)};
+        esphome::image::Image *b[4] = {id(p2b0), id(p2b1), id(p2b2), id(p2b3)};
+        for (int k = 0; k < 4; k++) {
+          it.image(10, 90 + k * 196, a[k]);
+          it.image(275, 90 + k * 196, b[k]);
+        }
+      }
+
+      // bottom bar
+      it.line(10, 878, 530, 878, COLOR_ON);
+      it.print(15, 915, id(f_nav), COLOR_ON, TextAlign::CENTER_LEFT, "‹ zurück");
+      it.print(525, 915, id(f_nav), COLOR_ON, TextAlign::CENTER_RIGHT, "weiter ›");
+      static const char *const STYLE[3] = {"Wechsel: Blitz", "Wechsel: kurzer Blitz", "Tiefenreinigung (8 s)"};
+      it.printf(270, 900, id(t16), COLOR_ON, TextAlign::CENTER, "Seite %d von 8", P + 1);
+      it.print(270, 922, id(t16), COLOR_ON, TextAlign::CENTER, STYLE[id(pc_style)]);
+      it.print(270, 942, id(t12), COLOR_ON, TextAlign::CENTER, "(hier tippen: ändern)");
+
+touchscreen:
+  - platform: lilygo_t5_47_plus
+    id: touch
+    display: epaper
+    i2c_id: lilygo_t5_47_plus_i2c
+    update_interval: 20ms
+    on_touch:
+      - lambda: |-
+          const int x = touch.x, y = touch.y;
+          id(last_touch) = millis();
+          id(cleaned) = false;
+          if (y >= 880) {  // bottom bar: back / next are TRUE PAGE CHANGES; middle cycles their style
+            if (x < 180) id(page) = (id(page) + 7) % 8;
+            else if (x > 360) id(page) = (id(page) + 1) % 8;
+            else id(pc_style) = (id(pc_style) + 1) % 3;
+            id(epaper).set_page_change_style(id(pc_style));
+            id(epaper).request_page_change();
+            id(stroke) = false;
+            id(anim_last) = 0;
+            id(fps_shown) = 0;
+            id(anim_left) = (id(page) == 6) ? 20 : 0;
+            id(dirty) = true;
+            return;
+          }
+          if (id(page) == 0) {
+            if (y < 70 && x > 380) {
+              demo::canvas_clear();   // erasing large content is practically a new page
+              id(epaper).set_page_change_style(1);
+              id(epaper).request_page_change();
+            } else if (y > 95) {
+              demo::canvas_dot(x, y, 3, 95, 870);
+              id(stroke) = true;
+              id(last_x) = x;
+              id(last_y) = y;
+            }
+            id(dirty) = true;
+          } else if (id(page) == 6) {
+            if (id(anim_left) > 0) {   // running: next mode = new content = a true page change
+              id(anim_mode) = (id(anim_mode) + 1) % 4;
+              id(epaper).set_page_change_style(id(pc_style));
+              id(epaper).request_page_change();
+            }
+            id(anim_left) = 20;                                                // stopped: run again
+            id(anim_last) = 0;
+            id(fps_shown) = 0;
+            id(dirty) = true;
+          }
+    on_update:
+      - lambda: |-
+          if (id(page) != 0 || !id(stroke) || touches.empty())
+            return;
+          const auto &t = touches[0];
+          if (t.x == id(last_x) && t.y == id(last_y))
+            return;
+          demo::canvas_line(id(last_x), id(last_y), t.x, t.y, 3, 95, 870);
+          id(last_x) = t.x;
+          id(last_y) = t.y;
+          id(dirty) = true;
+    on_release:
+      - lambda: id(stroke) = false;
+
+interval:
+  - interval: 20ms
+    then:
+      - lambda: |-
+          if (id(page) == 6 && id(anim_left) > 0 && !id(dirty) && id(epaper).refresh_idle()) {
+            id(anim_left) -= 1;
+            const uint32_t now = millis();
+            if (id(anim_last) != 0) {
+              id(anim_fps) = 1000.0f / (float) (now - id(anim_last));
+              if (id(fps_shown) == 0 || id(anim_frame) % 6 == 0)
+                id(fps_shown) = id(anim_fps);
+            }
+            id(anim_last) = now;
+            id(anim_frame) += 1;
+            switch (id(anim_mode)) {
+              case 0: id(anim_spinner).next_frame(); break;
+              case 1: id(anim_bell).next_frame(); break;
+              case 2:
+                id(bx) += id(vx);
+                id(by) += id(vy);
+                if (id(bx) < 52 || id(bx) > 488) { id(vx) = -id(vx); id(bx) += 2 * id(vx); }
+                if (id(by) < 232 || id(by) > 768) { id(vy) = -id(vy); id(by) += 2 * id(vy); }
+                break;
+              case 3: id(anim_video).next_frame(); break;
+            }
+            id(dirty) = true;
+          }
+          // invisible clean-up: 45 s without a touch, one real flash while nobody is looking
+          if (!id(cleaned) && millis() - id(last_touch) > 45000 && id(anim_left) == 0 && !id(dirty) &&
+              id(epaper).refresh_idle()) {
+            id(cleaned) = true;
+            id(epaper).set_page_change_style(0);
+            id(epaper).request_page_change();
+            id(dirty) = true;
+            ESP_LOGI("demo", "idle clean-up");
+          }
+          if (id(dirty) && id(epaper).refresh_idle()) {
+            id(dirty) = false;
+            demo::canvas_ready();
+            id(epaper).update();
+          }

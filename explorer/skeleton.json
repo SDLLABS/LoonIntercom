@@ -1,0 +1,1828 @@
+{
+  "state": "2026-09-30",
+  "_about": "Structure of the Klingelbox explorer, state 2026-09-30. UPDATE 2026-09-30: the doorbell computer is the Waveshare ESP32-S3-ETH (bench-tested); the WT32-ETH01 was dropped because it always booted into download mode. The talk computer board and the power path (splitter, or the doorbell computer's plug-on PoE module) are being re-decided; the diagram keeps the 24.09 layout for them. Architecture (decided 2026-09-24): ONE PoE cable into the box, no switch in the box. Three computers: the WT32-ETH01 is the wired doorbell computer (button, light, heater, climate sensor) on the splitter's data port; the Waveshare ESP32-S3-ETH is the talk computer (microphone, amplifier) on WiFi; the LilyGO T5 4.7 S3 Touch drives the screen on WiFi. Splitter output voltage (12 V shown) is still pending. Hints carry the facts writers may use; writers add no new facts.",
+  "zones": [
+    {
+      "id": "internet",
+      "hint": "Outside services on the internet. Only Telegram, used for voice messages (planned)."
+    },
+    {
+      "id": "house",
+      "hint": "Inside the house: the Home Assistant server, the WiFi access point about a metre from the box, the local transcription server, the household's phones, planned house speakers and a planned self-hosted family app."
+    },
+    {
+      "id": "technikraum",
+      "hint": "The technical room indoors: UPS, the PoE network switch, the surge protector, the house earth. Everything that feeds the door lives here; no power supply is needed here any more because PoE carries the power."
+    },
+    {
+      "id": "wall",
+      "hint": "The outside wall: 14 cm facade insulation in front of masonry. One outdoor network cable crosses it and enters the box through a split cable gland. The exact cable route is still open."
+    },
+    {
+      "id": "box",
+      "hint": "The 3D-printed box set flush into the facade insulation, behind the brass front. It holds the PoE splitter, the power distribution, the three door computers and all small electronics. Sealed; heated in winter; breathes through a pressure vent."
+    },
+    {
+      "id": "front",
+      "hint": "The visible brass front outside, with everything mounted in or directly behind it: light and diffusor under the folded roof, speaker behind the grille, the screen behind its window, the mic holes and the push button. No camera, ever."
+    }
+  ],
+  "layers": [
+    {
+      "id": "mains",
+      "color": "mains",
+      "hint": "Household mains 230 V. Only indoors: it feeds the UPS, the UPS feeds the network switch."
+    },
+    {
+      "id": "poe",
+      "color": "poe",
+      "hint": "PoE = Power over Ethernet: one network cable carries data AND power (about 48 V) from the switch to the box. Runs at high voltage so the current and the loss in the cable stay small."
+    },
+    {
+      "id": "ethernet",
+      "color": "ethernet",
+      "hint": "Wired network data only (no power)."
+    },
+    {
+      "id": "wifi",
+      "color": "wifi",
+      "hint": "Radio network. The screen computer and the talk computer use it; the doorbell computer stays on the cable."
+    },
+    {
+      "id": "v12",
+      "color": "v12",
+      "hint": "12 V made by the PoE splitter in the box. Feeds the heater directly and the 5 V converter. PENDING: a 5 V-output splitter is the alternative still being decided."
+    },
+    {
+      "id": "v5",
+      "color": "v5",
+      "hint": "5 V rail in the box, made from 12 V by one step-down converter. Feeds all three computers, the amplifier, the LED strip and the level shifter."
+    },
+    {
+      "id": "v3",
+      "color": "v3",
+      "hint": "3.3 V made on the doorbell and talk computer boards from their 5 V. Feeds small parts: the BME280 and the button-line pull-up (doorbell computer) and the microphone (talk computer)."
+    },
+    {
+      "id": "gnd",
+      "color": "gnd",
+      "hint": "Ground (0 V): the shared return path. Every part's current flows back through it and every signal is measured against it, so all grounds in the box join at one point."
+    },
+    {
+      "id": "earth",
+      "color": "earth",
+      "hint": "Protective earth of the house. Only the surge protector is connected to it, by an electrician. It is a path for lightning surges, not for normal current."
+    },
+    {
+      "id": "i2c",
+      "color": "i2c",
+      "hint": "I2C: a slow two-wire chip bus (SDA data, SCL clock). Connects the BME280 sensor to the doorbell computer."
+    },
+    {
+      "id": "i2s",
+      "color": "i2s",
+      "hint": "I2S: a three-wire digital audio bus (bit clock, word clock, data) between the talk computer and both the microphone and the amplifier. Digital, so noise does not degrade the sound, but the wires must stay short."
+    },
+    {
+      "id": "gpio",
+      "color": "gpio",
+      "hint": "Single control lines from one computer pin: the LED data line (via the level shifter) and the heater on/off signal."
+    },
+    {
+      "id": "button",
+      "color": "button",
+      "hint": "The supervised doorbell line: resistors make three distinct voltages (idle about 1.73 V, pressed about 0.30 V, wire cut about 3.1-3.3 V) that the doorbell computer reads with an analog input. A cut wire is reported, not silent."
+    },
+    {
+      "id": "speaker",
+      "color": "speaker",
+      "hint": "The two amplified speaker wires from the amplifier's screw terminal to the loudspeaker. Both carry signal; neither is ground."
+    },
+    {
+      "id": "software",
+      "color": "software",
+      "hint": "Logical links over the network: the ESPHome connection to Home Assistant, phone notifications, screen content, and the planned voice-message and push-to-talk paths."
+    },
+    {
+      "id": "mech",
+      "color": "mech",
+      "hint": "How parts are mounted, sealed and where air, water, light and sound are allowed through."
+    }
+  ],
+  "nodes": [
+    {
+      "id": "telegram",
+      "zone": "internet",
+      "status": "existing",
+      "name": "Telegram",
+      "hint": "Messenger service the household already uses with its own bots. PLANNED use: delivers visitor voice messages plus their transcript to your phone, and carries your voice replies back. Audio passes through Telegram's servers."
+    },
+    {
+      "id": "ha",
+      "zone": "house",
+      "status": "existing",
+      "name": "Home Assistant",
+      "hint": "The home automation server (already running). Talks to all three door computers via ESPHome and runs the automations: phone notification on a ring (loud channel, can be silenced by a toggle), screen content, light at dusk, and (planned) starting a call to the talk computer. Will later be integrated with the planned family app via an API."
+    },
+    {
+      "id": "phone",
+      "zone": "house",
+      "status": "existing",
+      "name": "Your phone",
+      "hint": "Gets the ring notification from Home Assistant's companion app on a loud notification channel (under 1 second target). Later also Telegram voice messages with transcript, and sends voice replies. Neutral wording: 'your phone', no person names."
+    },
+    {
+      "id": "ap",
+      "zone": "house",
+      "status": "existing",
+      "name": "WiFi access point",
+      "hint": "Existing access point about a metre from the box. The screen computer and the talk computer connect to it. Signal strength inside the box behind brass still to be tested on site."
+    },
+    {
+      "id": "transcribe",
+      "zone": "house",
+      "status": "existing",
+      "name": "Transcription server",
+      "hint": "Existing home server that already runs an n8n automation + Whisper speech-to-text pipeline locally. PLANNED: turns visitor voice messages into text before they go to Telegram. Transcription stays at home."
+    },
+    {
+      "id": "speakers",
+      "zone": "house",
+      "status": "planned",
+      "name": "House speakers",
+      "hint": "PLANNED WiFi speakers in the house (e.g. a Home Assistant Voice PE). Play the doorbell chime and, planned, the visitor's live push-to-talk voice."
+    },
+    {
+      "id": "app",
+      "zone": "house",
+      "status": "planned",
+      "name": "Family app",
+      "hint": "FUTURE self-hosted web app for the household: manage doorbell, speakers and other home systems (screen notices, ringtones, volumes); exposes an API to Home Assistant. Could host the live push-to-talk relay."
+    },
+    {
+      "id": "ups",
+      "zone": "technikraum",
+      "status": "existing",
+      "name": "UPS",
+      "hint": "Battery-backed mains supply already in the technical room. Keeps the network switch, and therefore the whole doorbell, running during short power cuts."
+    },
+    {
+      "id": "poeswitch",
+      "zone": "technikraum",
+      "status": "to_buy",
+      "name": "PoE switch port",
+      "hint": "A UniFi switch port with PoE switched ON (a small UniFi PoE switch for the door is planned). Sends data and about 48 V power down one cable. Its own VLAN, port isolation and MAC lock are advised because the front plate hides a live network port."
+    },
+    {
+      "id": "surge",
+      "zone": "technikraum",
+      "status": "in_hand",
+      "name": "Surge protector",
+      "hint": "UniFi ETH-SP-G2, already owned. Sits between switch and outdoor cable, diverts lightning-induced surges to earth. Only works when an electrician connects it to the house earth. Its datasheet lists 802.3af PoE."
+    },
+    {
+      "id": "earthbar",
+      "zone": "technikraum",
+      "status": "existing",
+      "name": "House earth",
+      "hint": "The house's equipotential bonding bar. The electrician connects the surge protector to it (same visit as removing the old dead doorbell transformer)."
+    },
+    {
+      "id": "cable",
+      "zone": "wall",
+      "status": "to_buy",
+      "name": "Outdoor network cable",
+      "hint": "ONE ready-made outdoor Cat6 cable, about 10 m, solid copper AWG24, rated -40 to +75 C (candidate goobay 55432; check it is not the copper-clad-aluminium 94389). No crimping. Carries PoE. A second dark spare cable in the same bundle is being considered."
+    },
+    {
+      "id": "gland",
+      "zone": "wall",
+      "status": "to_buy",
+      "name": "Split cable gland",
+      "hint": "Conta-Clip KDS-KV M25 split gland (lock nut included) with a split sealing insert KDS-DE 6-7 for the 6.0-6.6 mm cable, in one hole in the box's back wall (Conta-Clip specifies 25.2 mm). The moulded RJ45 plug passes through the opened gland, then the slit insert closes watertight around the cable. IP66."
+    },
+    {
+      "id": "splitter",
+      "zone": "box",
+      "status": "pending",
+      "name": "PoE splitter",
+      "hint": "Industrial PoE splitter inside the box, rated down to -40 C, isolated: separates the cable into data (to the doorbell computer) and DC power. Shown with a 12 V output (candidate TRENDnet TI-SG104, -40 to +75 C, 802.3af to bt); a 5 V-output Waveshare industrial splitter (Amazon B0D795H51H) is the alternative still being decided. Possibly not needed at all: the doorbell computer's plug-on PoE module could power the box instead (its power rating is still to be checked)."
+    },
+    {
+      "id": "pololu",
+      "zone": "box",
+      "status": "in_hand",
+      "name": "12→5 V converter",
+      "hint": "Pololu D30V30F5 step-down regulator, already owned: 12 V in, 5 V out, up to 3.4 A, short-circuit and reverse-polarity protection. 17.8 x 20.3 mm."
+    },
+    {
+      "id": "rail5",
+      "zone": "box",
+      "status": "to_buy",
+      "name": "5 V distribution",
+      "hint": "Lever connectors (WAGO) or a small terminal strip where the 5 V and ground are split to every consumer. No soldering."
+    },
+    {
+      "id": "gndstar",
+      "zone": "box",
+      "status": "to_buy",
+      "name": "Common ground",
+      "hint": "The single point where all grounds in the box meet (part of the distribution terminals). Without a common ground the parts cannot read each other's signals."
+    },
+    {
+      "id": "wt32",
+      "zone": "box",
+      "status": "in_hand",
+      "name": "Doorbell computer",
+      "hint": "Waveshare ESP32-S3-ETH (ESP32-S3 with W5500 Ethernet, USB-C, plug-on PoE Module (B)), in hand and bench-tested 30 Sep 2026: supervised button line on IO1, sampled every millisecond, every press reaches Home Assistant. Replaced the WT32-ETH01 planned first, which always started in download mode (its Ethernet clock holds the IO0 boot pin low) and so could not restart on its own after a power cut. Runs only standard ESPHome: the button line, the LED light, the climate sensor, the heater thermostat and a power governor. An audio crash or a talk update can never take the bell down."
+    },
+    {
+      "id": "waveshare",
+      "zone": "box",
+      "status": "pending",
+      "name": "Talk computer",
+      "hint": "Board re-decided 30 Sep 2026: the Waveshare ESP32-S3-ETH became the doorbell computer. The talk software (community 'VoIP Stack') needs an ESP32-S3 with PSRAM; an ESP32-S3 N16R8 dev board (16 MB flash, 8 MB PSRAM) is in hand as a candidate. Talk only: microphone and amplifier, on WiFi. Fed with 5 V."
+    },
+    {
+      "id": "lilygo",
+      "zone": "box",
+      "status": "in_hand",
+      "name": "Screen computer",
+      "hint": "LilyGO T5-4.7-S3 Touch (H716): 4.7 inch e-paper, 960 x 540, 16 grey levels, capacitive touch, its own ESP32-S3. Needs its own computer because this parallel e-paper panel needs a dedicated driver chip. Connected by WiFi (locked). Powered from the box's 5 V. Touch chip GT911 (I2C 0x5D). Measured 2026-09-29: glass 120.1 x 66.77, visible 56.95 x 101.9, screen folds onto the board on 3M pads, stack 11.9, 7 holes 3.94."
+    },
+    {
+      "id": "amp",
+      "zone": "box",
+      "status": "in_hand",
+      "name": "Amplifier",
+      "hint": "Adafruit MAX98357A: turns the digital I2S audio into speaker power (about 1.8 W into 8 ohm max). Must be set to its LOWEST gain because the speaker takes only 0.5 W rated / 1 W max: 3 dB = a 100 kOhm resistor from GAIN to Vin. Connecting GAIN to ground gives 12 dB, which is LOUDER."
+    },
+    {
+      "id": "mic",
+      "zone": "box",
+      "status": "in_hand",
+      "name": "Microphone",
+      "hint": "INMP441 digital MEMS microphone module (I2S), 3 owned. Sits directly behind the two mic holes with the membrane in between. The labelled side carries the sound hole and faces the holes. Recording only after a visitor action, and announced on the screen (legal requirement)."
+    },
+    {
+      "id": "shifter",
+      "zone": "box",
+      "status": "in_hand",
+      "name": "Level shifter",
+      "hint": "SN74AHCT125N chip plus a 330 ohm series resistor, on a small perfboard: raises the 3.3 V LED data signal from the computer to the 5 V the LED strip expects. Without it the strip may work on the bench and fail mysteriously in the cold."
+    },
+    {
+      "id": "ledcap",
+      "zone": "box",
+      "status": "to_buy",
+      "name": "1000 µF capacitor",
+      "hint": "Electrolytic capacitor across +5 V and ground right at the LED strip: absorbs the inrush when the LEDs switch on. Polarity matters (the stripe marks minus). The owned kit only has 100 nF, so it must be bought."
+    },
+    {
+      "id": "bme",
+      "zone": "box",
+      "status": "in_hand",
+      "name": "Climate sensor",
+      "hint": "BME280 (confirmed genuine, with humidity): measures temperature and humidity inside the box. Drives the heater thermostat and warns about condensation."
+    },
+    {
+      "id": "mosfet",
+      "zone": "box",
+      "status": "in_hand",
+      "name": "Heater switch",
+      "hint": "Opto-coupled PWM MOSFET module (FR120N, board marking HW-532), already owned. The computer only lights an LED inside the optocoupler; the MOSFET switches the heater's MINUS side (low-side). With 12 V available its gate gets a full 12 V; on a 5 V system it would need a test or a logic-level module."
+    },
+    {
+      "id": "fuse",
+      "zone": "box",
+      "status": "in_hand",
+      "name": "Thermal fuse 73 °C",
+      "hint": "From the ordered assortment (73-240 C, 10 A). In series with the heater: cuts the heater permanently if anything overheats, independent of the firmware. Soldering heat can blow it."
+    },
+    {
+      "id": "heater",
+      "zone": "box",
+      "status": "pending",
+      "name": "Heater pad",
+      "hint": "Silicone heater pad about 5 W behind the display. Mandatory because the e-paper panel is only rated 0 to +50 C and the box sees -15 C. Voltage (12 V or 5 V) depends on the pending splitter decision. Fails cold: off at boot, off if the sensor fails, firmware cut-off around 40 C, the fuse as last backstop."
+    },
+    {
+      "id": "linecircuit",
+      "zone": "box",
+      "status": "in_hand",
+      "name": "Button-line circuit",
+      "hint": "Three small parts on perfboard, proven on the v1 breadboard: 10 kOhm pull-up to 3.3 V, 1 kOhm series resistor, 100 nF capacitor to ground. Together with the end-of-line resistor at the button they create the three voltage states. Prevents the floating pin that once caused 134 phantom rings in 15 minutes."
+    },
+    {
+      "id": "vent",
+      "zone": "box",
+      "status": "to_buy",
+      "name": "Pressure vent",
+      "hint": "Pressure-equalisation element (Bopla DAE M12): lets the sealed box breathe without letting water in. The box is buried in the wall, so it vents into the cavity behind the speaker grille, which is open to outside air."
+    },
+    {
+      "id": "led",
+      "zone": "front",
+      "status": "in_hand",
+      "name": "LED strip",
+      "hint": "Addressable LED strip, 3 wires (5 V, data, ground), very likely SK6812 RGBW with a real white chip (yellow phosphor spot seen on the LEDs). About 4 LEDs in the diffusor under the roof: warm downlight onto the brass and the step, plus status colours."
+    },
+    {
+      "id": "diffusor",
+      "zone": "front",
+      "status": "printed",
+      "name": "Diffusor",
+      "hint": "Printed quarter-round light diffusor (R18, x 13-87) in the corner under the folded brass roof, siliconed all round. The LED strip lies inside it."
+    },
+    {
+      "id": "speaker",
+      "zone": "front",
+      "status": "in_hand",
+      "name": "Loudspeaker",
+      "hint": "VISATON K 40 SQ, 40 x 40 mm, 8 ohm, 0.5 W rated / 1 W max, 82 dB at 1 W / 1 m (louder than a 3 W alternative at 74 dB: sensitivity beats wattage). IP65/67 at the front. Mounted with 4 screws on the box's front wall behind the grille."
+    },
+    {
+      "id": "grille",
+      "zone": "front",
+      "status": "printed",
+      "name": "Speaker grille",
+      "hint": "Slanted slots cut into the brass (3 rows in the current CAD). The cavity behind it counts as outside air: speaker seals against the box wall, vent breathes into it, floor must drain water out through the lowest slots (a CAD fix is pending: the modelled slope runs the wrong way)."
+    },
+    {
+      "id": "window",
+      "zone": "front",
+      "status": "printed",
+      "name": "Display window",
+      "hint": "Portrait window in the brass for the e-paper screen (about 58 x 104 mm visible area). The screen sits behind it with a soft gasket."
+    },
+    {
+      "id": "membrane",
+      "zone": "front",
+      "status": "to_buy",
+      "name": "Mic membrane",
+      "hint": "Self-adhesive PTFE vent membrane (B+B Thermo-Technik DAM-AD10, 10.2 mm outer, 5.5 mm open, IP67) stuck behind the two mic holes: sound passes, water does not. Sold as a pressure vent, no acoustic data published: test the voice quality through it on the bench."
+    },
+    {
+      "id": "micholes",
+      "zone": "front",
+      "status": "printed",
+      "name": "Mic holes",
+      "hint": "Two 1.2 mm holes in the brass next to the button. The microphone listens through them."
+    },
+    {
+      "id": "button",
+      "zone": "front",
+      "status": "in_hand",
+      "name": "Push button",
+      "hint": "The existing brass doorbell button, ring 48.5 mm, recessed in the brass. A 10 kOhm end-of-line resistor is soldered directly across its two contacts: that is what lets the computer tell 'idle' from 'wire cut'."
+    },
+    {
+      "id": "gasket",
+      "zone": "front",
+      "status": "to_buy",
+      "name": "Gasket",
+      "hint": "Gasket cord (2.0 mm) in a groove of the box rim, pressed by the brass front: seals the box against rain. Plus an O-ring 26 x 2 for the button (size from the CAD, kasten_v3_params)."
+    },
+    {
+      "id": "brass",
+      "zone": "front",
+      "status": "printed",
+      "name": "Brass front",
+      "hint": "One bent 2 mm brass sheet: front 100 x 260 mm with a folded rain roof and drip edge. So far only 3D-printed prototypes; brass is ordered only after the bench tests pass. Held by four slotted brass screws."
+    }
+  ],
+  "edges": [
+    {
+      "id": "e_ups_switch",
+      "from": "ups",
+      "to": "poeswitch",
+      "layer": "mains",
+      "method": "plug",
+      "decided": true,
+      "hint": "Mains power from the UPS to the switch's power supply."
+    },
+    {
+      "id": "e_switch_ha",
+      "from": "poeswitch",
+      "to": "ha",
+      "layer": "ethernet",
+      "method": "plug",
+      "decided": true,
+      "hint": "The switch is part of the house network, which also reaches Home Assistant."
+    },
+    {
+      "id": "e_ap_ha",
+      "from": "ap",
+      "to": "ha",
+      "layer": "ethernet",
+      "method": "plug",
+      "decided": true,
+      "hint": "The access point is wired into the house network."
+    },
+    {
+      "id": "e_switch_surge",
+      "from": "poeswitch",
+      "to": "surge",
+      "layer": "poe",
+      "method": "plug",
+      "decided": true,
+      "hint": "Short patch cable, PoE port of the switch into the surge protector."
+    },
+    {
+      "id": "e_surge_earth",
+      "from": "surge",
+      "to": "earthbar",
+      "layer": "earth",
+      "method": "screw",
+      "decided": true,
+      "hint": "Earth wire from the surge protector's earth screw to the house earth. Electrician's job."
+    },
+    {
+      "id": "e_surge_cable",
+      "from": "surge",
+      "to": "cable",
+      "layer": "poe",
+      "method": "plug",
+      "decided": true,
+      "hint": "The outdoor cable plugs into the protector's outdoor-side port."
+    },
+    {
+      "id": "e_cable_gland",
+      "from": "cable",
+      "to": "gland",
+      "layer": "poe",
+      "method": "gland",
+      "decided": true,
+      "hint": "The cable passes through the split gland into the box; the plug goes through the opened gland, then it is sealed."
+    },
+    {
+      "id": "e_gland_splitter",
+      "from": "gland",
+      "to": "splitter",
+      "layer": "poe",
+      "method": "plug",
+      "decided": true,
+      "hint": "Inside the box the cable's plug goes into the splitter's PoE IN."
+    },
+    {
+      "id": "e_splitter_wt32",
+      "from": "splitter",
+      "to": "wt32",
+      "layer": "ethernet",
+      "method": "plug",
+      "decided": true,
+      "hint": "Short patch cable (15-25 cm) from the splitter's data port to the doorbell computer's RJ45: the data part of the cable, without power."
+    },
+    {
+      "id": "e_splitter_pololu",
+      "from": "splitter",
+      "to": "pololu",
+      "layer": "v12",
+      "method": "screw",
+      "decided": false,
+      "hint": "12 V DC out of the splitter (barrel plug to screw adapter) into the converter's input. Pending: 12 V vs 5 V splitter."
+    },
+    {
+      "id": "e_splitter_fuse",
+      "from": "splitter",
+      "to": "fuse",
+      "layer": "v12",
+      "method": "wago",
+      "decided": false,
+      "hint": "12 V also goes straight to the heater loop, starting with the thermal fuse."
+    },
+    {
+      "id": "e_fuse_heater",
+      "from": "fuse",
+      "to": "heater",
+      "layer": "v12",
+      "method": "crimp",
+      "decided": true,
+      "hint": "Fuse in series with the heater pad. Crimp, or solder with the leg heat-sunk: soldering heat can blow a 73 C fuse."
+    },
+    {
+      "id": "e_heater_mosfet",
+      "from": "heater",
+      "to": "mosfet",
+      "layer": "v12",
+      "method": "screw",
+      "decided": true,
+      "hint": "The heater's second lead goes to the module's switched minus terminal: the module closes the path to ground when the computer says 'heat'."
+    },
+    {
+      "id": "e_pololu_rail",
+      "from": "pololu",
+      "to": "rail5",
+      "layer": "v5",
+      "method": "screw",
+      "decided": true,
+      "hint": "5 V out of the converter to the distribution terminals."
+    },
+    {
+      "id": "e_rail_ws",
+      "from": "rail5",
+      "to": "waveshare",
+      "layer": "v5",
+      "method": "header",
+      "decided": true,
+      "hint": "5 V into the talk computer's supply input. Which pin depends on the board, which is being re-decided."
+    },
+    {
+      "id": "e_rail_wt32",
+      "from": "rail5",
+      "to": "wt32",
+      "layer": "v5",
+      "method": "header",
+      "decided": true,
+      "hint": "5 V into the doorbell computer's VSYS header pin (supply input), or from its own PoE module if that powers the box. Check with a meter before the first power-up."
+    },
+    {
+      "id": "e_rail_lilygo",
+      "from": "rail5",
+      "to": "lilygo",
+      "layer": "v5",
+      "method": "usb",
+      "decided": true,
+      "hint": "5 V to the screen computer, by a USB-C power lead or its VBUS pin."
+    },
+    {
+      "id": "e_rail_amp",
+      "from": "rail5",
+      "to": "amp",
+      "layer": "v5",
+      "method": "solder",
+      "decided": true,
+      "hint": "5 V to the amplifier's Vin, with 10 uF + 0.1 uF at its pins."
+    },
+    {
+      "id": "e_rail_shifter",
+      "from": "rail5",
+      "to": "shifter",
+      "layer": "v5",
+      "method": "solder",
+      "decided": true,
+      "hint": "5 V supply for the level shifter chip."
+    },
+    {
+      "id": "e_rail_ledcap",
+      "from": "rail5",
+      "to": "ledcap",
+      "layer": "v5",
+      "method": "solder",
+      "decided": true,
+      "hint": "5 V towards the LED strip; the 1000 uF capacitor sits across +5 V and ground right at the strip."
+    },
+    {
+      "id": "e_ledcap_led",
+      "from": "ledcap",
+      "to": "led",
+      "layer": "v5",
+      "method": "solder",
+      "decided": true,
+      "hint": "5 V and ground soldered to the strip's +5V and GND pads at the arrow's starting end."
+    },
+    {
+      "id": "e_gnd_pololu",
+      "from": "pololu",
+      "to": "gndstar",
+      "layer": "gnd",
+      "method": "screw",
+      "decided": true,
+      "hint": "Converter ground to the common ground point."
+    },
+    {
+      "id": "e_gnd_ws",
+      "from": "waveshare",
+      "to": "gndstar",
+      "layer": "gnd",
+      "method": "header",
+      "decided": true,
+      "hint": "Talk computer ground to the common ground point."
+    },
+    {
+      "id": "e_gnd_wt32",
+      "from": "wt32",
+      "to": "gndstar",
+      "layer": "gnd",
+      "method": "header",
+      "decided": true,
+      "hint": "Doorbell computer ground to the common ground point. The button line gets its own return to this board's GND pin, away from the heater and LED currents."
+    },
+    {
+      "id": "e_gnd_lilygo",
+      "from": "lilygo",
+      "to": "gndstar",
+      "layer": "gnd",
+      "method": "usb",
+      "decided": true,
+      "hint": "Screen computer ground (part of its power lead)."
+    },
+    {
+      "id": "e_gnd_mosfet",
+      "from": "mosfet",
+      "to": "gndstar",
+      "layer": "gnd",
+      "method": "screw",
+      "decided": true,
+      "hint": "The heater switch sends the heater current back to ground; its signal side also needs the computer's ground."
+    },
+    {
+      "id": "e_gnd_splitter",
+      "from": "splitter",
+      "to": "gndstar",
+      "layer": "gnd",
+      "method": "screw",
+      "decided": true,
+      "hint": "Splitter DC minus = the box's ground reference."
+    },
+    {
+      "id": "e_wt32_bme_3v3",
+      "from": "wt32",
+      "to": "bme",
+      "layer": "v3",
+      "method": "header",
+      "decided": true,
+      "hint": "3.3 V and ground for the sensor from the doorbell computer's header."
+    },
+    {
+      "id": "e_ws_mic_3v3",
+      "from": "waveshare",
+      "to": "mic",
+      "layer": "v3",
+      "method": "header",
+      "decided": true,
+      "hint": "3.3 V and ground for the microphone."
+    },
+    {
+      "id": "e_wt32_line_3v3",
+      "from": "wt32",
+      "to": "linecircuit",
+      "layer": "v3",
+      "method": "solder",
+      "decided": true,
+      "hint": "3.3 V for the 10 kOhm pull-up of the button line."
+    },
+    {
+      "id": "e_wt32_bme_i2c",
+      "from": "wt32",
+      "to": "bme",
+      "layer": "i2c",
+      "method": "header",
+      "decided": true,
+      "hint": "SDA and SCL, two wires. Pins not chosen yet."
+    },
+    {
+      "id": "e_ws_amp_i2s",
+      "from": "waveshare",
+      "to": "amp",
+      "layer": "i2s",
+      "method": "header",
+      "decided": true,
+      "hint": "Bit clock, word clock and data out to the amplifier. Pins not chosen yet."
+    },
+    {
+      "id": "e_mic_ws_i2s",
+      "from": "mic",
+      "to": "waveshare",
+      "layer": "i2s",
+      "method": "header",
+      "decided": true,
+      "hint": "Clock, word select and data from the microphone. Pins not chosen yet."
+    },
+    {
+      "id": "e_amp_speaker",
+      "from": "amp",
+      "to": "speaker",
+      "layer": "speaker",
+      "method": "screw",
+      "decided": true,
+      "hint": "Two wires: screwed into the amplifier's terminal, soldered to the speaker's lugs."
+    },
+    {
+      "id": "e_wt32_shifter",
+      "from": "wt32",
+      "to": "shifter",
+      "layer": "gpio",
+      "method": "header",
+      "decided": true,
+      "hint": "LED data at 3.3 V from one computer pin. Pin not chosen yet."
+    },
+    {
+      "id": "e_shifter_led",
+      "from": "shifter",
+      "to": "led",
+      "layer": "gpio",
+      "method": "solder",
+      "decided": true,
+      "hint": "LED data at 5 V through the 330 ohm resistor into the strip's DIN pad (the arrow points away from it)."
+    },
+    {
+      "id": "e_wt32_mosfet",
+      "from": "wt32",
+      "to": "mosfet",
+      "layer": "gpio",
+      "method": "header",
+      "decided": true,
+      "hint": "Heater on/off signal into the module's signal input (the optocoupler LED). A pull-down keeps the heater off while the computer boots."
+    },
+    {
+      "id": "e_button_line",
+      "from": "button",
+      "to": "linecircuit",
+      "layer": "button",
+      "method": "solder",
+      "decided": true,
+      "hint": "Two wires from the button (with its end-of-line resistor) to the line circuit."
+    },
+    {
+      "id": "e_line_wt32",
+      "from": "linecircuit",
+      "to": "wt32",
+      "layer": "button",
+      "method": "header",
+      "decided": true,
+      "hint": "The measured line voltage into IO1 (ADC1), bench-tested. The ESP's internal pull-up is on too, so a loose signal wire reads as cut, not as a press."
+    },
+    {
+      "id": "e_lilygo_ap",
+      "from": "lilygo",
+      "to": "ap",
+      "layer": "wifi",
+      "method": "wireless",
+      "decided": true,
+      "hint": "The screen computer's WiFi link to the access point (locked decision)."
+    },
+    {
+      "id": "e_ws_ap",
+      "from": "waveshare",
+      "to": "ap",
+      "layer": "wifi",
+      "method": "wireless",
+      "decided": true,
+      "hint": "The talk computer's WiFi link to the access point. If calls over WiFi fail the in-box test, a small cold-rated switch in the box can give it a cable instead."
+    },
+    {
+      "id": "e_wt32_ha",
+      "from": "wt32",
+      "to": "ha",
+      "layer": "software",
+      "method": "network",
+      "decided": true,
+      "hint": "The encrypted ESPHome API from the doorbell computer to Home Assistant, over the one cable and the house network. Carries the ring event first, before any local feedback. The light, heater and sensor are controlled over it too."
+    },
+    {
+      "id": "e_ws_ha",
+      "from": "waveshare",
+      "to": "ha",
+      "layer": "software",
+      "method": "network",
+      "decided": true,
+      "hint": "The talk computer's link to Home Assistant over WiFi: the ESPHome API plus the VoIP Stack call (speech both ways, relayed by Home Assistant to your phone). Only ever started by a visitor's press; auto-answer locked off."
+    },
+    {
+      "id": "e_ha_lilygo",
+      "from": "ha",
+      "to": "lilygo",
+      "layer": "software",
+      "method": "network",
+      "decided": true,
+      "hint": "Home Assistant sends the screen what to show; touches come back the same way. Over WiFi."
+    },
+    {
+      "id": "e_ha_phone",
+      "from": "ha",
+      "to": "phone",
+      "layer": "software",
+      "method": "network",
+      "decided": true,
+      "hint": "Push notification on the loud 'Klingel' channel (ttl 0, high priority); a silence toggle switches to a quiet channel."
+    },
+    {
+      "id": "e_ha_speakers",
+      "from": "ha",
+      "to": "speakers",
+      "layer": "software",
+      "method": "network",
+      "decided": false,
+      "hint": "PLANNED: the chime on the house speakers."
+    },
+    {
+      "id": "e_ws_transcribe",
+      "from": "waveshare",
+      "to": "transcribe",
+      "layer": "software",
+      "method": "network",
+      "decided": false,
+      "hint": "PLANNED: a recorded voice message goes to the local n8n + Whisper pipeline."
+    },
+    {
+      "id": "e_transcribe_telegram",
+      "from": "transcribe",
+      "to": "telegram",
+      "layer": "software",
+      "method": "network",
+      "decided": false,
+      "hint": "PLANNED: the Telegram bot sends audio plus transcript."
+    },
+    {
+      "id": "e_telegram_phone",
+      "from": "telegram",
+      "to": "phone",
+      "layer": "software",
+      "method": "network",
+      "decided": false,
+      "hint": "PLANNED: the voice message arrives in Telegram; a voice note sent back travels the other way and is played at the door."
+    },
+    {
+      "id": "e_ha_ws_play",
+      "from": "ha",
+      "to": "waveshare",
+      "layer": "software",
+      "method": "network",
+      "decided": false,
+      "hint": "PLANNED: a reply or announcement is played through the door speaker (ESPHome media player)."
+    },
+    {
+      "id": "e_ws_app",
+      "from": "waveshare",
+      "to": "app",
+      "layer": "software",
+      "method": "network",
+      "decided": false,
+      "hint": "PLANNED/FUTURE: the live push-to-talk stream from the door microphone to a relay, one direction at a time."
+    },
+    {
+      "id": "e_app_speakers",
+      "from": "app",
+      "to": "speakers",
+      "layer": "software",
+      "method": "network",
+      "decided": false,
+      "hint": "PLANNED/FUTURE: the relay plays the visitor's voice live on the house speakers."
+    },
+    {
+      "id": "e_app_ha",
+      "from": "app",
+      "to": "ha",
+      "layer": "software",
+      "method": "network",
+      "decided": false,
+      "hint": "FUTURE: the family app exposes an API/integration to Home Assistant (status and control)."
+    },
+    {
+      "id": "e_speaker_grille",
+      "from": "speaker",
+      "to": "grille",
+      "layer": "mech",
+      "method": "mech",
+      "decided": true,
+      "hint": "Speaker screwed and sealed to the box's front wall behind the grille; sound leaves through the slots."
+    },
+    {
+      "id": "e_vent_grille",
+      "from": "vent",
+      "to": "grille",
+      "layer": "mech",
+      "method": "mech",
+      "decided": true,
+      "hint": "The vent breathes into the grille cavity, the only place with outside air."
+    },
+    {
+      "id": "e_lilygo_window",
+      "from": "lilygo",
+      "to": "window",
+      "layer": "mech",
+      "method": "mech",
+      "decided": true,
+      "hint": "Screen behind the window with a soft gasket; the panel is thin glass, no hard O-ring."
+    },
+    {
+      "id": "e_heater_lilygo",
+      "from": "heater",
+      "to": "lilygo",
+      "layer": "mech",
+      "method": "mech",
+      "decided": true,
+      "hint": "Heater pad on the back of the screen, with thermally conductive tape."
+    },
+    {
+      "id": "e_mic_membrane",
+      "from": "mic",
+      "to": "membrane",
+      "layer": "mech",
+      "method": "mech",
+      "decided": true,
+      "hint": "Microphone behind the membrane, smallest possible air gap."
+    },
+    {
+      "id": "e_membrane_holes",
+      "from": "membrane",
+      "to": "micholes",
+      "layer": "mech",
+      "method": "mech",
+      "decided": true,
+      "hint": "Membrane stuck on the back of the brass over the two mic holes."
+    },
+    {
+      "id": "e_led_diffusor",
+      "from": "led",
+      "to": "diffusor",
+      "layer": "mech",
+      "method": "mech",
+      "decided": true,
+      "hint": "Strip inside the diffusor; its cable enters through a window in the brass bend."
+    },
+    {
+      "id": "e_gasket_brass",
+      "from": "gasket",
+      "to": "brass",
+      "layer": "mech",
+      "method": "mech",
+      "decided": true,
+      "hint": "The brass front presses on the gasket in the box rim."
+    },
+    {
+      "id": "e_button_brass",
+      "from": "button",
+      "to": "brass",
+      "layer": "mech",
+      "method": "mech",
+      "decided": true,
+      "hint": "Button ring recessed in the brass, O-ring behind it."
+    }
+  ],
+  "tours": [
+    {
+      "id": "ring",
+      "status": "decided",
+      "hint": "Someone presses the button. Target: phone notification in under 1 second.",
+      "steps": [
+        {
+          "nodes": [
+            "button",
+            "linecircuit"
+          ],
+          "edges": [
+            "e_button_line"
+          ],
+          "hint": "Pressing closes the contacts: the line voltage drops from about 2.0 V to about 0.4 V."
+        },
+        {
+          "nodes": [
+            "linecircuit",
+            "wt32"
+          ],
+          "edges": [
+            "e_line_wt32"
+          ],
+          "hint": "The doorbell computer samples the line every millisecond; below 1.30 V it is 'pressed', and only above 1.60 V released again, so a wobbly contact counts once."
+        },
+        {
+          "nodes": [
+            "wt32",
+            "splitter",
+            "gland",
+            "cable",
+            "surge",
+            "poeswitch",
+            "ha"
+          ],
+          "edges": [
+            "e_wt32_ha",
+            "e_splitter_wt32",
+            "e_gland_splitter",
+            "e_cable_gland",
+            "e_surge_cable",
+            "e_switch_surge",
+            "e_switch_ha"
+          ],
+          "hint": "ESPHome sends the ring event FIRST, from the doorbell computer over the one cable to Home Assistant."
+        },
+        {
+          "nodes": [
+            "ha",
+            "phone",
+            "speakers"
+          ],
+          "edges": [
+            "e_ha_phone",
+            "e_ha_speakers"
+          ],
+          "hint": "Home Assistant pushes a loud notification to your phone and (planned) chimes the house speakers."
+        },
+        {
+          "nodes": [
+            "wt32",
+            "shifter",
+            "led",
+            "lilygo"
+          ],
+          "edges": [
+            "e_wt32_shifter",
+            "e_shifter_led",
+            "e_ha_lilygo"
+          ],
+          "hint": "Only then local feedback at the door: the light flashes and the screen changes. Nothing on the ring path waits for these."
+        }
+      ]
+    },
+    {
+      "id": "power",
+      "status": "decided",
+      "hint": "Where the power comes from, from the wall socket to every part.",
+      "steps": [
+        {
+          "nodes": [
+            "ups",
+            "poeswitch"
+          ],
+          "edges": [
+            "e_ups_switch"
+          ],
+          "hint": "Mains feeds the UPS, the UPS feeds the switch. A power cut does not stop the doorbell."
+        },
+        {
+          "nodes": [
+            "poeswitch",
+            "surge",
+            "cable",
+            "gland",
+            "splitter"
+          ],
+          "edges": [
+            "e_switch_surge",
+            "e_surge_cable",
+            "e_cable_gland",
+            "e_gland_splitter"
+          ],
+          "hint": "The switch puts about 48 V on the cable (PoE). High voltage means little current and little loss in the cable."
+        },
+        {
+          "nodes": [
+            "splitter",
+            "pololu",
+            "rail5"
+          ],
+          "edges": [
+            "e_splitter_pololu",
+            "e_pololu_rail"
+          ],
+          "hint": "The splitter turns it into 12 V; the converter makes 5 V from that for the distribution terminals."
+        },
+        {
+          "nodes": [
+            "rail5",
+            "wt32",
+            "waveshare",
+            "lilygo",
+            "amp",
+            "shifter",
+            "ledcap",
+            "led"
+          ],
+          "edges": [
+            "e_rail_wt32",
+            "e_rail_ws",
+            "e_rail_lilygo",
+            "e_rail_amp",
+            "e_rail_shifter",
+            "e_rail_ledcap",
+            "e_ledcap_led"
+          ],
+          "hint": "5 V goes to all three computers, the amplifier, the level shifter and the LED strip."
+        },
+        {
+          "nodes": [
+            "wt32",
+            "waveshare",
+            "bme",
+            "mic",
+            "linecircuit"
+          ],
+          "edges": [
+            "e_wt32_bme_3v3",
+            "e_ws_mic_3v3",
+            "e_wt32_line_3v3"
+          ],
+          "hint": "The doorbell and talk computers each make their own 3.3 V: the doorbell computer for the sensor and the button line, the talk computer for the microphone."
+        },
+        {
+          "nodes": [
+            "splitter",
+            "fuse",
+            "heater",
+            "mosfet"
+          ],
+          "edges": [
+            "e_splitter_fuse",
+            "e_fuse_heater",
+            "e_heater_mosfet"
+          ],
+          "hint": "The heater runs directly on 12 V, through the thermal fuse, switched on its minus side."
+        },
+        {
+          "nodes": [
+            "gndstar"
+          ],
+          "edges": [
+            "e_gnd_pololu",
+            "e_gnd_wt32",
+            "e_gnd_ws",
+            "e_gnd_lilygo",
+            "e_gnd_mosfet",
+            "e_gnd_splitter"
+          ],
+          "hint": "Every ground meets at one point."
+        }
+      ]
+    },
+    {
+      "id": "screen",
+      "status": "decided",
+      "hint": "How the screen gets what it shows.",
+      "steps": [
+        {
+          "nodes": [
+            "ha"
+          ],
+          "edges": [],
+          "hint": "Home Assistant decides the content: greeting, a notice, a QR code (later from the family app)."
+        },
+        {
+          "nodes": [
+            "ha",
+            "ap",
+            "lilygo"
+          ],
+          "edges": [
+            "e_ap_ha",
+            "e_lilygo_ap",
+            "e_ha_lilygo"
+          ],
+          "hint": "It travels over the house network and WiFi to the screen computer."
+        },
+        {
+          "nodes": [
+            "lilygo",
+            "window"
+          ],
+          "edges": [
+            "e_lilygo_window"
+          ],
+          "hint": "The screen computer draws the e-paper. The image stays without power."
+        },
+        {
+          "nodes": [
+            "lilygo",
+            "ha"
+          ],
+          "edges": [
+            "e_ha_lilygo"
+          ],
+          "hint": "Touches go back the same way."
+        }
+      ]
+    },
+    {
+      "id": "winter",
+      "status": "decided",
+      "hint": "Keeping the e-paper warm in winter.",
+      "steps": [
+        {
+          "nodes": [
+            "bme",
+            "wt32"
+          ],
+          "edges": [
+            "e_wt32_bme_i2c"
+          ],
+          "hint": "The sensor reports the box temperature and humidity."
+        },
+        {
+          "nodes": [
+            "wt32",
+            "mosfet"
+          ],
+          "edges": [
+            "e_wt32_mosfet"
+          ],
+          "hint": "Below the set point the doorbell computer switches the heater on (and off again during calls, to stay within the PoE power budget)."
+        },
+        {
+          "nodes": [
+            "mosfet",
+            "heater",
+            "fuse",
+            "lilygo"
+          ],
+          "edges": [
+            "e_heater_mosfet",
+            "e_fuse_heater",
+            "e_heater_lilygo"
+          ],
+          "hint": "The pad warms the back of the screen. The fuse cuts it for good if anything overheats."
+        },
+        {
+          "nodes": [
+            "lilygo"
+          ],
+          "edges": [],
+          "hint": "Below about +2 C the screen waits before refreshing."
+        }
+      ]
+    },
+    {
+      "id": "light",
+      "status": "decided",
+      "hint": "The light at dusk or when someone approaches.",
+      "steps": [
+        {
+          "nodes": [
+            "ha"
+          ],
+          "edges": [],
+          "hint": "Home Assistant decides: dusk, or the existing motion sensor at the door."
+        },
+        {
+          "nodes": [
+            "ha",
+            "wt32"
+          ],
+          "edges": [
+            "e_wt32_ha"
+          ],
+          "hint": "It tells the doorbell computer over ESPHome."
+        },
+        {
+          "nodes": [
+            "wt32",
+            "shifter",
+            "led",
+            "diffusor"
+          ],
+          "edges": [
+            "e_wt32_shifter",
+            "e_shifter_led",
+            "e_led_diffusor"
+          ],
+          "hint": "The data line, raised to 5 V, drives the LEDs; the diffusor softens them into one warm band."
+        }
+      ]
+    },
+    {
+      "id": "talk",
+      "status": "planned",
+      "hint": "PLANNED: a two-way conversation at the door, started by a ring. Hardware chosen, software to be bench-tested.",
+      "steps": [
+        {
+          "nodes": [
+            "button",
+            "linecircuit",
+            "wt32",
+            "ha"
+          ],
+          "edges": [
+            "e_button_line",
+            "e_line_wt32",
+            "e_wt32_ha"
+          ],
+          "hint": "The ring reaches Home Assistant exactly as always. Nothing about the call can delay or block it."
+        },
+        {
+          "nodes": [
+            "ha",
+            "waveshare",
+            "ap",
+            "lilygo"
+          ],
+          "edges": [
+            "e_ws_ha",
+            "e_ws_ap",
+            "e_ha_lilygo"
+          ],
+          "hint": "Home Assistant then starts a call to the talk computer over WiFi (VoIP Stack). The screen asks for a moment's patience."
+        },
+        {
+          "nodes": [
+            "ha",
+            "phone"
+          ],
+          "edges": [
+            "e_ha_phone"
+          ],
+          "hint": "Your phone gets a notification with a talk button. Only tapping it answers; receiving it never opens a microphone."
+        },
+        {
+          "nodes": [
+            "micholes",
+            "membrane",
+            "mic",
+            "waveshare",
+            "amp",
+            "speaker",
+            "grille"
+          ],
+          "edges": [
+            "e_membrane_holes",
+            "e_mic_membrane",
+            "e_mic_ws_i2s",
+            "e_ws_amp_i2s",
+            "e_amp_speaker",
+            "e_speaker_grille"
+          ],
+          "hint": "Both sides talk as on a hands-free phone. The LED colour and the screen show that the microphone is live."
+        },
+        {
+          "nodes": [
+            "waveshare",
+            "ha",
+            "phone"
+          ],
+          "edges": [
+            "e_ws_ha",
+            "e_ha_phone"
+          ],
+          "hint": "If the echo cannot be tuned out, mute buttons turn it into walkie-talkie mode: one direction at a time."
+        }
+      ]
+    },
+    {
+      "id": "voicemsg",
+      "status": "planned",
+      "hint": "PLANNED: a visitor leaves a voice message.",
+      "steps": [
+        {
+          "nodes": [
+            "lilygo"
+          ],
+          "edges": [],
+          "hint": "The visitor taps 'leave a message' on the screen, which announces that it records."
+        },
+        {
+          "nodes": [
+            "micholes",
+            "membrane",
+            "mic",
+            "waveshare"
+          ],
+          "edges": [
+            "e_membrane_holes",
+            "e_mic_membrane",
+            "e_mic_ws_i2s"
+          ],
+          "hint": "The microphone records through the holes and the membrane."
+        },
+        {
+          "nodes": [
+            "waveshare",
+            "transcribe"
+          ],
+          "edges": [
+            "e_ws_transcribe"
+          ],
+          "hint": "The recording goes to the local transcription server; Whisper turns it into text at home."
+        },
+        {
+          "nodes": [
+            "transcribe",
+            "telegram",
+            "phone"
+          ],
+          "edges": [
+            "e_transcribe_telegram",
+            "e_telegram_phone"
+          ],
+          "hint": "The bot sends audio and text to your phone via Telegram."
+        }
+      ]
+    },
+    {
+      "id": "reply",
+      "status": "planned",
+      "hint": "PLANNED: you answer from your phone.",
+      "steps": [
+        {
+          "nodes": [
+            "phone",
+            "telegram"
+          ],
+          "edges": [
+            "e_telegram_phone"
+          ],
+          "hint": "You send a voice note to the bot."
+        },
+        {
+          "nodes": [
+            "telegram",
+            "transcribe",
+            "ha"
+          ],
+          "edges": [
+            "e_transcribe_telegram"
+          ],
+          "hint": "The automation passes it to Home Assistant."
+        },
+        {
+          "nodes": [
+            "ha",
+            "waveshare",
+            "amp",
+            "speaker",
+            "grille"
+          ],
+          "edges": [
+            "e_ha_ws_play",
+            "e_ws_amp_i2s",
+            "e_amp_speaker",
+            "e_speaker_grille"
+          ],
+          "hint": "The door plays it through the amplifier and speaker."
+        }
+      ]
+    },
+    {
+      "id": "ptt",
+      "status": "planned",
+      "hint": "PLANNED: push-to-talk into the house, live, one direction at a time.",
+      "steps": [
+        {
+          "nodes": [
+            "lilygo"
+          ],
+          "edges": [],
+          "hint": "The screen shows 'hold here and speak'."
+        },
+        {
+          "nodes": [
+            "mic",
+            "waveshare"
+          ],
+          "edges": [
+            "e_mic_ws_i2s"
+          ],
+          "hint": "While held, the microphone streams."
+        },
+        {
+          "nodes": [
+            "waveshare",
+            "app",
+            "speakers"
+          ],
+          "edges": [
+            "e_ws_app",
+            "e_app_speakers"
+          ],
+          "hint": "A relay plays it live on the house speakers. One direction at a time avoids the echo problem of a full phone call."
+        }
+      ]
+    }
+  ],
+  "solder": [
+    {
+      "node": "button",
+      "hint": "10 kOhm end-of-line resistor across the button's two contacts, then shrink tubing over it."
+    },
+    {
+      "node": "linecircuit",
+      "hint": "10 kOhm, 1 kOhm and 100 nF on perfboard, as on the v1 breadboard."
+    },
+    {
+      "node": "shifter",
+      "hint": "Chip in a DIP-14 socket on perfboard; 330 ohm in the output line; unused inputs and the enable (OE) pins to ground; 5 V supply."
+    },
+    {
+      "node": "led",
+      "hint": "Three wires onto +5V, DIN and GND at the start of the arrow; 1000 uF across +5 V and GND at the strip, stripe to minus."
+    },
+    {
+      "node": "amp",
+      "hint": "7-pin header and the speaker terminal; a 100 kOhm resistor from GAIN to Vin for the lowest gain (3 dB). Not to ground."
+    },
+    {
+      "node": "speaker",
+      "hint": "Two wires on the solder lugs; keep the iron brief."
+    },
+    {
+      "node": "mic",
+      "hint": "6-pin header or wires directly; labelled side (sound hole) towards the membrane."
+    },
+    {
+      "node": "bme",
+      "hint": "6-pin header."
+    },
+    {
+      "node": "mosfet",
+      "hint": "Blue 3-pin and green 2-pin screw terminals plus the 3-pin signal header."
+    },
+    {
+      "node": "pololu",
+      "hint": "Header pins or wires on VIN, GND and VOUT."
+    },
+    {
+      "node": "fuse",
+      "hint": "Crimp preferred. If soldered: clamp pliers between joint and fuse body as a heat sink, long legs. Soldering heat can blow a 73 C fuse."
+    },
+    {
+      "node": "waveshare",
+      "hint": "Board for the talk computer not chosen yet."
+    },
+    {
+      "node": "wt32",
+      "hint": "Pin header row IO43 ... VBUS soldered (3V3, IO1 and GND are used for the button line); the kit comes with loose headers."
+    }
+  ],
+  "pending": [
+    "Talk computer board and power path (splitter, or the doorbell computer's PoE module feeding the box): re-decided after the WT32-ETH01 was dropped on 30 Sep 2026.",
+    "Two-way talk: chosen (VoIP Stack on the talk computer, walkie-talkie mode as fallback) but not yet proven on the bench. Push-to-talk into the house speakers and Telegram voice messages are not designed yet.",
+    "Splitter output 12 V or 5 V, and with it the heater voltage.",
+    "PoE power budget: ring plus call plus heater comes close to the 802.3af limit (about 12 of 12.95 W). The doorbell computer switches the heater off during calls; the real draw is not measured yet.",
+    "Pin assignment on the talk computer (board being re-decided). The doorbell button is on IO1 (bench-tested).",
+    "WiFi signal for the screen and the talk computer inside the box: on-site test.",
+    "LED strip type (RGBW): bench check.",
+    "CAD: brass window and speaker-block clearance against the measured screen glass.",
+    "CAD: the grille cavity floor slopes the wrong way (water would pool at the speaker)."
+  ],
+  "milestones": [
+    {
+      "id": "m_concept",
+      "track": "plan",
+      "status": "done",
+      "needs": [],
+      "soft": [],
+      "tasks": [
+        {
+          "id": "t_front",
+          "status": "done",
+          "node": "brass"
+        },
+        {
+          "id": "t_arch",
+          "status": "done",
+          "node": "wt32"
+        },
+        {
+          "id": "t_parts",
+          "status": "done"
+        },
+        {
+          "id": "t_map",
+          "status": "done"
+        }
+      ]
+    },
+    {
+      "id": "m_parts",
+      "track": "hw",
+      "status": "now",
+      "needs": [
+        "m_concept"
+      ],
+      "soft": [],
+      "tasks": [
+        {
+          "id": "t_split",
+          "status": "decide",
+          "node": "splitter"
+        },
+        {
+          "id": "t_order",
+          "status": "open"
+        },
+        {
+          "id": "t_inhand",
+          "status": "done"
+        },
+        {
+          "id": "t_mail",
+          "status": "done",
+          "node": "lilygo"
+        },
+        {
+          "id": "t_bench",
+          "status": "open",
+          "node": "lilygo"
+        }
+      ]
+    },
+    {
+      "id": "m_fit",
+      "track": "hw",
+      "status": "next",
+      "needs": [
+        "m_parts"
+      ],
+      "soft": [],
+      "tasks": [
+        {
+          "id": "t_measure",
+          "status": "open"
+        },
+        {
+          "id": "t_cables",
+          "status": "open",
+          "node": "gland"
+        },
+        {
+          "id": "t_alpha1",
+          "status": "open"
+        },
+        {
+          "id": "t_alpha2",
+          "status": "open"
+        },
+        {
+          "id": "t_size",
+          "status": "decide",
+          "node": "splitter"
+        }
+      ]
+    },
+    {
+      "id": "m_soft",
+      "track": "sw",
+      "status": "now",
+      "needs": [
+        "m_parts"
+      ],
+      "soft": [],
+      "tasks": [
+        {
+          "id": "t_s0",
+          "status": "open",
+          "node": "phone"
+        },
+        {
+          "id": "t_s1",
+          "status": "open",
+          "node": "wt32"
+        },
+        {
+          "id": "t_s2",
+          "status": "open",
+          "node": "lilygo"
+        },
+        {
+          "id": "t_s3",
+          "status": "open",
+          "node": "waveshare"
+        },
+        {
+          "id": "t_s4",
+          "status": "decide",
+          "node": "waveshare"
+        },
+        {
+          "id": "t_audio",
+          "status": "decide",
+          "node": "speakers"
+        },
+        {
+          "id": "t_s5",
+          "status": "waiting",
+          "node": "splitter"
+        },
+        {
+          "id": "t_ux",
+          "status": "open"
+        }
+      ]
+    },
+    {
+      "id": "m_water",
+      "track": "wx",
+      "status": "now",
+      "needs": [
+        "m_concept"
+      ],
+      "soft": [],
+      "tasks": [
+        {
+          "id": "t_mount",
+          "status": "decide"
+        },
+        {
+          "id": "t_bracket",
+          "status": "open"
+        },
+        {
+          "id": "t_testplate",
+          "status": "open",
+          "node": "brass"
+        },
+        {
+          "id": "t_seals",
+          "status": "open",
+          "node": "gasket"
+        },
+        {
+          "id": "t_material",
+          "status": "decide"
+        },
+        {
+          "id": "t_drain",
+          "status": "open",
+          "node": "grille"
+        },
+        {
+          "id": "t_test",
+          "status": "open"
+        }
+      ]
+    },
+    {
+      "id": "m_beta",
+      "track": "box",
+      "status": "later",
+      "needs": [
+        "m_fit",
+        "m_soft"
+      ],
+      "soft": [
+        "m_water"
+      ],
+      "tasks": [
+        {
+          "id": "t_bprint",
+          "status": "open"
+        },
+        {
+          "id": "t_bbracket",
+          "status": "open"
+        },
+        {
+          "id": "t_bwire",
+          "status": "open",
+          "node": "cable"
+        },
+        {
+          "id": "t_bsoak",
+          "status": "open"
+        }
+      ]
+    },
+    {
+      "id": "m_pre",
+      "track": "box",
+      "status": "later",
+      "needs": [
+        "m_beta",
+        "m_water"
+      ],
+      "soft": [],
+      "tasks": [
+        {
+          "id": "t_papply",
+          "status": "open"
+        },
+        {
+          "id": "t_pbrass",
+          "status": "open",
+          "node": "brass"
+        },
+        {
+          "id": "t_pprint",
+          "status": "open"
+        },
+        {
+          "id": "t_pwater",
+          "status": "open"
+        },
+        {
+          "id": "t_pcold",
+          "status": "open",
+          "node": "heater"
+        }
+      ]
+    },
+    {
+      "id": "m_door",
+      "track": "box",
+      "status": "later",
+      "needs": [
+        "m_pre"
+      ],
+      "soft": [],
+      "tasks": [
+        {
+          "id": "t_elec",
+          "status": "open",
+          "node": "earthbar"
+        },
+        {
+          "id": "t_route",
+          "status": "open",
+          "node": "cable"
+        },
+        {
+          "id": "t_fix",
+          "status": "open"
+        },
+        {
+          "id": "t_live",
+          "status": "open",
+          "node": "button"
+        }
+      ]
+    }
+  ]
+}

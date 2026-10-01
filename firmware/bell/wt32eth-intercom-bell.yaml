@@ -1,0 +1,74 @@
+# Intercom bell computer (WT32-ETH01, silkscreen "ESP32-ETH01 V1.4"), stage 1 firmware (2026-09-30).
+# Device name scheme <board>-<system>-<role>.
+# Job: read the brass button over a supervised line and report EVERY press, as fast as possible
+# (storm ringing must ring exactly as often, without lag). Nothing else runs here.
+#
+# Contract: the HA binary sensor with object id doorbell_button. ESPHome names it
+# wt32eth_intercom_bell_doorbell_button; rename it in the HA entity registry once,
+# then delete the RoomKey thread's DEV stand-in of the same id.
+#
+# ⚠ Board quirk (found 2026-09-30): IO0 is also the 50 MHz Ethernet clock input and nothing holds it
+#   high at reset, so the chip may start in download mode (ROM: boot:0x3) and never run this program.
+#   Pull-ups did NOT fix it (10 kΩ and 1 kΩ tested 2026-09-30: EN reset still boot:0x3), so the board
+#   oscillator drives IO0 low when off. This unit is NOT fit as the bell (must reboot unattended);
+#   the bell moved to s3poeeth-intercom-bell. File kept for the record and for a better WT32 unit.
+#
+# After this flash, updates go over the network (OTA). The USB-TTL adapter is only for emergencies.
+
+substitutions:
+  # Supervised line: 3V3 ─ 10k ─┬─ line_pin (ADC1), 100 nF to GND, 1k in series to the cable;
+  # at the button a 10k end-of-line resistor in parallel. Volts at the pin (bench 2026-08-31):
+  #   cable cut ≈ 3.1-3.3 V · idle ≈ 1.74 V · pressed ≈ 0.30 V
+  # Keep line_installed "false" until the line is wired: a floating ADC pin produced
+  # 134 phantom presses in 15 min on the v1 bench.
+  line_installed: "false"
+  line_pin: GPIO36          # header "IO36", input-only, ADC1 (ADC2 is off-limits on the ESP32)
+  line_pin_idf: GPIO_NUM_36      # same pin, ESP-IDF name (for the pull-up)
+  th_pressed: "0.80"        # below = pressed (or shorted)
+  th_released: "1.20"       # above = released again (hysteresis)
+  th_cut: "2.60"            # above = cable cut
+  dip_level: "1.60"
+  line_voltage_report: 30s
+
+esphome:
+  name: wt32eth-intercom-bell
+  friendly_name: WT32ETH Intercom Bell
+
+udp:
+  addresses:
+    - !secret ring_target_1
+
+esp32:
+  board: esp32dev
+  framework:
+    type: esp-idf
+
+# WT32-ETH01: LAN8720 PHY, 50 MHz clock from the board oscillator into GPIO0, oscillator enable on GPIO16
+ethernet:
+  type: LAN8720
+  mdc_pin: GPIO23
+  mdio_pin: GPIO18
+  clk:
+    pin: GPIO0
+    mode: CLK_EXT_IN
+  phy_addr: 1
+  power_pin: GPIO16
+
+logger:
+  level: INFO
+
+api:
+  encryption:
+    key: !secret bell_api_key
+  # Don't reboot when Home Assistant is away: a restart cannot bring HA back and costs presses.
+  reboot_timeout: 0s
+  # Send every state change at once. The default 100 ms batch merges fast presses (storm ringing
+  # showed 2 of 5 on/off pairs in HA) and adds up to 100 ms of delay.
+  batch_delay: 0ms
+
+ota:
+  - platform: esphome
+    password: !secret bell_ota_password
+
+packages:
+  bell: !include bell-core.yaml

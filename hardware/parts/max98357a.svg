@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="37.78mm" height="39.05mm" viewBox="-10 -10 37.78 39.05" font-family="Arial, sans-serif">
+<rect x="0" y="0" width="17.78" height="19.05" rx="2.54" stroke="#222" stroke-width="0.25" fill="none"/>
+<rect x="5.39" y="0.06" width="7" height="7" stroke="#222" stroke-width="0.25" fill="none"/>
+<rect x="1.27" y="15.4" width="15.24" height="2.2" stroke="#222" stroke-width="0.25" fill="none"/>
+<circle cx="2.54" cy="2.54" r="1.25" stroke="#222" stroke-width="0.25" fill="none"/>
+<circle cx="15.24" cy="2.54" r="1.25" stroke="#222" stroke-width="0.25" fill="none"/>
+<text x="0" y="-3" font-size="3" fill="#444">MAX98357A-Breakout (Adafruit 3006) · I²S-Verstärker 3,2 W an 4 Ω – treibt den Lautsprecher</text>
+</svg>

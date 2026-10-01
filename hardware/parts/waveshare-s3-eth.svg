@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="92.8mm" height="41mm" viewBox="-10 -10 92.8 41" font-family="Arial, sans-serif">
+<rect x="0" y="0" width="72.8" height="21" rx="0" stroke="#222" stroke-width="0.25" fill="none"/>
+<rect x="8" y="0.3" width="50.3" height="2.6" stroke="#222" stroke-width="0.25" fill="none"/>
+<rect x="8" y="18.1" width="50.3" height="2.6" stroke="#222" stroke-width="0.25" fill="none"/>
+<rect x="58" y="2" width="14.8" height="17" stroke="#222" stroke-width="0.25" fill="none"/>
+<circle cx="1.58" cy="1.37" r="0.83" stroke="#222" stroke-width="0.25" fill="none"/>
+<circle cx="55.73" cy="1.37" r="0.83" stroke="#222" stroke-width="0.25" fill="none"/>
+<circle cx="1.58" cy="19.62" r="0.83" stroke="#222" stroke-width="0.25" fill="none"/>
+<circle cx="55.73" cy="19.62" r="0.83" stroke="#222" stroke-width="0.25" fill="none"/>
+<text x="0" y="-3" font-size="3" fill="#444">Waveshare ESP32-S3-ETH / POE-ETH · Platine B – Mikrofon und Verstärker (ESP32-S3 + W5500); PoE-Variante = gleiche Platine + Aufsteckmodul</text>
+</svg>

@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="80.3mm" height="45.4mm" viewBox="-10 -10 80.3 45.4" font-family="Arial, sans-serif">
+<rect x="0" y="0" width="60.3" height="25.4" rx="0" stroke="#222" stroke-width="0.25" fill="none"/>
+<rect x="39" y="4.68" width="21.3" height="16.04" stroke="#222" stroke-width="0.25" fill="none"/>
+<rect x="11.4" y="1.1" width="30.5" height="2.6" stroke="#222" stroke-width="0.25" fill="none"/>
+<rect x="11.4" y="21.7" width="30.5" height="2.6" stroke="#222" stroke-width="0.25" fill="none"/>
+<text x="0" y="-3" font-size="3" fill="#444">WT32-ETH01 · Platine A – Klingeltaster, LED-Streifen, Heizung, Sensoren (ESP32 + LAN8720)</text>
+</svg>

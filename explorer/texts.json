@@ -1,0 +1,2060 @@
+{
+  "nodes": {
+    "telegram": {
+      "en": {
+        "label": "Telegram",
+        "what": "Messenger service on the internet. Planned: it delivers a visitor's voice message plus its transcript to your phone and carries your spoken reply back to the door.",
+        "specs": "Already in use with the household's own bots. Voice-message use: planned, not built yet.",
+        "why": "The household's Telegram bots and the local transcription pipeline already run. The cost is that the audio passes through Telegram's servers.",
+        "solder": ""
+      },
+      "de": {
+        "label": "Telegram",
+        "what": "Messenger-Dienst im Internet. Geplant: Er stellt die Sprachnachricht eines Besuchers samt Abschrift auf dein Handy zu und bringt deine gesprochene Antwort zurück an die Tür.",
+        "specs": "Im Haushalt schon mit eigenen Bots im Einsatz. Nutzung für Sprachnachrichten: geplant, noch nicht gebaut.",
+        "why": "Die Telegram-Bots des Haushalts und die lokale Transkription laufen bereits. Dafür nimmt man in Kauf, dass der Ton über die Server von Telegram läuft.",
+        "solder": ""
+      }
+    },
+    "ha": {
+      "en": {
+        "label": "Home Assistant",
+        "what": "The home automation server, already running. It talks to all three door computers via ESPHome (the firmware on them) and runs the automations: ring notification, silence toggle, screen content, light at dusk and, planned, starting a call.",
+        "specs": "Encrypted ESPHome API to the doorbell computer over the cable; the screen and talk computers by WiFi. Ring event first, then feedback. Planned: family app API.",
+        "why": "The door computers stay simple and all logic lives in one place, on a server the house already runs.",
+        "solder": ""
+      },
+      "de": {
+        "label": "Home Assistant",
+        "what": "Der Hausautomations-Server, läuft bereits. Er spricht per ESPHome (Firmware auf den Türrechnern) mit allen drei Rechnern an der Tür und steuert die Abläufe: Klingelmeldung, Stummschalter, Bildschirminhalt, Licht bei Dämmerung und, geplant, den Gesprächsaufbau.",
+        "specs": "Verschlüsselte ESPHome-API zum Klingelrechner über das Kabel, per WLAN zu Bildschirm- und Sprechrechner. Klingelereignis vor Rückmeldung. Geplant: API zur Familien-App.",
+        "why": "Die Türrechner bleiben einfach, die ganze Logik liegt an einer Stelle, auf einem Server, der im Haus ohnehin läuft.",
+        "solder": ""
+      }
+    },
+    "phone": {
+      "en": {
+        "label": "Your phone",
+        "what": "Gets the ring notification from the Home Assistant companion app on a loud channel, target under 1 second. Planned: Telegram voice messages with transcript, and your voice replies back to the door.",
+        "specs": "Loud channel 'Klingel' (doorbell), high priority, ttl 0 (deliver at once). A silence toggle picks a quiet channel. Target: under 1 s.",
+        "why": "The phone's own channel settings decide how the ring sounds. Home Assistant only picks the channel, loud or quiet.",
+        "solder": ""
+      },
+      "de": {
+        "label": "Dein Handy",
+        "what": "Bekommt die Klingelmeldung über die Companion-App von Home Assistant auf einem lauten Kanal, Ziel unter 1 Sekunde. Geplant: Sprachnachrichten mit Abschrift über Telegram und deine Antworten zurück an die Tür.",
+        "specs": "Kanal „Klingel“, hohe Priorität, ttl 0 (sofort zustellen). Ein Stummschalter leitet Klingeln auf einen leisen Kanal um. Ziel: unter 1 s.",
+        "why": "Wie das Klingeln klingt, legen die Kanaleinstellungen auf dem Handy fest. Home Assistant wählt nur den Kanal, laut oder leise.",
+        "solder": ""
+      }
+    },
+    "ap": {
+      "en": {
+        "label": "WiFi access point",
+        "what": "An existing indoor access point, about a metre from the box. The screen computer and the talk computer connect to it; the doorbell computer stays on the cable.",
+        "specs": "About 1 m from the box. Signal strength inside the box behind the brass is still to be tested on site, before the wall is closed.",
+        "why": "The screen and talk computers need no cable of their own and no switch in the box. The access point is already close by.",
+        "solder": ""
+      },
+      "de": {
+        "label": "WLAN-Access-Point",
+        "what": "Ein vorhandener Access Point im Haus, etwa einen Meter vom Kasten entfernt. Bildschirm- und Sprechrechner verbinden sich mit ihm; der Klingelrechner bleibt am Kabel.",
+        "specs": "Etwa 1 m vom Kasten. Die Signalstärke im Kasten hinter dem Messing ist noch vor Ort zu testen, bevor die Wand geschlossen wird.",
+        "why": "Bildschirm- und Sprechrechner brauchen so kein eigenes Kabel und keinen Switch im Kasten. Der Access Point ist ohnehin nah.",
+        "solder": ""
+      }
+    },
+    "transcribe": {
+      "en": {
+        "label": "Transcription server",
+        "what": "An existing home server that already runs an n8n automation (a workflow tool) with Whisper speech-to-text. Planned: it turns a visitor's voice message into text before both go to Telegram.",
+        "specs": "Local n8n plus Whisper (whisper.cpp) pipeline, already running. Voice-message use is planned.",
+        "why": "The pipeline already exists, and transcription stays at home. No outside speech-to-text service is involved.",
+        "solder": ""
+      },
+      "de": {
+        "label": "Transkriptionsserver",
+        "what": "Ein vorhandener Heimserver, auf dem schon eine n8n-Automation (ein Workflow-Werkzeug) mit Whisper-Spracherkennung läuft. Geplant: Er macht aus der Sprachnachricht eines Besuchers Text, bevor beides an Telegram geht.",
+        "specs": "Lokale Pipeline aus n8n und Whisper (whisper.cpp), läuft bereits. Nutzung für Sprachnachrichten: geplant.",
+        "why": "Die Pipeline gibt es schon, und die Umwandlung in Text bleibt im Haus. Ein externer Spracherkennungsdienst ist nicht beteiligt.",
+        "solder": ""
+      }
+    },
+    "speakers": {
+      "en": {
+        "label": "House speakers",
+        "what": "Planned WiFi speakers in the house. They play the doorbell chime and, also planned, the visitor's voice live during push-to-talk (speech in one direction at a time).",
+        "specs": "Planned; model not decided yet. Example: Home Assistant Voice PE (84 × 84 × 21 mm), needs its own USB-C 5 V / 3 A supply.",
+        "why": "The old indoor chime is probably broken. WiFi speakers play announcements and audio files from Home Assistant, so ringtone and volume become settings.",
+        "solder": ""
+      },
+      "de": {
+        "label": "Hauslautsprecher",
+        "what": "Geplante WLAN-Lautsprecher im Haus. Sie spielen den Klingelton und, ebenfalls geplant, die Stimme des Besuchers live per Push-to-Talk (Sprechen in jeweils eine Richtung).",
+        "specs": "Geplant, Modell noch nicht entschieden. Beispiel: Home Assistant Voice PE (84 × 84 × 21 mm), braucht ein eigenes USB-C-Netzteil 5 V / 3 A.",
+        "why": "Der alte Gong ist vermutlich defekt. WLAN-Lautsprecher spielen Ansagen und Audiodateien aus Home Assistant, Klingelton und Lautstärke sind dann Einstellungen.",
+        "solder": ""
+      }
+    },
+    "app": {
+      "en": {
+        "label": "Family app",
+        "what": "Planned for later: a self-hosted web app for the household to manage doorbell, speakers and other home systems (screen notices, ringtones, volumes). Could host the live push-to-talk relay (a server forwarding the audio).",
+        "specs": "Future, nothing built yet. Self-hosted web UI with an API to Home Assistant for status and control.",
+        "why": "Home Assistant stays the automation hub; the app becomes the household's interface and reaches the door's settings through an API.",
+        "solder": ""
+      },
+      "de": {
+        "label": "Familien-App",
+        "what": "Später geplant: eine selbst gehostete Web-App für den Haushalt, die Klingel, Lautsprecher und andere Haustechnik verwaltet (Bildschirmhinweise, Klingeltöne, Lautstärken). Könnte die Push-to-Talk-Weiterleitung übernehmen.",
+        "specs": "Zukunft, noch nichts gebaut. Selbst gehostete Weboberfläche mit API zu Home Assistant für Status und Steuerung.",
+        "why": "Home Assistant bleibt die Automationszentrale; die App wird die Oberfläche für den Haushalt und erreicht die Einstellungen der Tür über eine API.",
+        "solder": ""
+      }
+    },
+    "ups": {
+      "en": {
+        "label": "UPS",
+        "what": "Battery-backed mains supply (UPS, uninterruptible power supply) in the technical room. It feeds the network switch, so the whole doorbell keeps running during short power cuts.",
+        "specs": "Already in place. 230 V mains to the switch's power supply; the box itself gets its power through PoE.",
+        "why": "The doorbell is treated as critical. Since the box hangs off the switch by PoE, one UPS in front of the switch covers the whole door.",
+        "solder": ""
+      },
+      "de": {
+        "label": "USV",
+        "what": "Batteriegestützte Netzversorgung (USV, unterbrechungsfreie Stromversorgung) im Technikraum. Sie speist den Netzwerk-Switch, damit die ganze Klingel kurze Stromausfälle übersteht.",
+        "specs": "Vorhanden. 230 V an das Netzteil des Switches; der Kasten selbst bekommt seinen Strom per PoE.",
+        "why": "Die Klingel gilt als kritisch. Weil der Kasten per PoE am Switch hängt, sichert eine USV vor dem Switch die ganze Tür ab.",
+        "solder": ""
+      }
+    },
+    "poeswitch": {
+      "en": {
+        "label": "PoE switch port",
+        "what": "A UniFi switch port with PoE (Power over Ethernet: data and power on one network cable) switched on. It sends data and about 48 V down the single cable to the box.",
+        "specs": "To buy: a small UniFi PoE switch for the door is planned, powered from the UPS. About 48 V. The surge protector lists only 802.3af.",
+        "why": "One cable feeds the whole box. Opening the front exposes a live network port, so in any build give that port its own VLAN, port isolation and a MAC lock.",
+        "solder": ""
+      },
+      "de": {
+        "label": "PoE-Switch-Port",
+        "what": "Ein Port an einem UniFi-Switch mit eingeschaltetem PoE (Power over Ethernet: Daten und Strom über ein Netzwerkkabel). Er schickt Daten und etwa 48 V über das eine Kabel zum Kasten.",
+        "specs": "Zu kaufen: geplant ist ein kleiner UniFi-PoE-Switch für die Tür, versorgt von der USV. Etwa 48 V. Der Überspannungsschutz nennt nur 802.3af.",
+        "why": "Ein Kabel versorgt den Kasten. Hinter der Front liegt ein aktiver Netzwerkport; beim Nachbau gehört er in ein eigenes VLAN, mit Port-Isolation und MAC-Sperre.",
+        "solder": ""
+      }
+    },
+    "surge": {
+      "en": {
+        "label": "Surge protector",
+        "what": "Sits between the switch and the outdoor cable and diverts lightning-induced surges (short high-voltage spikes) to earth before they reach the switch. Works only once an electrician connects it to the house earth.",
+        "specs": "UniFi ETH-SP-G2, already owned. 91 × 61 × 32.5 mm. Datasheet lists only 802.3af (basic PoE standard, 12.95 W at the device).",
+        "why": "Keeps surges from the outdoor cable off the switch. As its datasheet lists only 802.3af, the box should stay within it; its real draw is not measured yet.",
+        "solder": ""
+      },
+      "de": {
+        "label": "Überspannungsschutz",
+        "what": "Sitzt zwischen Switch und Außenkabel und leitet durch Blitz eingekoppelte Überspannungen (kurze Spannungsspitzen) vor dem Switch zur Erde ab. Wirkt nur, wenn ein Elektriker ihn an die Hauserde anschließt.",
+        "specs": "UniFi ETH-SP-G2, vorhanden. 91 × 61 × 32,5 mm. Datenblatt nennt nur 802.3af (PoE-Grundstandard, 12,95 W am Gerät).",
+        "why": "Schützt den Switch vor Überspannungen aus dem Außenkabel. Das Datenblatt nennt nur 802.3af, dabei sollte der Kasten bleiben; Verbrauch noch nicht gemessen.",
+        "solder": ""
+      }
+    },
+    "earthbar": {
+      "en": {
+        "label": "House earth",
+        "what": "The house's equipotential bonding bar, the central point where the protective earth wires meet. The electrician connects the surge protector to it, which gives surges a path into the ground.",
+        "specs": "Existing. Of the doorbell parts, only the surge protector connects to it; no normal current flows here. An electrician makes the connection.",
+        "why": "Without earth the surge protector has nowhere to divert a surge. The electrician does it on the same visit as removing the old dead doorbell transformer.",
+        "solder": ""
+      },
+      "de": {
+        "label": "Hauserde",
+        "what": "Die Potentialausgleichsschiene des Hauses, der zentrale Punkt, an dem die Schutzleiter zusammenlaufen. Der Elektriker schließt den Überspannungsschutz dort an; so haben Überspannungen einen Weg in die Erde.",
+        "specs": "Vorhanden. Von der Klingel hängt nur der Überspannungsschutz daran; im Normalbetrieb fließt kein Strom. Anschluss durch den Elektriker.",
+        "why": "Ohne Erdung kann der Überspannungsschutz nichts ableiten. Der Elektriker erledigt das im selben Termin, in dem er den alten, defekten Klingeltrafo ausbaut.",
+        "solder": ""
+      }
+    },
+    "cable": {
+      "en": {
+        "label": "Outdoor Cat6 cable",
+        "what": "One ready-made outdoor network cable from the surge protector through the wall into the box. It carries data and PoE power. The exact route is not decided yet.",
+        "specs": "Cat6, about 10 m, solid copper AWG24 (wire gauge), -40 to +75 °C. Candidate goobay 55432; not the 94389, which is copper-clad aluminium.",
+        "why": "Ready-made plugs mean no crimping (fitting plugs by hand). Loss: about 0.29 V at 350 mA. An unconnected spare cable in the same bundle is not decided yet.",
+        "solder": ""
+      },
+      "de": {
+        "label": "Außenkabel Cat6",
+        "what": "Ein fertig konfektioniertes Outdoor-Netzwerkkabel vom Überspannungsschutz durch die Wand in den Kasten. Es führt Daten und PoE-Strom. Der genaue Kabelweg ist noch nicht entschieden.",
+        "specs": "Cat6, ca. 10 m, massives Kupfer AWG24 (Aderstärke), −40 bis +75 °C. Kandidat goobay 55432; nicht 94389, das ist kupferkaschiertes Aluminium.",
+        "why": "Fertige Stecker ersparen das Crimpen (Stecker selbst aufpressen). Verlust: etwa 0,29 V bei 350 mA. Ob ein Reservekabel mitkommt, ist noch nicht entschieden.",
+        "solder": ""
+      }
+    },
+    "gland": {
+      "en": {
+        "label": "Split cable gland",
+        "what": "The single sealed cable entry in the box's back wall. It opens so the moulded RJ45 plug (the network plug) passes through; then the slit insert closes watertight around the cable.",
+        "specs": "Conta-Clip KDS-KV M25 (lock nut included) with the split insert KDS-DE 6-7 for the 6.0-6.6 mm cable. One hole in the back wall; Conta-Clip specifies 25.2 mm. IP66 (dust-tight, resists strong water jets).",
+        "why": "Lets the ready-made cable in without cutting off its plug. Measure the cable's outer diameter first; it is not published.",
+        "solder": ""
+      },
+      "de": {
+        "label": "Kabelverschraubung",
+        "what": "Die einzige abgedichtete Kabeleinführung in der Kastenrückwand. Sie lässt sich öffnen, damit der angespritzte RJ45-Stecker (Netzwerkstecker) durchpasst; danach schließt der geschlitzte Einsatz wasserdicht ums Kabel.",
+        "specs": "Conta-Clip KDS-KV M25 (Gegenmutter dabei) mit geteiltem Dichteinsatz KDS-DE 6-7 für das 6,0–6,6-mm-Kabel. Ein Loch in der Rückwand, laut Conta-Clip Ø 25,2 mm. IP66 (staubdicht, strahlwassergeschützt).",
+        "why": "Das fertige Kabel kommt hinein, ohne dass man den Stecker abschneidet. Vorher den Außendurchmesser des Kabels messen; er ist nicht veröffentlicht.",
+        "solder": ""
+      }
+    },
+    "splitter": {
+      "en": {
+        "label": "PoE splitter",
+        "what": "Splits the incoming PoE cable (Power over Ethernet: data and power on one cable) into data for the doorbell computer and DC (direct current) power. Output not decided yet: 12 V shown, 5 V is the alternative.",
+        "specs": "Industrial, rated down to -40 °C. 12 V candidate: TRENDnet TI-SG104 (-40 to +75 °C, PoE 802.3af to bt, isolated: no electrical path from input to output). 5 V alternative: Waveshare industrial splitter, Amazon B0D795H51H. Possibly not needed: the doorbell computer's plug-on PoE module could power the box instead (its power rating is still to be checked).",
+        "why": "Common PoE splitters are only rated 0 to 40 °C, too narrow for winter at the door. PoE means no separate power supply in the technical room.",
+        "solder": ""
+      },
+      "de": {
+        "label": "PoE-Splitter",
+        "what": "Trennt das PoE-Kabel (Power over Ethernet: Daten und Strom auf einer Leitung) in Daten für den Klingelrechner und Gleichspannung für den Kasten. Ausgangsspannung noch nicht entschieden: 12 V gezeigt, 5 V als Alternative.",
+        "specs": "Industrieausführung, freigegeben bis −40 °C. Kandidat für 12 V: TRENDnet TI-SG104 (−40 bis +75 °C, PoE 802.3af bis bt, galvanisch getrennt: Ein- und Ausgang ohne leitende Verbindung). Alternative mit 5 V: Waveshare-Industriesplitter, Amazon B0D795H51H. Vielleicht gar nicht nötig: Das aufsteckbare PoE-Modul des Klingelrechners könnte den Kasten versorgen (dessen Belastbarkeit ist noch zu prüfen).",
+        "why": "Übliche PoE-Splitter sind nur für 0 bis 40 °C freigegeben, zu wenig für den Winter an der Tür. Mit PoE braucht der Technikraum kein eigenes Netzteil.",
+        "solder": ""
+      }
+    },
+    "pololu": {
+      "en": {
+        "label": "12→5 V converter",
+        "what": "Turns the splitter's 12 V into the 5 V that all three computers, the amplifier, the level shifter and the LED strip run on. It is a step-down converter (makes a lower voltage from a higher one with little loss).",
+        "specs": "Pololu D30V30F5. 12 V in, 5 V out, up to 3.4 A. Protected against short circuit and swapped input wires. 17.8 × 20.3 mm.",
+        "why": "Already owned. Needed only if the splitter gives 12 V, which is not decided yet; a 5 V splitter would make it unnecessary.",
+        "solder": "Header pins (a row of pins) or wires on VIN (12 V in), GND (ground) and VOUT (5 V out). Measure 5 V at VOUT before connecting any board."
+      },
+      "de": {
+        "label": "12→5-V-Wandler",
+        "what": "Macht aus den 12 V des Splitters die 5 V für alle drei Rechner, den Verstärker, den Pegelwandler und den LED-Streifen. Es ist ein Abwärtswandler (erzeugt verlustarm eine niedrigere Spannung aus einer höheren).",
+        "specs": "Pololu D30V30F5. Eingang 12 V, Ausgang 5 V, bis 3,4 A. Schutz gegen Kurzschluss und Verpolung (Plus und Minus vertauscht). 17,8 × 20,3 mm.",
+        "why": "Schon vorhanden. Nur nötig, wenn der Splitter 12 V liefert. Das ist noch nicht entschieden; ein 5-V-Splitter würde ihn überflüssig machen.",
+        "solder": "Stiftleiste (Reihe von Steckstiften) oder Drähte an VIN (Eingang 12 V), GND (Masse) und VOUT (Ausgang 5 V). Vor dem Anschließen der Rechner an VOUT 5 V nachmessen."
+      }
+    },
+    "rail5": {
+      "en": {
+        "label": "5 V distribution",
+        "what": "The point where the converter's 5 V output is split into one wire per consumer: all three computers, the amplifier, the level shifter and the LED strip. Ground (0 V, the common return path) is split the same way.",
+        "specs": "WAGO lever clamps or a small strip of screw terminals. Which of the two is not decided yet. To buy.",
+        "why": "Several parts take their 5 V and ground from the converter. Clamping the wires in one place needs no soldering.",
+        "solder": ""
+      },
+      "de": {
+        "label": "5-V-Verteilung",
+        "what": "Hier wird der 5-V-Ausgang des Wandlers auf je eine Leitung pro Verbraucher aufgeteilt: alle drei Rechner, Verstärker, Pegelwandler und LED-Streifen. Für die Masse (0 V, gemeinsamer Rückleiter) gilt dasselbe.",
+        "specs": "WAGO-Hebelklemmen oder eine kleine Schraubklemmleiste. Auswahl noch nicht entschieden. Zu kaufen.",
+        "why": "Mehrere Teile beziehen 5 V und Masse vom Wandler. An einer Stelle geklemmt, kommt das ohne Löten aus.",
+        "solder": ""
+      }
+    },
+    "gndstar": {
+      "en": {
+        "label": "Common ground",
+        "what": "The one point where every ground wire in the box meets. Ground is 0 V, the return path for every part's current and the reference that every signal voltage is measured against.",
+        "specs": "Part of the distribution terminals. Joined here: splitter minus, converter, all three computers and the heater switch. To buy.",
+        "why": "Without a common ground the parts cannot read each other's signals. The splitter's minus output is the reference for the whole box.",
+        "solder": ""
+      },
+      "de": {
+        "label": "Gemeinsame Masse",
+        "what": "Der eine Punkt, an dem alle Masseleitungen im Kasten zusammenkommen. Masse ist 0 V: der Rückweg für den Strom jedes Teils und der Bezug, gegen den jede Signalspannung gemessen wird.",
+        "specs": "Teil der Verteilerklemmen. Hier laufen zusammen: Minus des Splitters, Wandler, alle drei Rechner und der Heizungsschalter. Zu kaufen.",
+        "why": "Ohne gemeinsame Masse können die Teile ihre Signale gegenseitig nicht lesen. Der Minus-Ausgang des Splitters ist der Bezug für den ganzen Kasten.",
+        "solder": ""
+      }
+    },
+    "waveshare": {
+      "en": {
+        "label": "Talk computer",
+        "what": "The computer for two-way talk: it drives the microphone and the amplifier and connects to Home Assistant over WiFi. Which board is being re-decided.",
+        "specs": "Board open again (30 Sep 2026): the Waveshare ESP32-S3-ETH became the doorbell computer. The talk software needs an ESP32-S3 with PSRAM (extra RAM); an ESP32-S3 N16R8 dev board is in hand as a candidate.",
+        "why": "The ESP32-S3 has the power for echo cancellation. On WiFi it needs no switch in the box.",
+        "solder": ""
+      },
+      "de": {
+        "label": "Sprechrechner",
+        "what": "Der Rechner für das Gegensprechen: Er steuert Mikrofon und Verstärker und ist per WLAN mit Home Assistant verbunden. Welche Platine, wird neu entschieden.",
+        "specs": "Platine wieder offen (30.09.2026): Die Waveshare ESP32-S3-ETH ist jetzt der Klingelrechner. Die Sprechsoftware braucht einen ESP32-S3 mit PSRAM (Arbeitsspeicher); als Kandidat liegt ein ESP32-S3-N16R8-Board bereit.",
+        "why": "Der ESP32-S3 hat genug Leistung für die Echounterdrückung. Im WLAN braucht der Kasten keinen Switch.",
+        "solder": ""
+      }
+    },
+    "lilygo": {
+      "en": {
+        "label": "Screen computer",
+        "what": "Shows greetings and notices at the door and reads touches. Home Assistant sends the content over WiFi. It is a 4.7 inch e-paper screen (keeps its image without power) with its own ESP32-S3 computer on the back.",
+        "specs": "LilyGO T5-4.7-S3 Touch (H716), board V2.4. Touch glass 120.1 × 66.77 mm, visible picture 56.95 × 101.9 mm. The screen comes loose on two ribbons and folds onto the board: 11.9 mm thick together. Seven mounting holes Ø3.94. Touch chip GT911 at I2C address 0x5D.",
+        "why": "The parallel e-paper panel (fed over many data lines at once) needs a dedicated driver chip, so it gets its own computer. WiFi is a fixed decision.",
+        "solder": "No soldering with a USB-C power lead. VBUS (USB 5 V line) needs the 40-pin header (pin row) soldered; check pin 2 or 4 on your board. Then keep USB-C off a PC while the box is on."
+      },
+      "de": {
+        "label": "Bildschirmrechner",
+        "what": "Zeigt an der Tür Begrüßung und Hinweise und nimmt Touch-Eingaben entgegen. Home Assistant schickt die Inhalte per WLAN. Es ist ein 4,7-Zoll-E-Paper (hält das Bild ohne Strom) mit eigenem ESP32-S3 auf der Rückseite.",
+        "specs": "LilyGO T5-4.7-S3 Touch (H716), Platine V2.4. Touchglas 120,1 × 66,77 mm, sichtbares Bild 56,95 × 101,9 mm. Der Bildschirm kommt lose an zwei Flachbandkabeln und wird auf die Platine geklappt: zusammen 11,9 mm dick. Sieben Befestigungslöcher Ø3,94. Touch-Chip GT911 an I2C-Adresse 0x5D.",
+        "why": "Das parallele E-Paper-Panel (viele Datenleitungen gleichzeitig) braucht einen eigenen Treiberchip und damit einen eigenen Rechner. WLAN ist fest entschieden.",
+        "solder": "Kein Löten mit USB-C-Stromkabel. VBUS (USB-5-V-Leitung) braucht die 40-polige Stiftleiste; Pin 2 oder 4 an der Platine prüfen. Nie USB-C an einen PC, solange der Kasten Strom hat."
+      }
+    },
+    "amp": {
+      "en": {
+        "label": "Amplifier",
+        "what": "Turns the digital audio from the talk computer into power for the loudspeaker. The audio arrives over I2S, a three-wire digital sound bus, so noise does not degrade the sound.",
+        "specs": "Adafruit MAX98357A. Up to about 1.8 W into 8 Ω; the speaker takes 0.5 W rated, 1 W max. 10 µF + 0.1 µF capacitors at its 5 V pins.",
+        "why": "The amp can deliver more than the speaker can take, so its gain (amplification) must be the lowest, 3 dB. Grounding the GAIN pin gives 12 dB, which is louder.",
+        "solder": "7-pin header (pin row), speaker screw terminal. 100 kΩ from GAIN to Vin (5 V) for the lowest gain, not to ground. 10 µF + 0.1 µF across Vin and GND, 10 µF stripe (minus) to GND."
+      },
+      "de": {
+        "label": "Verstärker",
+        "what": "Macht aus dem digitalen Ton des Sprechrechners Leistung für den Lautsprecher. Der Ton kommt über I2S, einen digitalen Audiobus mit drei Leitungen, daher stört Rauschen den Klang nicht.",
+        "specs": "Adafruit MAX98357A. Bis etwa 1,8 W an 8 Ω; der Lautsprecher verträgt 0,5 W Dauer, 1 W max. 10 µF + 0,1 µF Kondensatoren an den 5-V-Pins.",
+        "why": "Der Verstärker leistet mehr, als der Lautsprecher verträgt. Deshalb die kleinste Verstärkung, 3 dB. GAIN an Masse gibt 12 dB, das ist lauter.",
+        "solder": "7-polige Stiftleiste, Lautsprecherklemme. 100 kΩ von GAIN nach Vin (5 V): kleinste Verstärkung, nicht an Masse. 10 µF + 0,1 µF an Vin/GND, beim 10 µF Minus-Markierung an GND."
+      }
+    },
+    "mic": {
+      "en": {
+        "label": "Microphone",
+        "what": "Picks up the visitor's voice through the two mic holes and the membrane and sends it as digital I2S audio (sound as numbers over three wires) to the talk computer. Planned: recording only after a visitor action.",
+        "specs": "INMP441 MEMS microphone module (microphone built as a tiny chip), 3 owned. About 14 mm round, 6 pins, runs on 3.3 V.",
+        "why": "Digital output: noise on the wires does not degrade the sound. Recording must be announced on the screen (legal requirement).",
+        "solder": "6-pin header (a row of pins) or wires directly. Labelled side (with the sound hole) towards the membrane, or it hears almost nothing. Power from the 3.3 V, never 5 V."
+      },
+      "de": {
+        "label": "Mikrofon",
+        "what": "Nimmt die Stimme durch die zwei Mikrofonlöcher und die Membran auf und schickt sie digital per I2S (Ton als Zahlen über drei Leitungen) an den Sprechrechner. Geplant: Aufnahme nur nach einer Aktion des Besuchers.",
+        "specs": "INMP441-MEMS-Mikrofonmodul (Mikrofon als winziger Chip), 3 vorhanden. Etwa Ø 14 mm, 6 Pins, läuft mit 3,3 V.",
+        "why": "Digitaler Ausgang: Störungen auf den Leitungen verschlechtern den Klang nicht. Die Aufnahme muss auf dem Bildschirm angekündigt werden (gesetzliche Pflicht).",
+        "solder": "6-polige Stiftleiste (Reihe von Steckstiften) oder Drähte direkt. Beschriftete Seite mit dem Schallloch zur Membran, sonst hört es fast nichts. Versorgung mit 3,3 V, nie 5 V."
+      }
+    },
+    "shifter": {
+      "en": {
+        "label": "Level shifter",
+        "what": "Raises the LED data signal from the doorbell computer's 3.3 V to the 5 V the LED strip expects. It sits between one computer pin and the strip's data input.",
+        "specs": "SN74AHCT125N chip (DIP-14: 14 legs in two rows) plus a 330 Ω series resistor in the data line. On perfboard (board with a grid of holes).",
+        "why": "Without it the strip may work on the bench and then fail in the cold for no visible reason.",
+        "solder": "Chip in a DIP-14 socket (plug-in holder) on perfboard, supplied with 5 V. 330 Ω in the output line. Unused inputs and the enable (OE) pins to ground."
+      },
+      "de": {
+        "label": "Pegelwandler",
+        "what": "Hebt das LED-Datensignal vom Klingelrechner von 3,3 V auf die 5 V, die der LED-Streifen erwartet. Er sitzt zwischen einem Pin des Rechners und dem Dateneingang des Streifens.",
+        "specs": "Chip SN74AHCT125N (DIP-14: 14 Beinchen in zwei Reihen) plus 330-Ω-Widerstand in der Datenleitung. Auf einer Lochrasterplatine.",
+        "why": "Ohne ihn läuft der Streifen am Tisch vielleicht und fällt dann in der Kälte ohne erkennbaren Grund aus.",
+        "solder": "Chip in DIP-14-Fassung (Steckhalter) auf Lochraster, mit 5 V versorgt. 330 Ω in die Ausgangsleitung. Unbenutzte Eingänge und die Freigabe-Pins (OE) an Masse."
+      }
+    },
+    "ledcap": {
+      "en": {
+        "label": "1000 µF capacitor",
+        "what": "A capacitor (small charge store) across +5 V and ground directly at the LED strip. It absorbs the inrush (the short current surge) when the LEDs switch on.",
+        "specs": "1000 µF electrolytic (has a plus and a minus side; the stripe marks minus). To buy.",
+        "why": "It sits directly at the strip so the surge is absorbed there. The owned kit only has 100 nF capacitors, so this one must be bought.",
+        "solder": "Solder across +5 V and ground at the strip's input end, where its arrows start. Stripe (minus) to ground."
+      },
+      "de": {
+        "label": "Kondensator 1000 µF",
+        "what": "Ein Kondensator (kleiner Ladungsspeicher) zwischen +5 V und Masse direkt am LED-Streifen. Er fängt den kurzen Stromstoß ab, wenn die LEDs einschalten.",
+        "specs": "Elektrolytkondensator 1000 µF (gepolt, also mit Plus und Minus; der Markierungsstreifen am Gehäuse zeigt Minus). Zu kaufen.",
+        "why": "Er sitzt direkt am LED-Streifen, damit der Stromstoß dort abgefangen wird. Im vorhandenen Sortiment gibt es nur 100 nF, deshalb muss er gekauft werden.",
+        "solder": "Zwischen +5 V und Masse am Eingangsende des LED-Streifens löten, wo die Pfeile beginnen. Markierungsstreifen (Minus) an Masse."
+      }
+    },
+    "bme": {
+      "en": {
+        "label": "Climate sensor",
+        "what": "Measures temperature and humidity inside the box. The doorbell computer uses it as the heater's thermostat (heat on below a set point) and to warn before moisture condenses on the electronics.",
+        "specs": "BME280 module, already owned, checked genuine (the similar BMP280 has no humidity). I2C (a two-wire chip bus), 3.3 V.",
+        "why": "It measures humidity too, which the condensation warning needs. If the sensor fails, the heater stays off.",
+        "solder": "6-pin header (a row of pins). It connects with four wires: 3.3 V, ground, SDA and SCL (the two I2C lines)."
+      },
+      "de": {
+        "label": "Klimasensor",
+        "what": "Misst Temperatur und Luftfeuchte im Kasten. Der Klingelrechner nutzt ihn als Thermostat der Heizung (unter einem Sollwert heizen) und warnt, bevor sich Feuchte auf der Elektronik niederschlägt.",
+        "specs": "BME280-Modul, vorhanden, als Original bestätigt (der ähnliche BMP280 misst keine Feuchte). I2C (Chipbus mit zwei Leitungen), 3,3 V.",
+        "why": "Er misst auch die Luftfeuchte, die für die Kondenswarnung nötig ist. Fällt der Sensor aus, bleibt die Heizung aus.",
+        "solder": "6-polige Stiftleiste (Reihe von Steckstiften). Angeschlossen über vier Leitungen: 3,3 V, Masse, SDA und SCL (die zwei I2C-Leitungen)."
+      }
+    },
+    "mosfet": {
+      "en": {
+        "label": "Heater switch",
+        "what": "Turns the heater on and off. The doorbell computer only lights an LED in an optocoupler (LED plus light sensor in one part); the MOSFET (a power switch) then connects the heater's minus lead to ground.",
+        "specs": "FR120N module, marked HW-532, owned; PWM-capable (fast on/off). Also wired to 12 V: its optocoupler drives the gate (control input) from it.",
+        "why": "With 12 V the gate gets a full 12 V. Heater voltage not decided yet: on 5 V it needs a test or a module made for low gate voltages.",
+        "solder": "Blue 3-pin and green 2-pin screw terminals plus the 3 signal pins. A pull-down (resistor to ground) on the signal keeps the heater off while the computer boots."
+      },
+      "de": {
+        "label": "Heizungsschalter",
+        "what": "Schaltet die Heizung ein und aus. Der Klingelrechner lässt nur eine LED in einem Optokoppler leuchten (LED und Lichtsensor in einem Bauteil); der MOSFET (ein Leistungsschalter) legt dann das Minus der Heizung an Masse.",
+        "specs": "Modul FR120N, Aufdruck HW-532, vorhanden; PWM-fähig. Hängt auch an den 12 V, daraus steuert der Optokoppler das Gate (Steuereingang).",
+        "why": "Mit 12 V erhält das Gate volle 12 V. Heizspannung noch nicht entschieden: Bei 5 V wäre ein Test oder ein Modul für kleine Gate-Spannung nötig.",
+        "solder": "Blaue 3-polige und grüne 2-polige Schraubklemmen plus 3-polige Signal-Stiftleiste. Ein Pull-down (Widerstand nach Masse) hält die Heizung aus, solange der Rechner startet."
+      }
+    },
+    "fuse": {
+      "en": {
+        "label": "Thermal fuse 73 °C",
+        "what": "A one-shot safety link in series with the heater (in the same wire, so all heater current passes through it). If it gets hotter than 73 °C it cuts the heater off for good, whatever the firmware does.",
+        "specs": "73 °C, 250 V, 10 A; two in hand, one is a spare. Where it is mounted is not decided yet.",
+        "why": "It works without any software. The firmware switches the heater off around 40 °C; the fuse is the last backstop if that fails.",
+        "solder": "Crimp (squeeze on a metal sleeve) preferred. If soldered: keep the legs long and clamp pliers between joint and fuse body to draw off the heat, since soldering heat can blow it."
+      },
+      "de": {
+        "label": "73-°C-Sicherung",
+        "what": "Eine Einmal-Sicherung in Reihe mit der Heizung (in derselben Leitung, der ganze Heizstrom fließt hindurch). Wird sie heißer als 73 °C, trennt sie die Heizung dauerhaft, egal, was die Firmware tut.",
+        "specs": "73 °C, 250 V, 10 A; zwei Stück da, eine ist Reserve. Wo die Sicherung sitzt, ist noch nicht entschieden.",
+        "why": "Sie wirkt ohne jede Software. Die Firmware schaltet die Heizung schon bei etwa 40 °C ab; die Sicherung greift erst, wenn das versagt.",
+        "solder": "Am besten crimpen (Metallhülse aufpressen). Beim Löten: Beinchen lang lassen, Zange als Wärmeableiter zwischen Lötstelle und Sicherungskörper klemmen. Lötwärme kann sie auslösen."
+      }
+    },
+    "heater": {
+      "en": {
+        "label": "Heater pad",
+        "what": "A thin silicone heating pad of about 5 W, taped to the back of the screen with heat-conducting tape. It keeps the e-paper panel (a screen that holds its image without power) warm enough to work in frost.",
+        "specs": "About 5 W. Voltage not decided yet: 12 V or 5 V, set by the splitter choice. The 12 V candidate is 50 mm round, 1.5 mm thick, about 0.42 A.",
+        "why": "The panel is rated 0 to +50 °C, the box sees -15 °C. It stays off at boot and on sensor failure, cuts out near 40 °C, and a one-shot 73 °C fuse backs that up.",
+        "solder": ""
+      },
+      "de": {
+        "label": "Heizpad",
+        "what": "Dünnes Silikon-Heizpad mit etwa 5 W, mit Wärmeleitband hinten auf den Bildschirm geklebt. Es hält das E-Paper-Panel (ein Bildschirm, der sein Bild ohne Strom behält) bei Frost betriebsfähig.",
+        "specs": "Etwa 5 W. Spannung noch nicht entschieden: 12 V oder 5 V, je nach Splitter. Der 12-V-Kandidat: Ø 50 mm, 1,5 mm dick, etwa 0,42 A.",
+        "why": "Das Panel verträgt nur 0 bis +50 °C, der Kasten wird −15 °C kalt. Im Zweifel ist das Pad aus: beim Booten, ohne Sensor, ab ca. 40 °C; dazu die 73-°C-Sicherung.",
+        "solder": ""
+      }
+    },
+    "linecircuit": {
+      "en": {
+        "label": "Button-line circuit",
+        "what": "Three parts on perfboard (a board with a grid of solder holes): a pull-up (a resistor that holds the line at a known voltage), a resistor in series with the line and a small capacitor that smooths spikes.",
+        "specs": "10 kΩ pull-up to 3.3 V, 1 kΩ in series, 100 nF to ground (0 V). Idle about 1.73 V, pressed about 0.30 V, wire cut 3.1 to 3.3 V.",
+        "why": "A floating pin (one tied to no fixed voltage) once caused 134 phantom rings in 15 minutes. With the button's resistor, a cut wire shows up as its own voltage.",
+        "solder": "10 kΩ, 1 kΩ and 100 nF on perfboard, wired as on the tested v1 breadboard (plug-in prototype board). The pull-up goes to the doorbell computer's 3.3 V, never to 5 V."
+      },
+      "de": {
+        "label": "Tasterschaltung",
+        "what": "Drei Bauteile auf Lochraster (Platine mit Lötpunkt-Raster): ein Pull-up (Widerstand, der die Leitung auf einer festen Spannung hält), ein Widerstand in Reihe und ein kleiner Kondensator gegen Störspitzen.",
+        "specs": "10 kΩ Pull-up an 3,3 V, 1 kΩ in Reihe, 100 nF gegen Masse (0 V). Ruhe etwa 1,73 V, gedrückt etwa 0,30 V, Drahtbruch 3,1 bis 3,3 V.",
+        "why": "Ein offener Pin ohne feste Spannung löste einmal 134 Phantomklingeln in 15 Minuten aus. Mit dem Widerstand am Taster hat ein Drahtbruch eine eigene Spannung.",
+        "solder": "10 kΩ, 1 kΩ und 100 nF auf Lochraster löten, verschaltet wie auf dem erprobten v1-Steckbrett (Aufbau ohne Löten). Pull-up an die 3,3 V des Klingelrechners, nie an 5 V."
+      }
+    },
+    "vent": {
+      "en": {
+        "label": "Pressure vent",
+        "what": "A screw-in plug with a breathable membrane. Air passes and water does not, so the sealed box can breathe as it warms and cools. It breathes into the cavity behind the speaker grille.",
+        "specs": "Bopla DAE M12: M12 × 1.5 thread, 16 mm long, -45 to +80 °C, 12.2 mm hole. A hole without thread needs lock nut 52090101.",
+        "why": "The box sits buried in the insulation and has no free outside face. The cavity behind the grille is the only place with outside air.",
+        "solder": ""
+      },
+      "de": {
+        "label": "Druckausgleich",
+        "what": "Ein Einschraubstopfen mit atmungsaktiver Membran. Luft kommt durch, Wasser nicht. So kann der dichte Kasten beim Erwärmen und Abkühlen atmen. Das Element atmet in den Hohlraum hinter dem Gitter.",
+        "specs": "Bopla DAE M12: Gewinde M12 × 1,5, 16 mm lang, −45 bis +80 °C, Loch Ø 12,2 mm. Ohne Gewinde im Loch ist die Gegenmutter 52090101 nötig.",
+        "why": "Der Kasten steckt in der Dämmung und hat keine freie Außenfläche. Außenluft gibt es nur im Hohlraum hinter dem Lautsprechergitter.",
+        "solder": ""
+      }
+    },
+    "led": {
+      "en": {
+        "label": "LED strip",
+        "what": "A short addressable LED strip (each LED gets its own colour over one data wire) inside the diffuser. About 4 LEDs give a warm downlight onto the brass and the step, plus status colours.",
+        "specs": "3 wires: 5 V, data, ground (0 V). Probably SK6812 RGBW (red, green, blue plus a white chip); to be confirmed on the bench.",
+        "why": "A separate white chip makes the warm light; the colour chips show status. A yellow phosphor spot (the coating of a white LED) seen on each LED points to RGBW.",
+        "solder": "Three wires onto the +5V, DIN (data in) and GND pads at the end the arrows point away from. A 1000 µF capacitor (charge buffer) across +5 V and GND at the strip, stripe to minus."
+      },
+      "de": {
+        "label": "LED-Streifen",
+        "what": "Kurzer adressierbarer LED-Streifen (jede LED bekommt über eine Datenleitung ihre eigene Farbe) im Diffusor. Etwa 4 LEDs werfen warmes Licht auf Messing und Stufe und zeigen Statusfarben.",
+        "specs": "3 Adern: 5 V, Daten, Masse (0 V). Vermutlich SK6812 RGBW (Rot, Grün, Blau plus weißer Chip); im Testaufbau noch zu bestätigen.",
+        "why": "Ein eigener weißer Chip macht das warme Licht, die Farbchips zeigen den Status. Ein gelber Leuchtstoff-Fleck (Beschichtung weißer LEDs) spricht für RGBW.",
+        "solder": "Drei Adern auf +5V, DIN (Dateneingang) und GND an dem Ende, von dem die Pfeile weglaufen. 1000-µF-Kondensator (Ladungspuffer) am Streifen über +5 V und GND, Markierung an Minus."
+      }
+    },
+    "diffusor": {
+      "en": {
+        "label": "Diffuser",
+        "what": "A white, hollow quarter-round cover in the corner under the brass roof. The LED strip lies inside it, and it spreads the few LEDs into one even band of warm light.",
+        "specs": "3D-printed, radius 18 mm, 74 mm long, 2 mm wall. Two wedge tabs clamp in slits in the brass; silicone all round.",
+        "why": "It covers the LED windows in the brass bend, and its silicone joint seals them. So far printed prototypes; a resin print of the final part is an option.",
+        "solder": ""
+      },
+      "de": {
+        "label": "Diffusor",
+        "what": "Weiße, hohle Viertelrund-Abdeckung in der Ecke unter dem Messingdach. Darin liegt der LED-Streifen, und sie macht aus den wenigen LEDs ein gleichmäßiges warmes Lichtband.",
+        "specs": "3D-gedruckt, Radius 18 mm, 74 mm lang, Wand 2 mm. Zwei Keillaschen klemmen in Schlitzen im Blech, rundum Silikon.",
+        "why": "Er deckt die LED-Fenster in der Kantung ab, seine Silikonfuge dichtet sie. Bisher gedruckte Prototypen; ein Harzdruck für das finale Teil ist eine Option.",
+        "solder": ""
+      }
+    },
+    "speaker": {
+      "en": {
+        "label": "Loudspeaker",
+        "what": "A small weatherproof speaker, screwed and sealed to the front wall of the box behind the brass grille. Planned use: announcements and voice replies from your phone.",
+        "specs": "VISATON K 40 SQ, 40 × 40 mm, 8 Ω, 0.5 W rated, 1 W max, 82 dB at 1 W and 1 m. Front side IP65/67 (dust- and waterproof).",
+        "why": "Sensitivity (loudness per watt) beats wattage: at 1 m it is louder than a 3 W candidate. Rated 0.5 W, it needs the amplifier at its lowest gain setting.",
+        "solder": "Two wires from the amplifier's screw terminal onto the solder lugs; keep the iron on briefly. Both wires carry signal, neither is ground (0 V)."
+      },
+      "de": {
+        "label": "Lautsprecher",
+        "what": "Kleiner wetterfester Lautsprecher, hinter dem Messinggitter an die Vorderwand des Kastens geschraubt und abgedichtet. Geplant für Ansagen und Sprachantworten von deinem Handy.",
+        "specs": "VISATON K 40 SQ, 40 × 40 mm, 8 Ω, 0,5 W Nenn- und 1 W Maximalleistung, 82 dB bei 1 W in 1 m. Front IP65/67 (staub- und wasserdicht).",
+        "why": "Es zählt die Empfindlichkeit (Schalldruck pro Watt): In 1 m Abstand ist er lauter als ein 3-W-Kandidat. Bei nur 0,5 W braucht er die kleinste Verstärkerstufe.",
+        "solder": "Zwei Adern vom Schraubterminal des Verstärkers an die Lötfahnen, Lötkolben nur kurz ansetzen. Beide Adern führen Signal, keine ist Masse (0 V)."
+      }
+    },
+    "grille": {
+      "en": {
+        "label": "Speaker grille",
+        "what": "Rows of slanted slots in the brass that let the sound out. The cavity behind them counts as outside air: rain may get in and must drain out through the lowest slots.",
+        "specs": "3 rows × 18 slots in the current CAD, each 1.5 × 5 mm at 70°. Open area 431 mm², 45% of the speaker opening.",
+        "why": "Under the roof it is the best-sheltered spot on the front. A CAD fix is pending: the cavity floor slopes toward the speaker, so water would pool there.",
+        "solder": ""
+      },
+      "de": {
+        "label": "Lautsprechergitter",
+        "what": "Reihen schräger Schlitze im Messing, durch die der Schall austritt. Der Hohlraum dahinter gilt als Außenluft: Regen darf hinein und muss durch die untersten Schlitze wieder ablaufen.",
+        "specs": "Im aktuellen CAD 3 Reihen × 18 Schlitze, je 1,5 × 5 mm unter 70°. Offene Fläche 431 mm², 45 % der Lautsprecheröffnung.",
+        "why": "Unter dem Dach ist die Front am besten geschützt. Eine CAD-Korrektur steht noch aus: Der Hohlraumboden fällt zum Lautsprecher hin, dort bliebe Wasser stehen.",
+        "solder": ""
+      }
+    },
+    "window": {
+      "en": {
+        "label": "Display window",
+        "what": "A portrait opening in the brass for the e-paper screen (a display that keeps its image without power). Visitors read greetings and notices through it and use its touch surface.",
+        "specs": "About 58 × 104 mm visible. Cut slightly smaller than the panel's active area (the part with pixels) of 58.32 × 103.68 mm.",
+        "why": "Slightly undersized so no panel edge shows. The panel is fragile 0.872 mm glass, so it sits behind a soft gasket and no hard O-ring (rubber sealing ring).",
+        "solder": ""
+      },
+      "de": {
+        "label": "Bildschirmfenster",
+        "what": "Hochformatige Öffnung im Messing für den E-Paper-Bildschirm (er behält sein Bild ohne Strom). Besucher lesen hier Begrüßung und Hinweise und bedienen die Touch-Fläche.",
+        "specs": "Sichtbar etwa 58 × 104 mm. Knapp kleiner als die aktive Fläche des Panels (der Teil mit Pixeln) von 58,32 × 103,68 mm.",
+        "why": "Knapp kleiner, damit kein Panelrand sichtbar ist. Das Panel ist empfindliches Glas von 0,872 mm, daher weiche Dichtung und kein harter O-Ring (Gummidichtring).",
+        "solder": ""
+      }
+    },
+    "membrane": {
+      "en": {
+        "label": "Mic membrane",
+        "what": "A thin self-adhesive PTFE patch (the plastic known as Teflon) stuck on the back of the brass over the mic holes. Sound passes through it and water does not, so the microphone stays dry.",
+        "specs": "B+B Thermo-Technik DAM-AD10: 10.2 mm outside, 5.5 mm open, 0.13 mm thick, IP67 (survives brief immersion).",
+        "why": "Sold as a pressure vent (breather for sealed boxes); no acoustic data is published. Voice quality through it is still to be tested on the bench.",
+        "solder": ""
+      },
+      "de": {
+        "label": "Mikrofonmembran",
+        "what": "Dünnes selbstklebendes PTFE-Plättchen (der als Teflon bekannte Kunststoff), hinten auf das Messing über die Mikrofonlöcher geklebt. Schall kommt durch, Wasser nicht, das Mikrofon bleibt trocken.",
+        "specs": "B+B Thermo-Technik DAM-AD10: außen Ø 10,2 mm, offen Ø 5,5 mm, 0,13 mm dick, IP67 (übersteht kurzes Untertauchen).",
+        "why": "Verkauft als Druckausgleich für dichte Gehäuse, Akustikdaten gibt es keine. Die Sprachqualität durch die Membran ist im Testaufbau noch zu prüfen.",
+        "solder": ""
+      }
+    },
+    "micholes": {
+      "en": {
+        "label": "Mic holes",
+        "what": "Two pin-size holes in the brass next to the button. The microphone behind them listens through the holes, with a waterproof membrane in between.",
+        "specs": "2 × 1.2 mm, 8 mm apart, beside the button.",
+        "why": "Next to the button they sit far from the speaker. This low spot gets the least rain shelter, so the membrane behind them matters most.",
+        "solder": ""
+      },
+      "de": {
+        "label": "Mikrofonlöcher",
+        "what": "Zwei nadelfeine Löcher im Messing neben dem Taster. Das Mikrofon dahinter hört durch sie, mit einer wasserdichten Membran dazwischen.",
+        "specs": "2 × Ø 1,2 mm, 8 mm Abstand, neben dem Taster.",
+        "why": "Neben dem Taster liegen sie weit vom Lautsprecher entfernt. Die Stelle ist am wenigsten vor Regen geschützt, deshalb kommt es hier auf die Membran an.",
+        "solder": ""
+      }
+    },
+    "button": {
+      "en": {
+        "label": "Push button",
+        "what": "The existing brass doorbell button, a plain contact with no electronics inside. A 10 kΩ end-of-line resistor (fitted at the button end of the wire) lets the computer tell idle from a cut wire.",
+        "specs": "Ring 48.5 mm across, recessed in a 49.5 mm hole in the brass. On the bench the contact closed for 50 to 200 ms per press.",
+        "why": "The old button had electronics inside and died from rain. Without the resistor a cut wire would read like idle, and the doorbell would fail unnoticed.",
+        "solder": "10 kΩ resistor across the button's two contacts, then shrink tubing (a sleeve that tightens when heated) over it."
+      },
+      "de": {
+        "label": "Klingeltaster",
+        "what": "Der vorhandene Messing-Klingeltaster, ein einfacher Kontakt ohne Elektronik. Ein 10-kΩ-Abschlusswiderstand (sitzt am Leitungsende, hier am Taster) lässt den Rechner Ruhe und Drahtbruch unterscheiden.",
+        "specs": "Ring Ø 48,5 mm, versenkt in einem Loch von Ø 49,5 mm im Messing. Im Test schloss der Kontakt pro Druck 50 bis 200 ms.",
+        "why": "Der alte Taster mit eingebauter Elektronik ging durch Regen kaputt. Ohne den Widerstand sähe ein Drahtbruch aus wie Ruhe, die Klingel fiele unbemerkt aus.",
+        "solder": "10-kΩ-Widerstand direkt über die zwei Kontakte des Tasters löten, danach Schrumpfschlauch darüberziehen."
+      }
+    },
+    "gasket": {
+      "en": {
+        "label": "Gasket",
+        "what": "A round sealing cord in a groove along the box rim. The screwed-on brass front presses on it, so water behind the brass stays out of the box. A separate O-ring (rubber ring) seals behind the button.",
+        "specs": "Cord 2.0 mm (solid EPDM, not foam) in a 2.4 × 1.5 mm groove. Button O-ring 26 × 2 mm.",
+        "why": "Rain can get behind the brass, and the cord keeps it out of the box. Along the top edge the LED openings break the groove; there the diffuser's silicone seals.",
+        "solder": ""
+      },
+      "de": {
+        "label": "Dichtung",
+        "what": "Eine runde Dichtschnur in einer Nut im Kastenrand. Die verschraubte Messingfront presst sie an, so bleibt Wasser hinter dem Messing aus dem Kasten. Ein eigener O-Ring (Gummiring) dichtet hinter dem Taster.",
+        "specs": "Schnur Ø 2,0 mm (Vollgummi EPDM, kein Moosgummi) in Nut 2,4 × 1,5 mm. O-Ring am Taster 26 × 2 mm.",
+        "why": "Regen kann hinter das Messing gelangen, die Schnur hält ihn vom Kasten fern. Oben unterbrechen die LED-Öffnungen die Nut, dort dichtet das Diffusor-Silikon.",
+        "solder": ""
+      }
+    },
+    "brass": {
+      "en": {
+        "label": "Brass front",
+        "what": "The visible face: one 2 mm brass sheet, folded forward at the top into a small rain roof. It carries the grille, screen window, mic holes and button, and hides the box behind it.",
+        "specs": "100 × 260 mm, 2 mm brass. Roof 60 mm deep, falling 5° to the front, 6 mm drip edge (lip that sheds water). Four slotted brass screws.",
+        "why": "One sheet leaves no seam at the top for rain. Only 3D-printed prototypes exist so far; the brass is ordered once the bench tests pass.",
+        "solder": ""
+      },
+      "de": {
+        "label": "Messingfront",
+        "what": "Die sichtbare Front: ein 2 mm starkes Messingblech, oben nach vorn zu einem kleinen Regendach gekantet. Es trägt Gitter, Bildschirmfenster, Mikrofonlöcher und Taster und verdeckt den Kasten dahinter.",
+        "specs": "100 × 260 mm, Messing 2 mm. Dach 60 mm tief, 5° Gefälle nach vorn, 6 mm Tropfkante. Vier geschlitzte Messingschrauben.",
+        "why": "Ein einziges Blech hat oben keine Naht, durch die Regen eindringt. Bisher nur 3D-gedruckte Prototypen; Messing wird erst nach bestandenen Tischtests bestellt.",
+        "solder": ""
+      }
+    },
+    "wt32": {
+      "en": {
+        "label": "Doorbell computer",
+        "what": "The wired computer that only rings: it reads the doorbell button, drives the light and the heater, and reads the climate sensor. It runs standard ESPHome only.",
+        "specs": "Waveshare ESP32-S3-ETH: ESP32-S3 with W5500 network chip, USB-C and a plug-on PoE module. Bench-tested on 30 Sep 2026: button line on IO1, read every millisecond, every press reaches Home Assistant.",
+        "why": "Already owned. It replaced the WT32-ETH01 planned first, which always started in download mode and so could not restart on its own after a power cut. With the bell on its own board, neither an audio crash nor a talk update can silence it.",
+        "solder": "The pin headers come loose: solder at least the row with 3V3, IO1 and GND."
+      },
+      "de": {
+        "label": "Klingelrechner",
+        "what": "Der kabelgebundene Rechner, der nur fürs Klingeln da ist: Er liest den Klingeltaster, steuert Licht und Heizung und liest den Klimasensor. Er läuft nur mit Standard-ESPHome.",
+        "specs": "Waveshare ESP32-S3-ETH: ESP32-S3 mit Netzwerkchip W5500, USB-C und aufsteckbarem PoE-Modul. Am 30.09.2026 auf dem Tisch getestet: Klingelleitung an IO1, jede Millisekunde gemessen, jeder Druck kommt in Home Assistant an.",
+        "why": "Schon vorhanden. Er ersetzt den zuerst geplanten WT32-ETH01, der immer im Flash-Modus startete und deshalb nach einem Stromausfall nicht von selbst hochkam. Mit der Klingel auf einer eigenen Platine kann weder ein Absturz im Audiocode noch ein Update der Sprechfunktion sie stumm schalten.",
+        "solder": "Die Stiftleisten liegen lose bei: mindestens die Reihe mit 3V3, IO1 und GND einlöten."
+      }
+    }
+  },
+  "edges": {
+    "e_ups_switch": {
+      "en": {
+        "label": "Mains 230 V",
+        "carries": "Household mains 230 V from the UPS (a battery-backed mains supply) into the power supply of the network switch. A normal plug, indoors only. During short power cuts the doorbell keeps running."
+      },
+      "de": {
+        "label": "Netz 230 V",
+        "carries": "Haushaltsnetz 230 V von der USV (Netzversorgung mit Akku) zum Netzteil des Switches. Normaler Stecker, nur im Haus. Bei kurzen Stromausfällen läuft die Klingel weiter."
+      }
+    },
+    "e_switch_ha": {
+      "en": {
+        "label": "House network",
+        "carries": "Network data only, no power, over plugged network cables. The switch that feeds the door is part of the house network, and through it the door reaches the Home Assistant server."
+      },
+      "de": {
+        "label": "Hausnetz",
+        "carries": "Nur Netzwerkdaten, kein Strom, über gesteckte Netzwerkkabel. Der Switch, der die Tür versorgt, hängt im Hausnetz. Darüber erreicht die Tür den Home-Assistant-Server."
+      }
+    },
+    "e_ap_ha": {
+      "en": {
+        "label": "Access point cable",
+        "carries": "Network data only, no power. The WiFi access point is plugged into the house network by cable. The screen computer's WiFi traffic reaches Home Assistant this way."
+      },
+      "de": {
+        "label": "Access-Point-Kabel",
+        "carries": "Nur Netzwerkdaten, kein Strom. Der WLAN-Access-Point steckt per Kabel im Hausnetz. So erreicht der WLAN-Verkehr des Bildschirmrechners Home Assistant."
+      }
+    },
+    "e_switch_surge": {
+      "en": {
+        "label": "PoE: data + power",
+        "carries": "Short patch cable from the switch's PoE port into the surge protector (it diverts lightning surges to earth). PoE (Power over Ethernet) puts data and about 48 V on one cable. PoE is switched on for this port."
+      },
+      "de": {
+        "label": "PoE: Daten + Strom",
+        "carries": "Kurzes Patchkabel vom PoE-Port des Switches in den Überspannungsschutz (leitet Überspannung durch Blitz zur Erde ab). PoE (Power over Ethernet) bringt Daten und etwa 48 V über ein Kabel. PoE ist hier eingeschaltet."
+      }
+    },
+    "e_surge_earth": {
+      "en": {
+        "label": "Earth wire",
+        "carries": "Earth wire from the surge protector's earth screw to the house's protective earth (the bonding bar). Current flows here only during a lightning surge. Without it the protector does nothing. Electrician's job."
+      },
+      "de": {
+        "label": "Erdungsleitung",
+        "carries": "Erdungsleitung von der Erdungsschraube des Überspannungsschutzes zur Potentialausgleichsschiene (Schutzerde des Hauses). Strom fließt nur bei Blitzüberspannungen. Ohne sie wirkt der Schutz nicht. Sache des Elektrikers."
+      }
+    },
+    "e_surge_cable": {
+      "en": {
+        "label": "To outdoor cable",
+        "carries": "The outdoor cable's moulded plug goes into the protector's outdoor-side port. From here PoE (data plus about 48 V power on one cable) runs about 10 m through the wall to the box."
+      },
+      "de": {
+        "label": "Zum Außenkabel",
+        "carries": "Der angespritzte Stecker des Außenkabels steckt im außenseitigen Port des Überspannungsschutzes. Ab hier läuft PoE (Daten und etwa 48 V auf einem Kabel) rund 10 m durch die Wand zum Kasten."
+      }
+    },
+    "e_cable_gland": {
+      "en": {
+        "label": "Through the gland",
+        "carries": "PoE (data plus about 48 V) enters the box through a split cable gland, a sealed cable entry that opens. The plug passes the opened gland, then the slit insert closes watertight around the cable."
+      },
+      "de": {
+        "label": "Kabelverschraubung",
+        "carries": "PoE (Daten und etwa 48 V) kommt durch eine teilbare Kabelverschraubung (dichte Kabeleinführung) in den Kasten. Der Stecker passt durch die geöffnete Verschraubung, dann schließt der geschlitzte Einsatz dicht ums Kabel."
+      }
+    },
+    "e_gland_splitter": {
+      "en": {
+        "label": "Into the splitter",
+        "carries": "Inside the box the cable's plug goes into the PoE IN socket of the splitter, the part that separates data from power. About 48 V and the network data arrive here on the same cable."
+      },
+      "de": {
+        "label": "In den Splitter",
+        "carries": "Im Kasten steckt der Stecker des Kabels im Eingang PoE IN des Splitters, der Daten und Versorgung trennt. Hier kommen etwa 48 V und die Netzwerkdaten auf demselben Kabel an."
+      }
+    },
+    "e_splitter_pololu": {
+      "en": {
+        "label": "12 V to converter",
+        "carries": "12 V DC (direct current) from the splitter into the step-down converter, which makes 5 V. The barrel plug goes into a screw-terminal adapter: find the plus terminal with a meter. 12 V or 5 V splitter: not decided yet."
+      },
+      "de": {
+        "label": "12 V zum Wandler",
+        "carries": "12 V Gleichspannung vom Splitter zum Abwärtswandler, der 5 V daraus macht. Hohlstecker in einen Schraubklemmen-Adapter; mit dem Messgerät die Plus-Klemme bestimmen. Splitter mit 12 V oder 5 V: noch nicht entschieden."
+      }
+    },
+    "e_splitter_fuse": {
+      "en": {
+        "label": "12 V to heater loop",
+        "carries": "12 V also goes straight into the heater loop via a lever connector (a tool-free clamp). First comes the thermal fuse, which cuts the heater for good if anything overheats. Heater voltage not decided yet."
+      },
+      "de": {
+        "label": "12 V zur Heizung",
+        "carries": "Die 12 V gehen über eine Hebelklemme (Klemme ohne Werkzeug) auch direkt in den Heizkreis. Zuerst kommt die Thermosicherung, die bei Überhitzung dauerhaft trennt. Heizspannung noch nicht entschieden."
+      }
+    },
+    "e_fuse_heater": {
+      "en": {
+        "label": "Fuse to heater",
+        "carries": "Heater current flows through the 73 °C thermal fuse, then the pad, in series (one after the other). Crimp it (press on a metal sleeve), or solder with pliers on the leg as a heat sink: soldering heat can blow the fuse."
+      },
+      "de": {
+        "label": "Sicherung zum Pad",
+        "carries": "Der Heizstrom fließt in Reihe (nacheinander) durch die 73-°C-Thermosicherung und das Heizpad. Crimpen (Metallhülse aufpressen) oder beim Löten eine Zange als Wärmeableiter ans Bein klemmen: Lötwärme kann sie auslösen."
+      }
+    },
+    "e_heater_mosfet": {
+      "en": {
+        "label": "Heater minus side",
+        "carries": "The heater's second lead is screwed into the switched minus terminal of the MOSFET module (an electronic switch). When the computer says 'heat', the module closes the path to ground (0 V)."
+      },
+      "de": {
+        "label": "Heizung, Minusseite",
+        "carries": "Das zweite Kabel der Heizung ist an der geschalteten Minusklemme des MOSFET-Moduls (elektronischer Schalter) verschraubt. Meldet der Rechner „heizen“, schließt das Modul den Weg zur Masse (0 V)."
+      }
+    },
+    "e_pololu_rail": {
+      "en": {
+        "label": "5 V to distribution",
+        "carries": "5 V from the step-down converter (it makes 5 V from 12 V) into the distribution terminals, screwed. From there the 5 V rail (the shared supply line) feeds every 5 V part in the box."
+      },
+      "de": {
+        "label": "5 V zur Verteilung",
+        "carries": "5 V vom Abwärtswandler (wandelt 12 V in 5 V) in die Verteilerklemmen, verschraubt. Von dort versorgt die 5-V-Schiene (gemeinsame Versorgungsleitung) alle 5-V-Teile im Kasten."
+      }
+    },
+    "e_rail_ws": {
+      "en": {
+        "label": "5 V to talk computer",
+        "carries": "5 V into the talk computer's supply input. Which pin depends on the board, which is being re-decided."
+      },
+      "de": {
+        "label": "5 V zum Sprechrechner",
+        "carries": "5 V an den Versorgungseingang des Sprechrechners. Welcher Pin, hängt von der Platine ab, die neu entschieden wird."
+      }
+    },
+    "e_rail_lilygo": {
+      "en": {
+        "label": "5 V to screen",
+        "carries": "5 V and ground (0 V) to the screen computer by a USB-C power lead or into its VBUS pin (the USB 5 V line). On VBUS, never plug USB-C into a PC while the box is powered. Data goes by WiFi."
+      },
+      "de": {
+        "label": "5 V zum Bildschirm",
+        "carries": "5 V und Masse (0 V) zum Bildschirmrechner, über ein USB-C-Stromkabel oder an seinen VBUS-Pin (USB-5-V-Leitung). Bei VBUS nie USB-C an einen PC stecken, solange der Kasten Strom hat. Daten laufen über WLAN."
+      }
+    },
+    "e_rail_amp": {
+      "en": {
+        "label": "5 V to amplifier",
+        "carries": "5 V soldered to the amplifier's Vin (supply input). Two capacitors (charge stores that smooth the supply), 10 µF and 0.1 µF, sit at its pins against crackling. The 10 µF is polarised, stripe to ground; still to buy."
+      },
+      "de": {
+        "label": "5 V zum Verstärker",
+        "carries": "5 V an Vin (Versorgungseingang) des Verstärkers, gelötet. An den Pins sitzen gegen Knistern zwei Kondensatoren (glätten die Versorgung), 10 µF und 0,1 µF. Der 10-µF-Elko ist gepolt, Markierung an Masse; noch zu kaufen."
+      }
+    },
+    "e_rail_shifter": {
+      "en": {
+        "label": "5 V to level shifter",
+        "carries": "5 V supply, soldered, for the level shifter chip (it raises the 3.3 V LED data signal to the 5 V the strip expects). The chip sits on a small perfboard."
+      },
+      "de": {
+        "label": "5 V zum Pegelwandler",
+        "carries": "5-V-Versorgung, gelötet, für den Pegelwandler-Chip (hebt das 3,3-V-Datensignal der LEDs auf die 5 V, die der Streifen erwartet). Der Chip sitzt auf einer kleinen Lochrasterplatine."
+      }
+    },
+    "e_rail_ledcap": {
+      "en": {
+        "label": "5 V to LED strip",
+        "carries": "5 V and ground (0 V), soldered, towards the LED strip. A 1000 µF electrolytic capacitor (a charge store) sits across +5 V and ground at the strip and absorbs the switch-on surge. Its stripe marks minus."
+      },
+      "de": {
+        "label": "5 V zum LED-Streifen",
+        "carries": "5 V und Masse (0 V), gelötet, zum LED-Streifen. Am Streifen liegt ein 1000-µF-Elko (Elektrolytkondensator, Ladungsspeicher) zwischen +5 V und Masse und fängt den Einschaltstrom ab. Die Markierung am Elko zeigt Minus."
+      }
+    },
+    "e_ledcap_led": {
+      "en": {
+        "label": "Strip power pads",
+        "carries": "5 V and ground (0 V) soldered to the strip's +5V and GND pads (solder spots) at the end where the arrow starts. The 1000 µF capacitor sits here."
+      },
+      "de": {
+        "label": "LED-Versorgung",
+        "carries": "5 V und Masse (0 V) sind an die Lötpads +5V und GND des Streifens gelötet, an dem Ende, an dem der Pfeil beginnt. Der 1000-µF-Kondensator sitzt hier."
+      }
+    },
+    "e_gnd_pololu": {
+      "en": {
+        "label": "Converter ground",
+        "carries": "The converter's ground (0 V, the shared return path for current) is screwed to the common ground point, where every ground in the box meets."
+      },
+      "de": {
+        "label": "Masse des Wandlers",
+        "carries": "Die Masse (0 V, gemeinsamer Rückweg des Stroms) des Wandlers ist am gemeinsamen Massepunkt verschraubt, an dem sich alle Massen im Kasten treffen."
+      }
+    },
+    "e_gnd_ws": {
+      "en": {
+        "label": "Talk computer ground",
+        "carries": "A ground pin (0 V) on the talk computer's pin header (its row of connection pins) goes to the common ground point. The board's current returns this way, and its signals are measured against it."
+      },
+      "de": {
+        "label": "Masse Sprechrechner",
+        "carries": "Ein Massepin (0 V) an der Stiftleiste (Anschlusspinreihe) des Sprechrechners führt zum gemeinsamen Massepunkt. Darüber fließt der Strom der Platine zurück, und ihre Signale beziehen sich darauf."
+      }
+    },
+    "e_gnd_lilygo": {
+      "en": {
+        "label": "Screen ground",
+        "carries": "Ground (0 V, the return path for current) of the screen computer. It runs in its USB-C power lead next to the 5 V and ends at the common ground point."
+      },
+      "de": {
+        "label": "Masse Bildschirm",
+        "carries": "Masse (0 V, Rückweg des Stroms) des Bildschirmrechners. Sie läuft im USB-C-Stromkabel neben den 5 V und endet am gemeinsamen Massepunkt."
+      }
+    },
+    "e_gnd_mosfet": {
+      "en": {
+        "label": "Heater return",
+        "carries": "The heater switch (a MOSFET module) sends the heater current back to ground (0 V) through a screw terminal. Its signal side also needs the computer's ground."
+      },
+      "de": {
+        "label": "Rückweg Heizung",
+        "carries": "Der Heizungsschalter (MOSFET-Modul) führt den Heizstrom über eine Schraubklemme zurück zur Masse (0 V). Auch seine Signalseite braucht die Masse des Rechners."
+      }
+    },
+    "e_gnd_splitter": {
+      "en": {
+        "label": "Splitter minus",
+        "carries": "The minus side of the splitter's DC (direct current) output is screwed to the common ground point. That makes it the ground reference (0 V) for everything in the box. Confirm which terminal is minus with a meter first."
+      },
+      "de": {
+        "label": "Minus des Splitters",
+        "carries": "Der Minuspol am Gleichspannungsausgang des Splitters ist am gemeinsamen Massepunkt verschraubt. Damit ist er die Bezugsmasse (0 V) für alles im Kasten. Vorher mit dem Messgerät prüfen, welche Klemme Minus ist."
+      }
+    },
+    "e_ws_mic_3v3": {
+      "en": {
+        "label": "3.3 V to microphone",
+        "carries": "3.3 V and ground (0 V) for the digital microphone, taken from the talk computer's pin header (its row of connection pins). This 3.3 V is made on the board from its 5 V."
+      },
+      "de": {
+        "label": "3,3 V zum Mikrofon",
+        "carries": "3,3 V und Masse (0 V) für das digitale Mikrofon, abgegriffen an der Stiftleiste (Anschlusspinreihe) des Sprechrechners. Diese 3,3 V erzeugt die Platine aus ihren 5 V."
+      }
+    },
+    "e_ws_amp_i2s": {
+      "en": {
+        "label": "I2S audio to amp",
+        "carries": "Digital audio on I2S (a three-wire audio bus): BCLK (bit clock), LRC (word clock) and DIN (data), from the talk computer to the amplifier over header pins (plug-in pin rows). Pins not chosen yet."
+      },
+      "de": {
+        "label": "I2S zum Verstärker",
+        "carries": "Digitaler Ton über I2S (ein dreiadriger Audiobus): BCLK (Bittakt), LRC (Worttakt) und DIN (Daten), vom Sprechrechner zum Verstärker über Stiftleisten. Die Pins sind noch nicht festgelegt."
+      }
+    },
+    "e_mic_ws_i2s": {
+      "en": {
+        "label": "I2S audio from mic",
+        "carries": "Digital audio on I2S (a three-wire audio bus). The talk computer drives SCK (clock) and WS (word select); the microphone answers with audio on SD (data). Attached by header pins (plug-in pin rows); pins not chosen yet."
+      },
+      "de": {
+        "label": "I2S vom Mikrofon",
+        "carries": "Digitaler Ton über I2S (ein dreiadriger Audiobus). Der Sprechrechner gibt SCK (Takt) und WS (Wortauswahl) vor, das Mikrofon liefert den Ton auf SD (Daten). Über Stiftleisten, die Pins sind noch nicht festgelegt."
+      }
+    },
+    "e_amp_speaker": {
+      "en": {
+        "label": "Speaker wires",
+        "carries": "Amplified audio on two wires, screwed into the amplifier's screw terminal and soldered to the speaker's lugs (solder tabs). Both wires carry signal and neither is ground (0 V), so never connect either to ground."
+      },
+      "de": {
+        "label": "Lautsprecherkabel",
+        "carries": "Verstärkter Ton auf zwei Adern: am Verstärker in die Schraubklemme, am Lautsprecher an die Lötfahnen gelötet. Beide Adern führen Signal, keine ist Masse (0 V). Deshalb keine davon mit Masse verbinden."
+      }
+    },
+    "e_shifter_led": {
+      "en": {
+        "label": "LED data, 5 V",
+        "carries": "The same LED data, now at 5 V, runs through the 330 Ω resistor into the strip's DIN pad (the data-in solder pad). DIN is at the end the printed arrows point away from."
+      },
+      "de": {
+        "label": "LED-Daten, 5 V",
+        "carries": "Dieselben LED-Daten, jetzt mit 5 V, laufen über den 330-Ω-Widerstand zum DIN-Pad des Streifens (Lötfläche für den Dateneingang). DIN liegt an dem Ende, von dem die aufgedruckten Pfeile wegzeigen."
+      }
+    },
+    "e_button_line": {
+      "en": {
+        "label": "Button line",
+        "carries": "Two soldered wires from the button to the line circuit. The 10 kΩ end-of-line resistor across the button's contacts lets the computer tell a cut wire (about 3.1 to 3.3 V) from idle (about 1.73 V). Pressed: about 0.30 V."
+      },
+      "de": {
+        "label": "Klingelleitung",
+        "carries": "Zwei gelötete Adern vom Taster zur Tasterschaltung. Mit dem 10-kΩ-Abschlusswiderstand über den Tasterkontakten unterscheidet der Rechner einen Drahtbruch (etwa 3,1–3,3 V) von Ruhe (etwa 1,73 V). Gedrückt: etwa 0,30 V."
+      }
+    },
+    "e_lilygo_ap": {
+      "en": {
+        "label": "Screen WiFi",
+        "carries": "The screen computer's radio link to the house WiFi access point, about a metre away. WiFi for the screen is a locked decision. The signal strength inside the box behind the brass is still to be tested on site."
+      },
+      "de": {
+        "label": "WLAN Bildschirm",
+        "carries": "Die Funkverbindung des Bildschirmrechners zum WLAN-Access-Point im Haus, etwa einen Meter entfernt. WLAN für den Bildschirm ist fest entschieden. Wie stark das Signal hinter dem Messing ist, wird noch vor Ort getestet."
+      }
+    },
+    "e_ws_ha": {
+      "en": {
+        "label": "Talk link",
+        "carries": "The talk computer's connection to Home Assistant over WiFi: the ESPHome API plus the call itself (speech both ways, passed on by Home Assistant to your phone). A call only ever starts after a visitor presses the button; auto-answer stays off."
+      },
+      "de": {
+        "label": "Sprechverbindung",
+        "carries": "Die Verbindung des Sprechrechners zu Home Assistant per WLAN: die ESPHome-API und das Gespräch selbst (Sprache in beide Richtungen, von Home Assistant an dein Handy weitergegeben). Ein Gespräch beginnt nur, nachdem jemand den Taster gedrückt hat; automatisches Annehmen bleibt aus."
+      }
+    },
+    "e_ha_lilygo": {
+      "en": {
+        "label": "Screen content",
+        "carries": "Home Assistant tells the screen computer what to show, and touch events travel back the same way. Runs as an ESPHome connection over WiFi."
+      },
+      "de": {
+        "label": "Bildschirminhalt",
+        "carries": "Home Assistant schickt dem Bildschirmrechner, was er anzeigen soll. Berührungen am Touchscreen gehen denselben Weg zurück. Läuft als ESPHome-Verbindung über WLAN."
+      }
+    },
+    "e_ha_phone": {
+      "en": {
+        "label": "Ring notification",
+        "carries": "A push notification through the Home Assistant companion app on the loud 'Klingel' (doorbell) channel. High priority and ttl 0 ask for immediate delivery, target under 1 s. A silence toggle switches to a quiet channel."
+      },
+      "de": {
+        "label": "Klingel-Push",
+        "carries": "Push-Benachrichtigung über die Companion-App von Home Assistant im lauten Kanal „Klingel“. Hohe Priorität und ttl 0 fordern sofortige Zustellung (Ziel unter 1 s). Ein Stummschalter wechselt auf einen leisen Kanal."
+      }
+    },
+    "e_ha_speakers": {
+      "en": {
+        "label": "Chime (planned)",
+        "carries": "Planned: on a ring, Home Assistant plays the doorbell chime on the house WiFi speakers. The speakers themselves are also still planned."
+      },
+      "de": {
+        "label": "Gong (geplant)",
+        "carries": "Geplant: Bei einem Klingeln spielt Home Assistant den Gong auf den WLAN-Lautsprechern im Haus. Die Lautsprecher selbst sind ebenfalls erst geplant."
+      }
+    },
+    "e_ws_transcribe": {
+      "en": {
+        "label": "Recording (planned)",
+        "carries": "Planned: a visitor's recorded voice message goes to the local n8n + Whisper pipeline (speech-to-text) on the home server. Recording starts only after a visitor action and is announced on the screen."
+      },
+      "de": {
+        "label": "Aufnahme (geplant)",
+        "carries": "Geplant: Eine aufgenommene Sprachnachricht des Besuchers geht an die lokale n8n- und Whisper-Pipeline (Sprache zu Text) auf dem Heimserver. Aufnahme nur nach einer Aktion des Besuchers und mit Hinweis auf dem Bildschirm."
+      }
+    },
+    "e_transcribe_telegram": {
+      "en": {
+        "label": "Telegram (planned)",
+        "carries": "Planned: after the transcription at home, a Telegram bot sends the audio together with its transcript. From here on the audio passes through Telegram's servers."
+      },
+      "de": {
+        "label": "Telegram (geplant)",
+        "carries": "Geplant: Nach der Umwandlung in Text, die zu Hause läuft, schickt ein Telegram-Bot die Aufnahme samt Abschrift. Ab hier läuft der Ton über die Server von Telegram."
+      }
+    },
+    "e_telegram_phone": {
+      "en": {
+        "label": "Messages (planned)",
+        "carries": "Planned: the voice message and its transcript arrive in Telegram on your phone. A voice note you send back travels the other way and is played through the door speaker."
+      },
+      "de": {
+        "label": "Nachricht (geplant)",
+        "carries": "Geplant: Sprachnachricht und Abschrift kommen in Telegram auf deinem Handy an. Eine Sprachnachricht als Antwort nimmt den umgekehrten Weg und wird am Türlautsprecher abgespielt."
+      }
+    },
+    "e_ha_ws_play": {
+      "en": {
+        "label": "Playback (planned)",
+        "carries": "Planned: Home Assistant sends a reply or an announcement to the talk computer, which plays it through the door speaker. On the door side this uses the ESPHome media player."
+      },
+      "de": {
+        "label": "Wiedergabe (geplant)",
+        "carries": "Geplant: Home Assistant schickt eine Antwort oder Durchsage an den Sprechrechner, der sie über den Türlautsprecher abspielt. Auf der Türseite übernimmt das der Media Player von ESPHome."
+      }
+    },
+    "e_ws_app": {
+      "en": {
+        "label": "Live talk (planned)",
+        "carries": "Planned for later: a live push-to-talk stream (you talk while you hold a control) from the door microphone to a relay (a server that forwards it), possibly in the family app. One direction at a time."
+      },
+      "de": {
+        "label": "Live-Ton (geplant)",
+        "carries": "Für später geplant: ein Live-Tonstrom per Push-to-Talk (sprechen, solange man drückt) vom Türmikrofon zu einem Relay (ein Server, der ihn weiterleitet), eventuell in der Familien-App. Immer nur in eine Richtung."
+      }
+    },
+    "e_app_speakers": {
+      "en": {
+        "label": "Live voice (planned)",
+        "carries": "Planned for later: the relay plays the visitor's voice live on the house speakers. The relay and the speakers are both still planned."
+      },
+      "de": {
+        "label": "Stimme (geplant)",
+        "carries": "Für später geplant: Das Relay spielt die Stimme des Besuchers live auf den Lautsprechern im Haus ab. Relay und Lautsprecher sind beide erst geplant."
+      }
+    },
+    "e_app_ha": {
+      "en": {
+        "label": "App API (planned)",
+        "carries": "Planned for later: the self-hosted family app offers Home Assistant an API for status and control. Home Assistant stays the automation hub."
+      },
+      "de": {
+        "label": "App-API (geplant)",
+        "carries": "Für später geplant: Die selbst gehostete Familien-App bietet Home Assistant eine API für Status und Steuerung. Die Automationen bleiben in Home Assistant."
+      }
+    },
+    "e_speaker_grille": {
+      "en": {
+        "label": "Behind the grille",
+        "carries": "The speaker is fixed with 4 screws to the box's front wall behind the grille and sealed against it. Sound leaves through the slanted slots. The space in front of the speaker counts as outside air."
+      },
+      "de": {
+        "label": "Hinter dem Gitter",
+        "carries": "Der Lautsprecher ist mit 4 Schrauben hinter dem Gitter an die Vorderwand des Kastens geschraubt und dagegen abgedichtet. Der Schall tritt durch die Schrägschlitze aus. Der Raum davor zählt als Außenluft."
+      }
+    },
+    "e_vent_grille": {
+      "en": {
+        "label": "Vent into cavity",
+        "carries": "The pressure vent (it lets air through and keeps water out) breathes into the cavity behind the grille. The box is buried in the wall, so this cavity is the only place with outside air."
+      },
+      "de": {
+        "label": "Druckausgleich",
+        "carries": "Das Druckausgleichselement (lässt Luft durch, hält Wasser draußen) atmet in den Hohlraum hinter dem Gitter. Der Kasten sitzt in der Wand, nur dieser Hohlraum hat Außenluft."
+      }
+    },
+    "e_lilygo_window": {
+      "en": {
+        "label": "Behind the window",
+        "carries": "The screen sits behind the display window with a soft gasket (a compressible seal) around it. The panel is thin glass (0.872 mm), so a hard O-ring (rubber sealing ring) is ruled out."
+      },
+      "de": {
+        "label": "Hinter dem Fenster",
+        "carries": "Der Bildschirm sitzt hinter dem Fenster, rundum mit einer weichen Dichtung. Das Panel ist dünnes Glas (0,872 mm), ein harter O-Ring (Gummidichtring) kommt deshalb nicht in Frage."
+      }
+    },
+    "e_heater_lilygo": {
+      "en": {
+        "label": "Heater on screen",
+        "carries": "The heater pad is fixed to the back of the screen with thermally conductive tape (tape that passes heat well). It keeps the e-paper panel, rated only 0 to +50 °C, warm when the box drops to -15 °C."
+      },
+      "de": {
+        "label": "Pad am Bildschirm",
+        "carries": "Das Heizpad klebt mit wärmeleitendem Klebeband auf der Rückseite des Bildschirms. Es hält das E-Paper-Panel, das nur für 0 bis +50 °C freigegeben ist, warm, wenn der Kasten auf −15 °C abkühlt."
+      }
+    },
+    "e_mic_membrane": {
+      "en": {
+        "label": "Mic behind membrane",
+        "carries": "The microphone sits behind the membrane with the smallest possible air gap. Its labelled side carries the sound hole and faces forward."
+      },
+      "de": {
+        "label": "Mikrofon an Membran",
+        "carries": "Das Mikrofon sitzt hinter der Membran, mit möglichst kleinem Luftspalt. Die beschriftete Seite trägt das Schallloch und zeigt nach vorn."
+      }
+    },
+    "e_membrane_holes": {
+      "en": {
+        "label": "Over the mic holes",
+        "carries": "The self-adhesive PTFE membrane is stuck behind the brass over the two 1.2 mm mic holes; sound passes, water does not. How it covers both holes, 8 mm apart, is not solved yet. Voice quality: bench test pending."
+      },
+      "de": {
+        "label": "Über Mikrofonlöchern",
+        "carries": "Die selbstklebende PTFE-Membran klebt hinten auf dem Messing über den zwei Mikrofonlöchern (1,2 mm). Schall kommt durch, Wasser nicht. Wie sie beide Löcher (8 mm Abstand) abdeckt, ist noch offen; Tischtest steht aus."
+      }
+    },
+    "e_led_diffusor": {
+      "en": {
+        "label": "Strip in diffuser",
+        "carries": "The LED strip lies inside the printed diffuser (a cover that spreads the light evenly). Its cable enters through a window in the brass bend."
+      },
+      "de": {
+        "label": "Streifen im Diffusor",
+        "carries": "Der LED-Streifen liegt im gedruckten Diffusor (eine Abdeckung, die das Licht gleichmäßig verteilt). Sein Kabel kommt durch ein Fenster in der Kantung des Messingblechs."
+      }
+    },
+    "e_gasket_brass": {
+      "en": {
+        "label": "Rim seal",
+        "carries": "The brass front presses on the 2.0 mm gasket cord (a sealing cord) in a groove of the box rim. This seals the box against rain."
+      },
+      "de": {
+        "label": "Randdichtung",
+        "carries": "Die Messingfront drückt auf die Dichtschnur (2,0 mm) in der Nut am Kastenrand. So ist der Kasten gegen Regen dicht."
+      }
+    },
+    "e_button_brass": {
+      "en": {
+        "label": "Button in the front",
+        "carries": "The button's 48.5 mm ring sits recessed in the brass front, with an O-ring (a rubber sealing ring) behind it that seals it. Size 26 × 2 mm."
+      },
+      "de": {
+        "label": "Taster in der Front",
+        "carries": "Der Ring des Tasters (48,5 mm) sitzt vertieft in der Messingfront, dahinter dichtet ein O-Ring (Gummidichtring) ab. Größe 26 × 2 mm."
+      }
+    },
+    "e_splitter_wt32": {
+      "en": {
+        "label": "Data only",
+        "carries": "Short patch cable, 15–25 cm, from the splitter's data port into the doorbell computer's RJ45 socket (the standard network jack). Network data only: the power has already been split off."
+      },
+      "de": {
+        "label": "Nur Daten",
+        "carries": "Kurzes Patchkabel, 15–25 cm, vom Datenport des Splitters in die RJ45-Buchse (normale Netzwerkbuchse) des Klingelrechners. Nur Netzwerkdaten, die Versorgung ist hier schon abgetrennt."
+      }
+    },
+    "e_wt32_bme_3v3": {
+      "en": {
+        "label": "3.3 V to sensor",
+        "carries": "3.3 V and ground (0 V) for the climate sensor, from the doorbell computer's pin header (its row of connection pins). The board makes this 3.3 V from its own 5 V."
+      },
+      "de": {
+        "label": "3,3 V zum Sensor",
+        "carries": "3,3 V und Masse (0 V) für den Klimasensor, von der Stiftleiste (Anschlusspinreihe) des Klingelrechners. Die Platine erzeugt diese 3,3 V selbst aus ihren 5 V."
+      }
+    },
+    "e_wt32_bme_i2c": {
+      "en": {
+        "label": "I2C sensor bus",
+        "carries": "Two wires of the I2C bus (a slow two-wire chip bus) on header pins: SDA carries data, SCL the clock. The sensor reports box temperature and humidity this way. Pins not chosen yet."
+      },
+      "de": {
+        "label": "I2C-Sensorbus",
+        "carries": "Zwei Adern des I2C-Busses (langsamer Zweidraht-Bus zwischen Chips) an der Stiftleiste: SDA für Daten, SCL für den Takt. So meldet der Sensor Temperatur und Feuchte im Kasten. Pins noch nicht festgelegt."
+      }
+    },
+    "e_wt32_line_3v3": {
+      "en": {
+        "label": "3.3 V for pull-up",
+        "carries": "3.3 V, soldered, for the 10 kΩ pull-up (a resistor that holds the line at a known voltage) of the button line. Without it the input floats (drifts freely) and reports phantom rings."
+      },
+      "de": {
+        "label": "3,3 V für Pull-up",
+        "carries": "3,3 V, gelötet, für den 10-kΩ-Pull-up (ein Widerstand, der die Leitung auf einer bekannten Spannung hält) der Klingelleitung. Ohne ihn hängt der Eingang in der Luft und meldet Phantom-Klingeln."
+      }
+    },
+    "e_line_wt32": {
+      "en": {
+        "label": "Line voltage",
+        "carries": "The measured line voltage goes to IO1, an analog pin on ADC1 (one of the chip's two voltage-measuring units), tested on the bench. The chip's own pull-up is on too, so a loose signal wire reads as a cut line, not as a press."
+      },
+      "de": {
+        "label": "Leitungsspannung",
+        "carries": "Die gemessene Leitungsspannung geht an IO1, einen Analogpin von ADC1 (einer der zwei Spannungsmesser im Chip), auf dem Tisch getestet. Der chipeigene Pull-up ist zusätzlich an: Ein loses Signalkabel sieht deshalb wie eine unterbrochene Leitung aus, nicht wie ein Druck."
+      }
+    },
+    "e_wt32_shifter": {
+      "en": {
+        "label": "LED data, 3.3 V",
+        "carries": "The colour data for the LED strip as a 3.3 V signal from one main-computer pin to the level shifter (a chip that raises the signal to 5 V). Attached by a header pin; which pin is not chosen yet."
+      },
+      "de": {
+        "label": "LED-Daten, 3,3 V",
+        "carries": "Die Farbdaten für den LED-Streifen als 3,3-V-Signal von einem Pin des Klingelrechners zum Pegelwandler (ein Chip, der das Signal auf 5 V anhebt). Über Stiftleiste, der Pin ist noch nicht festgelegt."
+      }
+    },
+    "e_wt32_mosfet": {
+      "en": {
+        "label": "Heater on/off",
+        "carries": "One header pin switches the heater via the module's signal input, which lights the LED in the optocoupler (a switch coupled by light). A pull-down (a resistor holding the line at 0 V) keeps the heater off during boot."
+      },
+      "de": {
+        "label": "Heizung ein/aus",
+        "carries": "Ein Pin schaltet die Heizung: Er lässt die LED im Optokoppler (Schalter, der über Licht koppelt) am Signaleingang leuchten. Ein Pull-down (Widerstand, der die Leitung auf 0 V zieht) hält die Heizung beim Booten aus."
+      }
+    },
+    "e_wt32_ha": {
+      "en": {
+        "label": "ESPHome API",
+        "carries": "The encrypted ESPHome API connection from the doorbell computer to Home Assistant, over the one cable and the house network. The ring event goes out first, before any local feedback at the door."
+      },
+      "de": {
+        "label": "ESPHome-API",
+        "carries": "Die verschlüsselte ESPHome-API-Verbindung vom Klingelrechner zu Home Assistant, über das eine Kabel und das Hausnetz. Das Klingelereignis wird zuerst gesendet, noch vor jeder Rückmeldung an der Tür."
+      }
+    },
+    "e_rail_wt32": {
+      "en": {
+        "label": "5 V to doorbell computer",
+        "carries": "5 V into the doorbell computer's VSYS pin (its supply input on the pin row), or from its own PoE module if that powers the box. Check with a meter before the first power-up."
+      },
+      "de": {
+        "label": "5 V zum Klingelrechner",
+        "carries": "5 V an den VSYS-Pin (Versorgungseingang an der Stiftleiste) des Klingelrechners, oder aus seinem eigenen PoE-Modul, falls das den Kasten versorgt. Vor dem ersten Einschalten nachmessen."
+      }
+    },
+    "e_gnd_wt32": {
+      "en": {
+        "label": "Doorbell computer ground",
+        "carries": "A ground pin (0 V) of the doorbell computer to the common ground point. The button line gets its own return wire to this board's GND pin, away from the heater and LED currents."
+      },
+      "de": {
+        "label": "Masse Klingelrechner",
+        "carries": "Ein Massepin (0 V) des Klingelrechners zum gemeinsamen Massepunkt. Die Klingelleitung bekommt einen eigenen Rückleiter an den GND-Pin dieser Platine, getrennt von den Strömen der Heizung und der LEDs."
+      }
+    },
+    "e_ws_ap": {
+      "en": {
+        "label": "WiFi of the talk computer",
+        "carries": "The talk computer's radio link to the access point. If calls over WiFi fail the test inside the box, a small cold-rated switch in the box can give it a cable instead."
+      },
+      "de": {
+        "label": "WLAN des Sprechrechners",
+        "carries": "Die Funkverbindung des Sprechrechners zum Access Point. Fallen Gespräche per WLAN beim Test im Kasten durch, kann ihm ein kleiner kältefester Switch im Kasten stattdessen ein Kabel geben."
+      }
+    }
+  },
+  "tours": {
+    "ring": {
+      "en": {
+        "title": "Someone rings the doorbell",
+        "steps": [
+          "A visitor presses the brass button. Its contacts close and bypass the 10 kΩ resistor soldered across them, so the voltage on the button line falls from about 2.0 V to about 0.4 V.",
+          "The doorbell computer reads the line voltage every millisecond on an analog input (a pin that measures voltage). Below 1.30 V counts as pressed, and only above 1.60 V as released again, so a wobbly contact still counts once.",
+          "First, ESPHome (the firmware on the doorbell computer) sends the ring event to Home Assistant. It travels over the one network cable: splitter, outdoor cable, surge protector, switch, house network.",
+          "Home Assistant pushes a notification to your phone on a loud channel, with a target of under 1 second. A silence toggle switches to a quiet channel. Planned: a chime on the house speakers.",
+          "Only then comes feedback at the door: the LED strip flashes via the level shifter (a chip that raises the 3.3 V data signal to 5 V), and Home Assistant changes the screen. Nothing on the ring path waits for this."
+        ]
+      },
+      "de": {
+        "title": "Jemand klingelt an der Tür",
+        "steps": [
+          "Jemand drückt den Messingtaster. Die Kontakte schließen und überbrücken den Widerstand (10 kΩ), der direkt am Taster sitzt. Die Spannung auf der Klingelleitung fällt von etwa 2,0 V auf etwa 0,4 V.",
+          "Der Klingelrechner misst die Leitungsspannung jede Millisekunde an einem Analogeingang (ein Pin, der Spannung misst). Unter 1,30 V gilt „gedrückt“, erst über 1,60 V wieder „losgelassen“. Ein wackeliger Kontakt zählt so trotzdem nur einmal.",
+          "Zuerst schickt ESPHome (die Firmware auf dem Klingelrechner) das Klingelereignis an Home Assistant. Der Weg führt über das eine Netzwerkkabel: Splitter, Außenkabel, Überspannungsschutz, Switch, Hausnetz.",
+          "Home Assistant schickt eine Push-Nachricht auf einem lauten Kanal an dein Handy; Ziel ist weniger als 1 Sekunde. Ein Stummschalter wechselt auf einen leisen Kanal. Geplant: ein Gong über die Hauslautsprecher.",
+          "Erst dann gibt es Rückmeldung an der Tür: Der LED-Streifen blinkt über den Pegelwandler (Chip, der das Datensignal von 3,3 V auf 5 V hebt), Home Assistant ändert den Bildschirminhalt. Der Klingelweg wartet nicht darauf."
+        ]
+      }
+    },
+    "power": {
+      "en": {
+        "title": "Where the power comes from",
+        "steps": [
+          "In the technical room, mains power (230 V) feeds the UPS (a battery-backed power supply), and the UPS feeds the network switch. A short power cut does not stop the doorbell.",
+          "The switch puts about 48 V onto the network cable next to the data (PoE, Power over Ethernet). The high voltage keeps the current small, so little is lost on the way through the surge protector and the wall.",
+          "In the box the PoE splitter separates power from data, shown here with 12 V out. A step-down converter (makes a lower voltage from a higher one) turns that into 5 V. 12 V or 5 V splitter: not decided yet.",
+          "Terminals split the 5 V to all three computers, the amplifier, the LED strip and the level shifter (a chip for the LED data). A 1000 µF capacitor (a charge store) at the strip absorbs the current spike at switch-on.",
+          "The doorbell and talk computers each make their own 3.3 V from the 5 V: the doorbell computer feeds the climate sensor and the pull-up (a resistor that holds the button line at a known voltage), the talk computer feeds the microphone.",
+          "The heater pad runs straight from the 12 V, through a 73 °C thermal fuse (it cuts the circuit for good if it overheats). An electronic switch opens and closes the pad's minus side. Heater voltage: not decided yet.",
+          "Every ground (0 V, the shared return path for all currents) meets at one point in the terminals. Signals are measured against ground, so without this common point the parts could not read each other."
+        ]
+      },
+      "de": {
+        "title": "Woher der Strom kommt",
+        "steps": [
+          "Im Technikraum speist das Stromnetz (230 V) die USV (eine Stromversorgung mit Batterie), und diese speist den Netzwerk-Switch. Ein kurzer Stromausfall legt die Klingel nicht lahm.",
+          "Der Switch legt zusätzlich zu den Daten etwa 48 V auf das Netzwerkkabel (PoE, Power over Ethernet). Die hohe Spannung hält den Strom klein, daher geht auf dem Weg durch Überspannungsschutz und Wand wenig verloren.",
+          "Im Kasten trennt der PoE-Splitter Strom und Daten und liefert hier 12 V. Ein Abwärtswandler (macht aus höherer Spannung eine niedrigere) erzeugt daraus 5 V. 12 V oder 5 V am Splitter: noch nicht entschieden.",
+          "Verteilerklemmen geben die 5 V an alle drei Rechner, den Verstärker, den LED-Streifen und den Pegelwandler (Chip für die LED-Daten). Am Streifen fängt ein Kondensator (Ladungsspeicher, 1000 µF) den Einschaltstoß ab.",
+          "Klingel- und Sprechrechner erzeugen aus den 5 V jeweils selbst 3,3 V: Der Klingelrechner versorgt den Klimasensor und den Pull-up (ein Widerstand, der die Klingelleitung auf einer bekannten Spannung hält), der Sprechrechner das Mikrofon.",
+          "Das Heizpad hängt direkt an den 12 V, über eine Thermosicherung mit 73 °C (sie trennt bei Überhitzung dauerhaft). Ein elektronischer Schalter schaltet seine Minusseite. Die Heizspannung ist noch nicht entschieden.",
+          "Alle Masseleitungen (0 V, gemeinsamer Rückweg aller Ströme) treffen sich an einem Punkt. Signale werden gegen Masse gemessen; ohne diesen Punkt könnte kein Teil die Signale der anderen auswerten."
+        ]
+      }
+    },
+    "screen": {
+      "en": {
+        "title": "How the screen gets its content",
+        "steps": [
+          "Home Assistant decides what the screen shows: a greeting, a notice or a QR code. Later the content is planned to come from the family app.",
+          "The content travels over the house network to the WiFi access point, about a metre from the box, and from there by radio to the screen computer. Only the screen uses WiFi.",
+          "The screen computer draws the image on the e-paper panel (a display that needs power only to change the picture). The image then stays visible behind the window in the brass, even without power.",
+          "The panel senses touch. Each touch goes back the same way, from the screen computer over WiFi to Home Assistant."
+        ]
+      },
+      "de": {
+        "title": "Wie der Bildschirm seinen Inhalt bekommt",
+        "steps": [
+          "Home Assistant legt fest, was auf dem Bildschirm erscheint: ein Gruß, ein Hinweis oder ein QR-Code. Später soll der Inhalt aus der geplanten Familien-App kommen.",
+          "Der Inhalt läuft über das Hausnetz zum WLAN-Access-Point, etwa einen Meter vom Kasten entfernt, und von dort per Funk zum Bildschirmrechner. Nur der Bildschirm hängt im WLAN.",
+          "Der Bildschirmrechner zeichnet das Bild auf das E-Paper (ein Bildschirm, der nur zum Umschalten Strom braucht). Das Bild bleibt danach auch ohne Strom hinter dem Fenster im Messing sichtbar.",
+          "Das Panel erkennt Berührungen. Jede Berührung geht denselben Weg zurück, vom Bildschirmrechner über WLAN zu Home Assistant."
+        ]
+      }
+    },
+    "winter": {
+      "en": {
+        "title": "Keeping the screen warm in winter",
+        "steps": [
+          "The BME280 climate sensor measures temperature and humidity inside the box. It reports them to the doorbell computer over I2C (a slow two-wire bus between chips).",
+          "Below the set point the doorbell computer switches the heater on. Its pin only lights an LED in the switch module (optocoupler: a light link between two separate circuits), which then switches the heater current.",
+          "The pad on the back of the screen warms the panel, which is rated only from 0 to +50 °C. The firmware cuts off at about 40 °C. If anything still overheats, the 73 °C fuse cuts the heater for good.",
+          "Below about +2 °C the screen computer waits before it refreshes the image. Until then the e-paper (which holds an image without power) keeps showing the last one."
+        ]
+      },
+      "de": {
+        "title": "Den Bildschirm im Winter warm halten",
+        "steps": [
+          "Der Klimasensor BME280 misst Temperatur und Luftfeuchte im Kasten. Er meldet die Werte über I2C (ein langsamer Zweidraht-Bus zwischen Chips) an den Klingelrechner.",
+          "Unter dem Sollwert schaltet der Klingelrechner die Heizung ein. Sein Pin lässt nur eine LED im Schaltmodul leuchten (Optokoppler: eine Lichtstrecke zwischen zwei getrennten Kreisen), das Modul schaltet dann den Heizstrom.",
+          "Das Pad hinten am Bildschirm wärmt das Panel, das nur für 0 bis +50 °C ausgelegt ist. Die Firmware schaltet bei etwa 40 °C ab. Überhitzt trotzdem etwas, trennt die Thermosicherung (73 °C) die Heizung dauerhaft.",
+          "Unter etwa +2 °C wartet der Bildschirmrechner, bevor er das Bild neu aufbaut. Bis dahin zeigt das E-Paper (es hält ein Bild ohne Strom) weiter das letzte Bild."
+        ]
+      }
+    },
+    "light": {
+      "en": {
+        "title": "Light at dusk or when someone comes",
+        "steps": [
+          "Home Assistant decides when the light goes on: at dusk, or when the existing motion sensor at the door detects someone.",
+          "Home Assistant sends the command to the doorbell computer over the ESPHome connection (an encrypted link over the network cable).",
+          "The level shifter (a chip) raises the computer's 3.3 V data signal to the 5 V the strip expects. The diffuser (a cover that spreads light) under the brass roof blends the roughly 4 LEDs into one warm band."
+        ]
+      },
+      "de": {
+        "title": "Licht bei Dämmerung oder Bewegung",
+        "steps": [
+          "Home Assistant entscheidet, wann das Licht angeht: bei Dämmerung oder wenn der vorhandene Bewegungsmelder an der Tür jemanden erkennt.",
+          "Home Assistant schickt den Befehl über die ESPHome-Verbindung (verschlüsselt, über das Netzwerkkabel) an den Klingelrechner.",
+          "Der Pegelwandler (ein Chip) hebt das Datensignal von 3,3 V auf die 5 V, die der Streifen braucht. Der Diffusor (lichtstreuende Abdeckung) unter dem Messingdach fasst die etwa 4 LEDs zu einem warmen Lichtband zusammen."
+        ]
+      }
+    },
+    "voicemsg": {
+      "en": {
+        "title": "Leaving a voice message (planned)",
+        "steps": [
+          "Planned: the visitor taps 'leave a message' on the screen, and the screen announces that it is recording. Recording starts only after such a visitor action; the law requires this.",
+          "The microphone listens through two 1.2 mm holes in the brass and a membrane that lets sound through and keeps water out. It sends digital audio over I2S (a three-wire audio bus) to the talk computer.",
+          "The talk computer sends the recording to the transcription server in the house. There Whisper, a speech-to-text program, turns it into text, so the transcription stays at home.",
+          "A Telegram bot sends the audio and the transcript to your phone. From this point the audio passes through Telegram's servers on the internet."
+        ]
+      },
+      "de": {
+        "title": "Sprachnachricht hinterlassen (geplant)",
+        "steps": [
+          "Geplant: Wer vor der Tür steht, tippt auf dem Bildschirm auf „Nachricht hinterlassen“, und der Bildschirm kündigt die Aufnahme an. Aufgenommen wird nur nach so einer Aktion, das schreibt das Gesetz vor.",
+          "Das Mikrofon hört durch zwei Löcher von 1,2 mm im Messing und eine Membran, die Schall durchlässt und Wasser abhält. Es schickt digitales Audio über I2S (ein Audio-Bus mit drei Leitungen) an den Sprechrechner.",
+          "Der Sprechrechner schickt die Aufnahme an den Transkriptionsserver im Haus. Dort macht Whisper, ein Spracherkennungsprogramm, Text daraus. Die Umwandlung in Text bleibt also im Haus.",
+          "Ein Telegram-Bot schickt Audio und Text an dein Handy. Ab hier läuft die Aufnahme über die Server von Telegram im Internet."
+        ]
+      }
+    },
+    "reply": {
+      "en": {
+        "title": "Answering from your phone (planned)",
+        "steps": [
+          "Planned: you record a voice note on your phone and send it to the Telegram bot.",
+          "The automation (n8n, a workflow tool) on the home transcription server picks up the voice note and passes it to Home Assistant.",
+          "Home Assistant sends it to the talk computer, which plays it over I2S (a digital audio bus) into the amplifier. The amplifier, set to its lowest gain (amplification), drives the speaker behind the grille."
+        ]
+      },
+      "de": {
+        "title": "Vom Handy antworten (geplant)",
+        "steps": [
+          "Geplant: Du nimmst auf dem Handy eine Sprachnachricht auf und schickst sie an den Telegram-Bot.",
+          "Die Automatisierung (n8n, ein Workflow-Werkzeug) auf dem Transkriptionsserver im Haus holt die Sprachnachricht ab und gibt sie an Home Assistant weiter.",
+          "Home Assistant schickt sie an den Sprechrechner, der sie über I2S (ein digitaler Audio-Bus) an den Verstärker gibt. Der Verstärker steht auf der kleinsten Verstärkungsstufe und treibt den Lautsprecher hinter dem Gitter."
+        ]
+      }
+    },
+    "ptt": {
+      "en": {
+        "title": "Push-to-talk into the house (planned)",
+        "steps": [
+          "Planned: the screen shows 'hold here and speak'. The visitor keeps a finger on that field while talking.",
+          "While the field is held, the microphone streams digital audio to the talk computer. Letting go ends the stream.",
+          "A relay (a service that forwards the stream), possibly in the planned family app, plays the voice live on the house speakers. One direction at a time avoids the echo problem of a full phone call."
+        ]
+      },
+      "de": {
+        "title": "Live ins Haus sprechen (geplant)",
+        "steps": [
+          "Geplant: Auf dem Bildschirm steht „Hier halten und sprechen“. Wer vor der Tür steht, hält den Finger auf dieses Feld, solange er spricht.",
+          "Solange das Feld gehalten wird, streamt das Mikrofon digitales Audio zum Sprechrechner. Loslassen beendet den Stream.",
+          "Ein Relay (ein Dienst, der den Stream weiterleitet), eventuell Teil der geplanten Familien-App, spielt die Stimme live auf den Hauslautsprechern ab. Immer nur eine Richtung vermeidet das Echo beim Gegensprechen."
+        ]
+      }
+    },
+    "talk": {
+      "en": {
+        "title": "A conversation at the door (planned)",
+        "steps": [
+          "A visitor presses the button. The ring reaches Home Assistant exactly as always, from the doorbell computer over the cable; nothing about the call can delay or block it.",
+          "Home Assistant then starts a call to the talk computer over WiFi (VoIP Stack). The screen asks the visitor to wait a moment.",
+          "Your phone gets a notification with a talk button. Only tapping it answers; receiving it never opens a microphone.",
+          "Both sides talk as on a hands-free phone: the microphone behind the brass picks up the visitor, the speaker plays your voice. The LED colour and the screen show that the microphone is live.",
+          "If the echo cannot be tuned out, mute buttons turn it into walkie-talkie mode: one direction at a time."
+        ]
+      },
+      "de": {
+        "title": "Ein Gespräch an der Tür (geplant)",
+        "steps": [
+          "Jemand drückt den Taster. Das Klingeln erreicht Home Assistant wie immer, vom Klingelrechner über das Kabel; das Gespräch kann es weder verzögern noch blockieren.",
+          "Danach baut Home Assistant per WLAN ein Gespräch zum Sprechrechner auf (VoIP Stack). Der Bildschirm bittet den Besuch um einen Moment Geduld.",
+          "Dein Handy bekommt eine Benachrichtigung mit einer Sprechen-Taste. Nur ein Tipp darauf nimmt das Gespräch an; der Empfang allein öffnet nie ein Mikrofon.",
+          "Beide Seiten sprechen wie beim Freisprechen: Das Mikrofon hinter dem Messing hört den Besuch, der Lautsprecher spielt deine Stimme. LED-Farbe und Bildschirm zeigen an, dass das Mikrofon offen ist.",
+          "Lässt sich das Echo nicht wegstimmen, machen Stummschalter daraus Wechselsprechen: immer nur eine Richtung."
+        ]
+      }
+    }
+  },
+  "solder": {
+    "button": {
+      "en": {
+        "what": "Solder a 10 kΩ end-of-line resistor (a resistor at the far end of the line) straight across the button's two contacts. Then pull shrink tubing (a sleeve that tightens when heated) over it.",
+        "caution": "It must sit at the button, or a cut wire still reads as idle. The joint behind the button is the weak point for water: use shrink tubing with glue inside."
+      },
+      "de": {
+        "what": "Einen 10-kΩ-Abschlusswiderstand (Widerstand am fernen Ende der Leitung) direkt über die beiden Kontakte des Tasters löten. Danach Schrumpfschlauch (zieht sich bei Wärme zusammen) darüberziehen.",
+        "caution": "Er gehört an den Taster, sonst meldet ein Drahtbruch „Ruhe“. Hinter dem Taster liegt die Schwachstelle für Wasser: Schrumpfschlauch mit Kleber nehmen."
+      }
+    },
+    "linecircuit": {
+      "en": {
+        "what": "On perfboard (a board with a hole grid), copying the v1 breadboard (plug-in test board): 10 kΩ pull-up (holds the line at a known voltage) to 3.3 V, 1 kΩ in series with the line, 100 nF capacitor to ground.",
+        "caution": "Pull-up to 3.3 V, never 5 V: a cut wire would put 5 V on the input. Idle must read about 1.73 V. On v1 a resistor once sat in an unconnected row."
+      },
+      "de": {
+        "what": "Auf Lochraster (Platine mit Lochgitter), wie auf dem v1-Steckbrett (Testaufbau ohne Löten): 10-kΩ-Pull-up (hält die Leitung auf bekannter Spannung) nach 3,3 V, 1 kΩ in Reihe zur Leitung, 100-nF-Kondensator nach Masse.",
+        "caution": "Pull-up an 3,3 V, nie an 5 V: Ein Drahtbruch legte sonst 5 V an den Eingang. In Ruhe ca. 1,73 V messen. Auf v1 saß ein Widerstand in einer unverbundenen Reihe."
+      }
+    },
+    "shifter": {
+      "en": {
+        "what": "Put the level shifter chip (lifts 3.3 V LED data to 5 V) in a DIP-14 socket (plug-in holder) on perfboard (hole-grid board), 5 V supply. 330 Ω in the output line. Unused inputs and OE (output enable) pins to ground.",
+        "caution": "Mind the pin-1 mark (notch or dot) on chip and socket. Shifter, computer and strip need the same ground: the data signal is measured against it."
+      },
+      "de": {
+        "what": "Den Pegelwandler (hebt die 3,3-V-LED-Daten auf 5 V) in einen DIP-14-Sockel (Steckfassung) auf Lochraster setzen, Versorgung 5 V. 330 Ω in die Ausgangsleitung. Unbenutzte Eingänge und OE-Pins (Output Enable) auf Masse.",
+        "caution": "Pin-1-Markierung (Kerbe/Punkt) an Chip und Sockel beachten. Wandler, Klingelrechner und LED-Streifen brauchen dieselbe Masse, das Signal wird gegen sie gemessen."
+      }
+    },
+    "led": {
+      "en": {
+        "what": "Solder three wires to the +5V, DIN (data in) and GND solder pads at the end the arrows point away from. Put the 1000 µF capacitor (a small charge store) across +5 V and GND at the strip, stripe to minus.",
+        "caution": "Reversed, the capacitor can fail. The joints sit outside the sealed box, and a short circuit there takes down the 5 V of the whole box, so seal them."
+      },
+      "de": {
+        "what": "Drei Drähte an die Lötflächen +5V, DIN (Dateneingang) und GND an dem Ende, von dem die Pfeile wegzeigen. Den 1000-µF-Kondensator (kleiner Ladungsspeicher) am Streifen über +5 V und GND, markierte Seite an Minus.",
+        "caution": "Verpolt kann der Kondensator ausfallen. Die Lötstellen liegen außerhalb des Kastens und müssen dicht sein, sonst legt ein Kurzschluss die 5 V im Kasten lahm."
+      }
+    },
+    "amp": {
+      "en": {
+        "what": "Solder the 7-pin header (a row of pins) and the speaker screw terminal. Add a 100 kΩ resistor from GAIN to Vin (the supply pin): lowest gain (amplification), 3 dB. 10 µF (stripe to GND) + 0.1 µF across Vin and GND.",
+        "caution": "GAIN to ground gives 12 dB, louder than open. The amp can deliver 1.8 W, the speaker takes 1 W max: also cap the volume in firmware. Check the datasheet first."
+      },
+      "de": {
+        "what": "Die 7-polige Stiftleiste (Reihe von Pins) und die Lautsprecher-Schraubklemme einlöten. 100-kΩ-Widerstand von GAIN nach Vin (Versorgungspin): kleinste Verstärkung, 3 dB. 10 µF (Markierung an GND) + 0,1 µF an Vin und GND.",
+        "caution": "GAIN an Masse ergibt 12 dB, lauter als offen. Verstärker bis 1,8 W, Lautsprecher max. 1 W: Lautstärke auch in der Firmware begrenzen. Datenblatt prüfen."
+      }
+    },
+    "speaker": {
+      "en": {
+        "what": "Solder two wires to the speaker's solder lugs (small metal tabs), keeping the iron on each lug only briefly. Do this before the speaker is screwed to the box wall. The other ends go into the amplifier's screw terminal.",
+        "caution": "Both wires carry signal, neither is ground: never connect either to ground. Route them into the box; the cavity in front of the speaker counts as outside."
+      },
+      "de": {
+        "what": "Zwei Drähte an die Lötfahnen (kleine Metalllaschen) des Lautsprechers löten, Kolben jeweils nur kurz ansetzen. Vor dem Anschrauben an die Kastenwand erledigen. Die anderen Enden kommen in die Klemme des Verstärkers.",
+        "caution": "Beide Drähte führen Signal, keiner ist Masse: keinen davon mit Masse verbinden. Die Drähte in den Kasten führen, der Raum vor dem Lautsprecher zählt als außen."
+      }
+    },
+    "mic": {
+      "en": {
+        "what": "Solder the loose 6-pin header (a row of pins), or wires straight to the pads (solder points). Mount it with the labelled side, which carries the sound hole, facing the membrane behind the mic holes.",
+        "caution": "Feed it from the talk computer's 3.3 V, never from the 5 V distribution. The wrong way round it hears almost nothing; keep the gap to the membrane small."
+      },
+      "de": {
+        "what": "Die lose 6-polige Stiftleiste (Reihe von Pins) einlöten oder Drähte direkt an die Lötpads. Die beschriftete Seite trägt das Schallloch und zeigt zur Membran hinter den Mikrofonlöchern.",
+        "caution": "Versorgung von den 3,3 V des Sprechrechners, nie von der 5-V-Verteilung. Falsch herum hört es fast nichts; Spalt zur Membran klein halten."
+      }
+    },
+    "bme": {
+      "en": {
+        "what": "Solder the 6-pin header (a row of pins) onto the sensor board. Wires then run to 3.3 V, ground, SDA and SCL (the two I2C lines, a slow two-wire chip bus) on the doorbell computer.",
+        "caution": "It is a 3.3 V module. Feed it from the doorbell computer's 3.3 V, never from the 5 V distribution."
+      },
+      "de": {
+        "what": "Die 6-polige Stiftleiste (Reihe von Pins) auf die Sensorplatine löten. Die Drähte gehen an 3,3 V, Masse, SDA und SCL (die beiden I2C-Leitungen, ein langsamer Zweidraht-Bus) am Klingelrechner.",
+        "caution": "Es ist ein 3,3-V-Modul. Die Versorgung kommt von den 3,3 V des Klingelrechners, nie von der 5-V-Verteilung."
+      }
+    },
+    "mosfet": {
+      "en": {
+        "what": "Solder the blue 3-pin and the green 2-pin screw terminals (clamps that hold a bare wire under a screw) and the 3-pin signal header (pin row for the control wires) onto the heater switch module.",
+        "caution": "Find the switched output terminal with a meter first. With the pad connected and the signal off, the pad must stay cold."
+      },
+      "de": {
+        "what": "Die blaue 3-polige und die grüne 2-polige Schraubklemme (halten einen blanken Draht unter einer Schraube) sowie die 3-polige Signal-Stiftleiste (Pinreihe für die Steuerdrähte) auf das Heizungs-Schaltmodul löten.",
+        "caution": "Erst mit dem Messgerät die geschaltete Ausgangsklemme finden. Mit angeschlossenem Pad und ohne Signal muss das Pad kalt bleiben."
+      }
+    },
+    "pololu": {
+      "en": {
+        "what": "Solder header pins (a pin row) or wires onto VIN (12 V in), GND (ground) and VOUT (5 V out). Needed only with a 12 V PoE splitter (it splits the cable into data and power), which is not decided yet.",
+        "caution": "Mark input and output clearly: swapped, 12 V would reach every part on the 5 V side. Measure 5 V at VOUT before connecting anything."
+      },
+      "de": {
+        "what": "Stiftleiste (Pinreihe) oder Drähte an VIN (Eingang 12 V), GND (Masse) und VOUT (Ausgang 5 V) löten. Nötig nur mit einem 12-V-PoE-Splitter (trennt das Kabel in Daten und Strom); das ist noch nicht entschieden.",
+        "caution": "Ein- und Ausgang deutlich beschriften. Vertauscht bekämen alle 5-V-Teile 12 V. Vor dem Anschließen an VOUT 5 V nachmessen."
+      }
+    },
+    "fuse": {
+      "en": {
+        "what": "Put the 73 °C thermal fuse (a one-time cut-out for overheating) in series with the heater pad. Crimping (a squeezed metal sleeve, no heat) is preferred. If soldering: long legs, pliers between joint and fuse body.",
+        "caution": "Soldering heat can blow a 73 °C fuse for good; the pliers act as a heat sink (they draw the heat away). Check with a meter that it still conducts."
+      },
+      "de": {
+        "what": "Die 73-°C-Thermosicherung (trennt einmalig bei Überhitzung) in Reihe mit dem Heizpad. Am besten crimpen (Metallhülse aufquetschen, ohne Hitze). Beim Löten: Beine lang lassen, Zange zwischen Lötstelle und Sicherung.",
+        "caution": "Lötwärme kann eine 73-°C-Sicherung dauerhaft auslösen, die Zange leitet die Wärme ab. Danach mit dem Messgerät prüfen, ob sie noch Durchgang hat."
+      }
+    },
+    "waveshare": {
+      "en": {
+        "what": "Board for the talk computer not chosen yet.",
+        "caution": ""
+      },
+      "de": {
+        "what": "Platine des Sprechrechners noch nicht gewählt.",
+        "caution": ""
+      }
+    },
+    "wt32": {
+      "en": {
+        "what": "Solder the pin header row IO43 ... VBUS (the kit comes with loose headers). The button line uses 3V3, IO1 and GND.",
+        "caution": "Check for solder bridges between neighbours before power-up, above all between 3V3, 3V3_EN and GND."
+      },
+      "de": {
+        "what": "Die Stiftleiste IO43 … VBUS einlöten (liegt lose bei). Die Klingelleitung nutzt 3V3, IO1 und GND.",
+        "caution": "Vor dem Einschalten auf Lötbrücken zwischen Nachbarpins prüfen, vor allem zwischen 3V3, 3V3_EN und GND."
+      }
+    }
+  },
+  "zones": {
+    "internet": {
+      "en": {
+        "name": "Internet",
+        "plain": "Outside services on the internet: only Telegram, a messenger that is planned to carry visitor voice messages to your phone."
+      },
+      "de": {
+        "name": "Internet",
+        "plain": "Dienste im Internet: nur Telegram, ein Messenger, über den Sprachnachrichten von Besuchern auf dein Handy kommen sollen (geplant)."
+      }
+    },
+    "house": {
+      "en": {
+        "name": "House",
+        "plain": "Inside the house: the Home Assistant server (runs the home automations), the WiFi access point, a local speech-to-text server and your phone, plus planned house speakers and a planned family app."
+      },
+      "de": {
+        "name": "Haus",
+        "plain": "Im Haus: der Home-Assistant-Server (steuert die Hausautomation), der WLAN-Access-Point, ein lokaler Server für Spracherkennung und dein Handy, dazu geplante Hauslautsprecher und eine geplante Familien-App."
+      }
+    },
+    "technikraum": {
+      "en": {
+        "name": "Technical room",
+        "plain": "Indoor room that feeds the door: UPS (battery-backed mains supply), PoE switch (sends power and data down one network cable), surge protector and house earth; the door needs no power supply of its own here."
+      },
+      "de": {
+        "name": "Technikraum",
+        "plain": "Der Raum im Haus, der die Tür versorgt: USV (Stromversorgung mit Akku), PoE-Switch (schickt Strom und Daten über ein Netzwerkkabel), Überspannungsschutz und Hauserde; die Tür braucht hier kein eigenes Netzteil."
+      }
+    },
+    "wall": {
+      "en": {
+        "name": "Outside wall",
+        "plain": "14 cm of facade insulation in front of masonry; one outdoor network cable crosses it into the box through a split cable gland (a sealed cable entry), and its exact route is still open."
+      },
+      "de": {
+        "name": "Außenwand",
+        "plain": "14 cm Fassadendämmung vor dem Mauerwerk; ein Outdoor-Netzwerkkabel führt hindurch und über eine geteilte Kabelverschraubung (dichte Kabeldurchführung) in den Kasten, der genaue Kabelweg ist noch offen."
+      }
+    },
+    "box": {
+      "en": {
+        "name": "Wall box",
+        "plain": "Sealed 3D-printed box, flush in the insulation behind the brass front, holding the PoE splitter (separates power from data), power distribution, the three door computers and small parts; heated in winter."
+      },
+      "de": {
+        "name": "Einbaukasten",
+        "plain": "Dichter, 3D-gedruckter Kasten, bündig in der Dämmung hinter der Messingfront: PoE-Splitter (trennt Strom und Daten), Stromverteilung, die drei Türrechner und die Kleinteile; im Winter beheizt."
+      }
+    },
+    "front": {
+      "en": {
+        "name": "Brass front",
+        "plain": "The visible brass front with all parts in or right behind it: light and diffuser (spreads the light) under the folded roof, speaker, screen, mic holes and push button; there is no camera."
+      },
+      "de": {
+        "name": "Messingfront",
+        "plain": "Die sichtbare Messingfront mit allem, was darin oder direkt dahinter sitzt: Licht mit Diffusor (streut das Licht) unter dem gekanteten Dach, Lautsprecher, Bildschirm, Mikrofonlöcher, Taster; keine Kamera."
+      }
+    }
+  },
+  "layers": {
+    "mains": {
+      "en": {
+        "name": "Mains 230 V",
+        "plain": "Household mains power at 230 V, only indoors: it feeds the UPS (a battery-backed power supply), and the UPS feeds the network switch."
+      },
+      "de": {
+        "name": "Netz 230 V",
+        "plain": "Netzspannung 230 V aus der Hausinstallation, nur im Haus: Sie versorgt die USV (Stromversorgung mit Akku), und die USV versorgt den Netzwerk-Switch."
+      }
+    },
+    "poe": {
+      "en": {
+        "name": "PoE (48 V)",
+        "plain": "Power over Ethernet: one network cable carries data and about 48 V power from the switch to the box; the high voltage keeps the current, and with it the loss in the cable, small."
+      },
+      "de": {
+        "name": "PoE (48 V)",
+        "plain": "Power over Ethernet: Ein Netzwerkkabel bringt Daten und Strom mit etwa 48 V vom Switch zum Kasten; die hohe Spannung hält den Strom und damit den Verlust im Kabel klein."
+      }
+    },
+    "ethernet": {
+      "en": {
+        "name": "Ethernet data",
+        "plain": "Wired network data only, with no power on the line."
+      },
+      "de": {
+        "name": "Ethernet-Daten",
+        "plain": "Nur Netzwerkdaten über Kabel, ohne Stromversorgung."
+      }
+    },
+    "wifi": {
+      "en": {
+        "name": "WiFi",
+        "plain": "Radio network; the screen computer and the talk computer use it. The doorbell computer stays on the cable."
+      },
+      "de": {
+        "name": "WLAN",
+        "plain": "Funknetz; Bildschirm- und Sprechrechner nutzen es. Der Klingelrechner bleibt am Kabel."
+      }
+    },
+    "v12": {
+      "en": {
+        "name": "12 V supply",
+        "plain": "12 V made by the PoE splitter (separates power from data) in the box for the heater and the 5 V converter; not decided yet, because a splitter with a 5 V output is the alternative."
+      },
+      "de": {
+        "name": "12-V-Versorgung",
+        "plain": "12 V aus dem PoE-Splitter (trennt Strom und Daten) im Kasten für die Heizung und den 5-V-Wandler; noch nicht entschieden, die Alternative ist ein Splitter mit 5 V Ausgang."
+      }
+    },
+    "v5": {
+      "en": {
+        "name": "5 V supply",
+        "plain": "5 V made from 12 V by one step-down converter (turns a higher voltage into a lower one); it feeds all three computers, the amplifier, the LED strip and the level shifter (raises the LED signal to 5 V)."
+      },
+      "de": {
+        "name": "5-V-Versorgung",
+        "plain": "5 V, von einem Abwärtswandler (macht aus höherer Spannung eine niedrigere) aus 12 V erzeugt; versorgt alle drei Rechner, Verstärker, LED-Streifen und Pegelwandler (hebt das LED-Signal auf 5 V)."
+      }
+    },
+    "v3": {
+      "en": {
+        "name": "3.3 V supply",
+        "plain": "3.3 V made on the doorbell and talk computer boards from their 5 V; it feeds the BME280 climate sensor and the pull-up (a resistor that holds a line at a known voltage) on the button line, and the microphone."
+      },
+      "de": {
+        "name": "3,3-V-Versorgung",
+        "plain": "3,3 V, auf den Platinen von Klingel- und Sprechrechner aus deren 5 V erzeugt; versorgt den Klimasensor BME280 und den Pull-up (Widerstand, der eine Leitung auf fester Spannung hält) der Klingelleitung sowie das Mikrofon."
+      }
+    },
+    "gnd": {
+      "en": {
+        "name": "Ground (0 V)",
+        "plain": "The shared return path: every part sends its current back through it and every signal is measured against it, so all grounds in the box join at one point."
+      },
+      "de": {
+        "name": "Masse (0 V)",
+        "plain": "Der gemeinsame Rückweg: Jeder Strom fließt über sie zurück und jedes Signal wird gegen sie gemessen, deshalb treffen sich alle Masseleitungen des Kastens in einem Punkt."
+      }
+    },
+    "earth": {
+      "en": {
+        "name": "Protective earth",
+        "plain": "The house protective earth; of the doorbell parts, only the surge protector (diverts voltage spikes from lightning) is connected to it, by an electrician. It carries no current in normal operation."
+      },
+      "de": {
+        "name": "Schutzerde",
+        "plain": "Die Schutzerde des Hauses; von der Klingel hängt nur der Überspannungsschutz (leitet Spannungsspitzen durch Blitz ab) daran, angeschlossen vom Elektriker. Im Normalbetrieb fließt darüber kein Strom."
+      }
+    },
+    "i2c": {
+      "en": {
+        "name": "I2C sensor bus",
+        "plain": "I2C: a slow two-wire bus (shared wires that chips use to talk), SDA for data and SCL for the clock; it connects the BME280 climate sensor to the doorbell computer."
+      },
+      "de": {
+        "name": "I2C-Sensorbus",
+        "plain": "I2C: ein langsamer Bus aus zwei Leitungen (über die Chips miteinander reden), SDA für Daten und SCL für den Takt; er verbindet den Klimasensor BME280 mit dem Klingelrechner."
+      }
+    },
+    "i2s": {
+      "en": {
+        "name": "I2S audio bus",
+        "plain": "I2S: a three-wire digital audio bus (bit clock, word clock, data) between the talk computer and both the microphone and the amplifier; being digital it resists noise, yet the wires must stay short."
+      },
+      "de": {
+        "name": "I2S-Audiobus",
+        "plain": "I2S: ein digitaler Audiobus mit drei Leitungen (Bittakt, Worttakt, Daten) zwischen Sprechrechner, Mikrofon und Verstärker; digital und daher störfest, die Leitungen müssen trotzdem kurz bleiben."
+      }
+    },
+    "gpio": {
+      "en": {
+        "name": "Control lines",
+        "plain": "Single lines from one computer pin each (GPIO, a general-purpose pin): the LED data line through the level shifter (raises 3.3 V to 5 V) and the heater on/off signal."
+      },
+      "de": {
+        "name": "Steuerleitungen",
+        "plain": "Einzelne Leitungen von je einem Rechner-Pin (GPIO, frei nutzbarer Ein-/Ausgang): die LED-Datenleitung über den Pegelwandler (hebt 3,3 V auf 5 V) und das Ein/Aus-Signal der Heizung."
+      }
+    },
+    "button": {
+      "en": {
+        "name": "Doorbell line",
+        "plain": "Monitored button line: resistors create three voltages (idle about 1.73 V, pressed about 0.30 V, wire cut about 3.1 to 3.3 V) that the computer measures on an analog pin, so a cut wire is reported."
+      },
+      "de": {
+        "name": "Klingelleitung",
+        "plain": "Überwachte Klingelleitung: Widerstände erzeugen drei Spannungen (Ruhe etwa 1,73 V, gedrückt etwa 0,30 V, Drahtbruch etwa 3,1 bis 3,3 V), die der Rechner analog misst; ein Drahtbruch wird gemeldet."
+      }
+    },
+    "speaker": {
+      "en": {
+        "name": "Speaker wires",
+        "plain": "The two amplified wires from the amplifier screw terminal to the loudspeaker; both carry the signal and neither is ground (the 0 V return)."
+      },
+      "de": {
+        "name": "Lautsprecherkabel",
+        "plain": "Die zwei verstärkten Leitungen von der Schraubklemme des Verstärkers zum Lautsprecher; beide führen Signal, keine davon ist Masse (der 0-V-Rückleiter)."
+      }
+    },
+    "software": {
+      "en": {
+        "name": "Software links",
+        "plain": "Logical links over the network: the ESPHome connection (firmware on the door computers) to Home Assistant, phone notifications, screen content, and the planned voice-message and push-to-talk paths."
+      },
+      "de": {
+        "name": "Datenflüsse",
+        "plain": "Logische Verbindungen über das Netz: die ESPHome-Verbindung (Firmware der Türrechner) zu Home Assistant, Handy-Benachrichtigungen, Bildschirminhalte sowie die geplanten Wege für Sprachnachrichten und Push-to-Talk."
+      }
+    },
+    "mech": {
+      "en": {
+        "name": "Mechanics & seals",
+        "plain": "How parts are mounted and sealed, and where air, water, light and sound may pass."
+      },
+      "de": {
+        "name": "Mechanik & Dichtung",
+        "plain": "Wie die Teile befestigt und abgedichtet sind und wo Luft, Wasser, Licht und Schall durchgelassen werden."
+      }
+    }
+  },
+  "pending": [
+    {
+      "en": "Talk computer board and power path (splitter, or the doorbell computer's PoE module powering the box): re-decided after the WT32-ETH01 was dropped on 30 Sep 2026.",
+      "de": "Platine des Sprechrechners und Stromweg (Splitter, oder das PoE-Modul des Klingelrechners versorgt den Kasten): werden neu entschieden, seit der WT32-ETH01 am 30.09.2026 ausgeschieden ist."
+    },
+    {
+      "en": "Two-way talk: chosen (VoIP Stack on the talk computer, walkie-talkie mode as fallback) but not yet proven on the bench. Push-to-talk into the house speakers and Telegram voice messages are not designed yet.",
+      "de": "Gegensprechen: gewählt (VoIP Stack auf dem Sprechrechner, Wechselsprechen als Rückfallebene), aber am Labortisch noch nicht erprobt. Push-to-Talk auf die Hauslautsprecher und Sprachnachrichten per Telegram sind noch nicht entworfen."
+    },
+    {
+      "en": "Splitter output, 12 V or 5 V, is not decided yet; the heater voltage follows from it.",
+      "de": "Ausgangsspannung des Splitters, 12 V oder 5 V, ist noch nicht entschieden; davon hängt die Heizspannung ab."
+    },
+    {
+      "en": "PoE power budget: ring plus call plus heater comes close to the 802.3af limit (about 12 of 12.95 W). The doorbell computer switches the heater off during calls; the real draw is not measured yet.",
+      "de": "PoE-Strombudget: Klingeln plus Gespräch plus Heizung kommt nahe an die Grenze von 802.3af (etwa 12 von 12,95 W). Der Klingelrechner schaltet die Heizung während eines Gesprächs ab; der echte Verbrauch ist noch nicht gemessen."
+    },
+    {
+      "en": "Pin assignment on the talk computer (board being re-decided). The doorbell button is on IO1 (tested on the bench).",
+      "de": "Pinbelegung am Sprechrechner (Platine wird neu entschieden). Der Klingeltaster liegt an IO1 (auf dem Tisch getestet)."
+    },
+    {
+      "en": "WiFi signal for the screen and the talk computer inside the box, behind the brass: still to be tested on site.",
+      "de": "WLAN-Empfang von Bildschirm und Sprechrechner im Kasten hinter dem Messing: Test vor Ort steht noch aus."
+    },
+    {
+      "en": "LED strip type (probably RGBW, with a separate white LED): still to be checked on the bench.",
+      "de": "Typ des LED-Streifens (vermutlich RGBW, mit eigener weißer LED): Prüfung auf dem Labortisch steht noch aus."
+    },
+    {
+      "en": "CAD: the measured screen glass needs a smaller brass window (visible area 56.95 × 101.9 mm) and about 1.5 mm more room below the speaker block.",
+      "de": "CAD: Das gemessene Bildschirmglas braucht ein kleineres Messingfenster (sichtbare Fläche 56,95 × 101,9 mm) und etwa 1,5 mm mehr Platz unter dem Lautsprechermodul."
+    },
+    {
+      "en": "CAD: the floor of the cavity behind the grille slopes the wrong way, so water would pool at the speaker; the fix is pending.",
+      "de": "CAD: Der Boden des Hohlraums hinter dem Gitter fällt zur falschen Seite, Wasser würde sich am Lautsprecher sammeln; die Korrektur steht noch aus."
+    }
+  ],
+  "milestones": {
+    "m_concept": {
+      "en": {
+        "title": "Concept and architecture",
+        "why": "Decide what the device is before buying and printing: the front design, the parts and how they connect.",
+        "done_when": "Every part, wire and open decision is on the map.",
+        "tasks": {
+          "t_front": "Front design v5: one bent brass sheet, 100 × 260 mm, light band under the roof",
+          "t_arch": "Architecture: one PoE cable, three computers (doorbell, talk, screen)",
+          "t_parts": "Parts chosen and drawn with their dimensions",
+          "t_map": "This map and the public repository"
+        }
+      },
+      "de": {
+        "title": "Konzept und Architektur",
+        "why": "Festlegen, was das Gerät ist, bevor gekauft und gedruckt wird: Frontdesign, Teile und wie sie zusammenhängen.",
+        "done_when": "Jedes Teil, jede Leitung und jede offene Entscheidung steht auf der Karte.",
+        "tasks": {
+          "t_front": "Frontdesign v5: ein gekantetes Messingblech, 100 × 260 mm, Lichtband unter dem Dach",
+          "t_arch": "Architektur: ein PoE-Kabel, drei Rechner (Klingel, Sprechen, Bildschirm)",
+          "t_parts": "Teile ausgewählt und mit ihren Maßen gezeichnet",
+          "t_map": "Diese Karte und das öffentliche Repository"
+        }
+      }
+    },
+    "m_parts": {
+      "en": {
+        "title": "All hardware on the table",
+        "why": "Nothing can be measured, fitted or programmed for real until every part of the final build is here.",
+        "done_when": "Every part of the final build is here and identified.",
+        "tasks": {
+          "t_split": "Lock in: splitter 12 V or 5 V (it decides the heater and its switch)",
+          "t_order": "Place the order: cable, cable gland, heater, seals, small parts",
+          "t_inhand": "In hand: doorbell and talk computers, microphones, amplifier, speaker, 12→5 V converter, level shifter, climate sensor, heater switch, USB-serial adapter, thermal fuses",
+          "t_mail": "Everything ordered so far has arrived (the screen computer last, 29 Sep)",
+          "t_bench": "Bench checks on arrival: touch chip ✓ (GT911, 29 Sep), LED strip really RGBW, heater switch triggers at 3.3 V"
+        }
+      },
+      "de": {
+        "title": "Alle Hardware auf dem Tisch",
+        "why": "Solange nicht jedes Teil des fertigen Geräts da ist, lässt sich nichts wirklich messen, einpassen oder programmieren.",
+        "done_when": "Jedes Teil des fertigen Geräts ist da und bestimmt.",
+        "tasks": {
+          "t_split": "Festlegen: Splitter 12 V oder 5 V (davon hängen Heizung und Schalter ab)",
+          "t_order": "Bestellen: Kabel, Kabeleinführung, Heizung, Dichtungen, Kleinteile",
+          "t_inhand": "Da: Klingel- und Sprechrechner, Mikrofone, Verstärker, Lautsprecher, 12→5-V-Wandler, Pegelwandler, Klimasensor, Heizungsschalter, USB-Seriell-Adapter, Thermosicherungen",
+          "t_mail": "Alles bisher Bestellte ist da (zuletzt der Bildschirmrechner, 29.09.)",
+          "t_bench": "Prüfen beim Auspacken: Touch-Chip ✓ (GT911, 29.09.), LED-Streifen wirklich RGBW, Heizungsschalter schaltet mit 3,3 V"
+        }
+      }
+    },
+    "m_fit": {
+      "en": {
+        "title": "Measure and alpha print",
+        "why": "Find out whether everything fits before designing the real box: first the parts alone, then with every cable.",
+        "done_when": "Every part and every cable fits in a printed box, and the number of cables entering it is final.",
+        "tasks": {
+          "t_measure": "Measure everything the makers don't publish: display ✓ (holes, glass, stack, 29 Sep), doorbell computer, microphone, splitter",
+          "t_cables": "Count every cable and connector that enters the box",
+          "t_alpha1": "Alpha print 1: all parts in place, no cables",
+          "t_alpha2": "Alpha print 2: the same with all the internal wiring",
+          "t_size": "Lock in: the box's inside size (the 12 V splitter alone is 104 × 82 × 32 mm)"
+        }
+      },
+      "de": {
+        "title": "Messen und Alpha-Druck",
+        "why": "Herausfinden, ob alles passt, bevor der richtige Kasten entsteht: erst die Teile allein, dann mit allen Kabeln.",
+        "done_when": "Jedes Teil und jedes Kabel passt in einen gedruckten Kasten, und die Zahl der Kabel, die hineinführen, steht fest.",
+        "tasks": {
+          "t_measure": "Alles messen, was die Hersteller nicht veröffentlichen: Bildschirm ✓ (Löcher, Glas, Aufbau, 29.09.), Klingelrechner, Mikrofon, Splitter",
+          "t_cables": "Jedes Kabel und jeden Stecker zählen, der in den Kasten führt",
+          "t_alpha1": "Alpha-Druck 1: alle Teile an ihrem Platz, ohne Kabel",
+          "t_alpha2": "Alpha-Druck 2: dasselbe mit der ganzen Verkabelung",
+          "t_size": "Festlegen: Innenmaß des Kastens (der 12-V-Splitter allein misst 104 × 82 × 32 mm)"
+        }
+      }
+    },
+    "m_soft": {
+      "en": {
+        "title": "Bench build and software",
+        "why": "Wire everything together on the desk and build the software until the experience at the door and on the phone is release quality. The first two steps can start today.",
+        "done_when": "The desk setup does everything at release quality, and the measured power stays within 802.3af.",
+        "tasks": {
+          "t_s0": "Phone side first: answer a test call from a notification (no door hardware needed)",
+          "t_s1": "Doorbell on the doorbell computer: all three line states, 20 of 20 presses on the phone in under 1 s",
+          "t_s2": "Screen pages change on a ring; WiFi signal measured in a mock box behind metal",
+          "t_s3": "Talk, one direction at a time (walkie-talkie)",
+          "t_s4": "Lock in: full duplex or walkie-talkie, after tuning the echo",
+          "t_audio": "Lock in: which extra audio features (voice messages, push-to-talk into the house)",
+          "t_s5": "One cable, power rail, heater and its power limit; measure the real PoE draw (waits for the splitter)",
+          "t_ux": "UX until release quality: screen pages, light, sounds, the flow on the phone"
+        }
+      },
+      "de": {
+        "title": "Testaufbau und Software",
+        "why": "Alles auf dem Tisch zusammenstecken und die Software bauen, bis die Bedienung an der Tür und am Handy veröffentlichungsreif ist. Die ersten beiden Schritte gehen schon heute.",
+        "done_when": "Der Testaufbau kann alles in Veröffentlichungsqualität, und der gemessene Verbrauch bleibt innerhalb von 802.3af.",
+        "tasks": {
+          "t_s0": "Zuerst das Handy: einen Testanruf aus einer Benachrichtigung annehmen (ohne Hardware an der Tür)",
+          "t_s1": "Klingel auf dem Klingelrechner: alle drei Leitungszustände, 20 von 20 Drücken in unter 1 s auf dem Handy",
+          "t_s2": "Bildschirmseiten wechseln beim Klingeln; WLAN-Signal in einem Probekasten hinter Metall gemessen",
+          "t_s3": "Sprechen, immer eine Richtung (Wechselsprechen)",
+          "t_s4": "Festlegen: Gegensprechen oder Wechselsprechen, nach dem Echo-Abgleich",
+          "t_audio": "Festlegen: welche Audio-Extras (Sprachnachrichten, Push-to-Talk ins Haus)",
+          "t_s5": "Ein Kabel, Stromschiene, Heizung mit Leistungsbegrenzung; echten PoE-Verbrauch messen (wartet auf den Splitter)",
+          "t_ux": "Bedienung bis zur Veröffentlichungsreife: Bildschirmseiten, Licht, Töne, Ablauf am Handy"
+        }
+      }
+    },
+    "m_water": {
+      "en": {
+        "title": "Watertightness proof of concept",
+        "why": "Prove that the printed box, a steel bracket and a metal plate can be sealed, whichever way the box is mounted. Exploratory: it runs alongside everything else.",
+        "done_when": "A test box with bracket and test plate stays dry inside in a repeatable water test, and the sealing recipe is written down.",
+        "tasks": {
+          "t_mount": "Lock in: flush in the wall (cut into the insulation) or on the wall (printed box inside a brass housing)",
+          "t_bracket": "Design and source the steel bracket the brass plate screws onto",
+          "t_testplate": "Test plate: flat, no bends, no engraving, but the real cut-outs",
+          "t_seals": "Seals: 2 mm gasket cord, button O-ring, mic membranes, cable gland, pressure vent",
+          "t_material": "Lock in: box material (ABS is here for test boxes; ABS and ASA warp in large parts on an open printer, PETG is the alternative)",
+          "t_drain": "The grille cavity drains outwards (the CAD slope is currently the wrong way round)",
+          "t_test": "Water test of a sealed test box: hose or shower, dry inside afterwards"
+        }
+      },
+      "de": {
+        "title": "Dichtheits-Machbarkeitstest",
+        "why": "Nachweisen, dass sich gedruckter Kasten, Stahlrahmen und Metallplatte abdichten lassen, egal wie der Kasten montiert wird. Explorativ: läuft neben allem anderen her.",
+        "done_when": "Ein Testkasten mit Rahmen und Testplatte bleibt in einem wiederholbaren Wassertest innen trocken, und das Dichtungsrezept ist aufgeschrieben.",
+        "tasks": {
+          "t_mount": "Festlegen: bündig in der Wand (Dämmung aufschneiden) oder auf der Wand (gedruckter Kasten in einem Messinggehäuse)",
+          "t_bracket": "Stahlrahmen entwerfen und beschaffen, an den die Messingplatte geschraubt wird",
+          "t_testplate": "Testplatte: flach, ohne Kantung und Gravur, aber mit den echten Ausschnitten",
+          "t_seals": "Dichtungen: 2-mm-Rundschnur, O-Ring am Taster, Mikrofon-Membranen, Kabeleinführung, Druckausgleich",
+          "t_material": "Festlegen: Material des Kastens (ABS ist für Testkästen da; ABS und ASA verziehen sich bei großen Teilen auf einem offenen Drucker, PETG ist die Alternative)",
+          "t_drain": "Die Gitterkammer entwässert nach außen (das Gefälle im CAD ist derzeit falsch herum)",
+          "t_test": "Wassertest eines abgedichteten Testkastens: Schlauch oder Dusche, danach innen trocken"
+        }
+      }
+    },
+    "m_beta": {
+      "en": {
+        "title": "Beta box on the desk",
+        "why": "The complete device in its real box, with the steel bracket and a dummy plate, running on the desk over Ethernet. Not watertight yet.",
+        "done_when": "The whole device runs in its box for two weeks without a surprise.",
+        "tasks": {
+          "t_bprint": "Print the beta box from what the alpha prints showed",
+          "t_bbracket": "Fit the steel bracket and a dummy plate (flat, same cut-outs)",
+          "t_bwire": "All inside wiring finished; the wiring to the outside is settled",
+          "t_bsoak": "Two weeks on the desk over Ethernet: scripted rings and calls, 20 PoE power cycles, no unexpected reboot of the doorbell computer"
+        }
+      },
+      "de": {
+        "title": "Beta-Kasten auf dem Tisch",
+        "why": "Das komplette Gerät in seinem echten Kasten, mit Stahlrahmen und Dummy-Platte, am Tisch per Ethernet in Betrieb. Noch nicht wasserdicht.",
+        "done_when": "Das ganze Gerät läuft zwei Wochen in seinem Kasten ohne Überraschung.",
+        "tasks": {
+          "t_bprint": "Beta-Kasten nach den Erkenntnissen der Alpha-Drucke drucken",
+          "t_bbracket": "Stahlrahmen und Dummy-Platte (flach, gleiche Ausschnitte) einbauen",
+          "t_bwire": "Verkabelung innen fertig; der Anschluss nach außen steht fest",
+          "t_bsoak": "Zwei Wochen am Tisch per Ethernet: automatische Klingel- und Gesprächstests, 20 PoE-Neustarts, kein unerwarteter Neustart des Klingelrechners"
+        }
+      }
+    },
+    "m_pre": {
+      "en": {
+        "title": "Pre-release box",
+        "why": "Bring the sealing lessons into the proven beta design and order the real brass front.",
+        "done_when": "The finished device passes the water test and the cold start.",
+        "tasks": {
+          "t_papply": "Apply the sealing recipe to the beta design",
+          "t_pbrass": "Order the real brass front from a metal shop (laser-cut, bent, engraved)",
+          "t_pprint": "Final print in the chosen material",
+          "t_pwater": "Water test of the complete device",
+          "t_pcold": "Freezer cold start: heater, screen and splitter come up in frost"
+        }
+      },
+      "de": {
+        "title": "Vorserien-Kasten",
+        "why": "Die Erkenntnisse aus dem Dichtheitstest in den erprobten Beta-Entwurf übernehmen und die echte Messingfront bestellen.",
+        "done_when": "Das fertige Gerät besteht Wassertest und Kaltstart.",
+        "tasks": {
+          "t_papply": "Das Dichtungsrezept auf den Beta-Entwurf übertragen",
+          "t_pbrass": "Die echte Messingfront beim Blechbearbeiter bestellen (gelasert, gekantet, graviert)",
+          "t_pprint": "Enddruck im gewählten Material",
+          "t_pwater": "Wassertest des kompletten Geräts",
+          "t_pcold": "Kaltstart im Gefrierschrank: Heizung, Bildschirm und Splitter starten bei Frost"
+        }
+      }
+    },
+    "m_door": {
+      "en": {
+        "title": "At the door",
+        "why": "Install the finished device at the front door and switch it on for good.",
+        "done_when": "A ring at the real door reaches the phone.",
+        "tasks": {
+          "t_elec": "Electrician: earth the surge protector, remove the old bell transformer",
+          "t_route": "Cable route through the wall",
+          "t_fix": "Mount the box and seal the joint to the facade",
+          "t_live": "Go live with the watchdogs on (stuck button, cut wire, offline)"
+        }
+      },
+      "de": {
+        "title": "An der Tür",
+        "why": "Das fertige Gerät an der Haustür einbauen und dauerhaft einschalten.",
+        "done_when": "Ein Klingeln an der echten Tür kommt auf dem Handy an.",
+        "tasks": {
+          "t_elec": "Elektriker: Überspannungsschutz erden, alten Klingeltrafo ausbauen",
+          "t_route": "Kabelweg durch die Wand",
+          "t_fix": "Kasten montieren und die Fuge zur Fassade abdichten",
+          "t_live": "In Betrieb nehmen, mit Wächtern (klemmender Taster, Kabelbruch, offline)"
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,124 @@
+# Klingelbox screen computer, bench test 7 (2026-09-29): flash-free one-sweep refresh in a background task (touch never blocked).
+# Checks: picture, orientation (arrow up = ribbon end down), touch (dot where tapped),
+# and how much of the picture the glass print hides (frame lines every 3 px from the edge).
+# No WiFi yet. Placeholder wording only; the real door texts come later.
+
+esphome:
+  name: klingel-screen-test
+  friendly_name: Klingelbox Bildschirm Test
+  min_version: 2026.3.0
+
+# Board settings as in hbast/lilygo_t5_47_plus v1.0.0 packages/board.yaml; the display driver is our
+# local copy in components/ (partial refresh added; the C++ stays GPLv3 like upstream).
+esp32:
+  board: esp32-s3-devkitc-1
+  variant: esp32s3
+  cpu_frequency: 240MHz
+  flash_size: 16MB
+  framework:
+    type: arduino
+
+psram:
+  mode: octal
+  speed: 80MHz
+
+i2c:
+  id: lilygo_t5_47_plus_i2c
+  sda: GPIO18
+  scl: GPIO17
+  frequency: 400kHz
+
+external_components:
+  - source:
+      type: local
+      path: components
+    components: [lilygo_t5_47_plus]
+
+logger:
+  hardware_uart: USB_SERIAL_JTAG
+
+globals:
+  - id: n_touches
+    type: int
+    initial_value: "0"
+  - id: tx
+    type: int
+    initial_value: "0"
+  - id: ty
+    type: int
+    initial_value: "0"
+
+font:
+  - file: "gfonts://Roboto@500"
+    id: f_big
+    size: 64
+    glyphs: " Klingebox"
+  - file: "gfonts://Roboto"
+    id: f_mid
+    size: 40
+    glyphs: " 0123456789:,ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyzäöüß"
+  - file: "gfonts://Roboto"
+    id: f_small
+    size: 28
+    glyphs: " 0123456789:,.-·ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyzäöüÄÖÜß"
+
+display:
+  - platform: lilygo_t5_47_plus
+    id: epaper
+    rotation: 270
+    update_interval: never
+    partial_updating: true
+    full_update_every: 30
+    lambda: |-
+      it.fill(COLOR_OFF);
+      const int W = it.get_width();
+      const int H = it.get_height();
+      // frame lines 0, 3, 6, 9, 12, 15 px in from every edge
+      for (int i = 0; i <= 15; i += 3) {
+        it.rectangle(i, i, W - 2 * i, H - 2 * i, COLOR_ON);
+      }
+      it.print(W / 2, 40, id(f_big), COLOR_ON, TextAlign::TOP_CENTER, "Klingelbox");
+      it.print(W / 2, 115, id(f_small), COLOR_ON, TextAlign::TOP_CENTER, "Testseite 7");
+      // small arrow pointing up
+      const int cx = W / 2;
+      it.filled_triangle(cx, 170, cx - 45, 240, cx + 45, 240, COLOR_ON);
+      it.filled_rectangle(cx - 14, 240, 28, 70, COLOR_ON);
+      it.print(cx, 318, id(f_small), COLOR_ON, TextAlign::TOP_CENTER, "oben");
+      // five numbered targets
+      const int tgt[5][2] = {{80, 230}, {460, 230}, {80, 860}, {460, 860}, {270, 520}};
+      for (int k = 0; k < 5; k++) {
+        const int x = tgt[k][0], y = tgt[k][1];
+        it.circle(x, y, 30, COLOR_ON);
+        it.circle(x, y, 29, COLOR_ON);
+        it.line(x - 40, y, x + 40, y, COLOR_ON);
+        it.line(x, y - 40, x, y + 40, COLOR_ON);
+        const int nx = (x > W / 2) ? x - 44 : x + 44;
+        it.printf(nx, y - 48, id(f_small), COLOR_ON, (x > W / 2) ? TextAlign::TOP_RIGHT : TextAlign::TOP_LEFT, "%d", k + 1);
+      }
+      it.printf(cx, 600, id(f_mid), COLOR_ON, TextAlign::TOP_CENTER, "Berührungen: %d", id(n_touches));
+      if (id(n_touches) > 0) {
+        it.printf(cx, 660, id(f_small), COLOR_ON, TextAlign::TOP_CENTER, "zuletzt x %d, y %d", id(tx), id(ty));
+        it.filled_circle(id(tx), id(ty), 12, COLOR_ON);
+      }
+      it.print(cx, 740, id(f_small), COLOR_ON, TextAlign::TOP_CENTER, "Ziele 1 bis 5 nacheinander tippen");
+
+touchscreen:
+  - platform: lilygo_t5_47_plus
+    id: touch
+    display: epaper
+    i2c_id: lilygo_t5_47_plus_i2c
+    update_interval: 100ms
+    on_touch:
+      - lambda: |-
+          id(n_touches) += 1;
+          id(tx) = touch.x;
+          id(ty) = touch.y;
+          ESP_LOGI("touch", "Touch x=%d y=%d raw_x=%d raw_y=%d", touch.x, touch.y, touch.x_raw, touch.y_raw);
+      - component.update: epaper
+
+interval:
+  - interval: 1s
+    then:
+      - lambda: |-
+          static bool drawn = false;
+          if (!drawn) { drawn = true; id(epaper).update(); }
