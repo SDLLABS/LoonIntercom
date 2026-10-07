@@ -29,6 +29,23 @@ The Function-EV `partitions.csv` uses 16 MB NOR with two 4 MB OTA application sl
 
 Serial output reports detected NOR and PSRAM capacities, warns on mismatches with the selected board profile, and separately reports ESP-IDF available PSRAM heap bytes. The selected BSP supplies I2C probes: Function-EV checks ES8311 and a *possible* SC2336, while Waveshare checks **ES8311 only**, since no camera module is assumed. Wired IP101 link-up and a DHCP address are reported asynchronously. **An I2C ACK is neither sensor identification nor proof of camera capture or audio input/output.** No Wi-Fi fallback is configured. No relay, unlock, access credential, media transport, cloud or Home Assistant logic is present.
 
+## Camera bench smoke (OV5647, optional)
+
+`components/camera_smoke` is off by default. The `sdkconfig.camera_ov5647.defaults` overlay enables it for an OV5647 module on the Waveshare 22-pin CSI connector (use a 22-pin 0.5 mm "Pi Zero" camera cable). Append it after the board profile and the verified revision overlay:
+
+```sh
+cd firmware/p4
+idf.py -D "SDKCONFIG_DEFAULTS=sdkconfig.defaults.waveshare_32086;CHOSEN_REVISION_OVERLAY;sdkconfig.camera_ov5647.defaults" set-target esp32p4 build
+idf.py -p PORT flash monitor
+```
+
+The component manager fetches `espressif/esp_video` 2.5.* (and its dependencies) only for this overlay. On boot the serial log reports the I2C probe at `0x36`, `sensor chip id (PID): 0x5647`, the capture format and the DHCP address. Then, from a PC on the same LAN:
+
+- `http://<address>/status` — sensor PID, format, frame and error counters, fps, age of the last frame, free PSRAM;
+- `http://<address>/snapshot.jpg` — the next captured frame, encoded by the hardware JPEG engine.
+
+**The HTTP server has no authentication and exposes the camera image to the LAN: bench use only.** Camera failure is logged and the rest of the application keeps running. Pass criteria for this step: PID 0x5647, fps close to 30 at 1920x1080, error counter not increasing, a correctly coloured snapshot (with the IR filter fitted), and stable counters after one hour.
+
 ## Board/BSP boundary and smoke scope
 
 `components/board_support/include/board_support.h` defines the board-neutral configuration consumed by the app and smoke components. `boards/function_ev_v152.c` and `boards/waveshare_esp32_p4_eth_32086.c` own their respective memory expectations, IP101 RMII pin maps, I2C probes and peripheral metadata. `Kconfig.projbuild` selects exactly one profile; `sdkconfig.defaults` retains the EOL Function-EV default, while `sdkconfig.defaults.waveshare_32086` is standalone and does **not** inherit its 16 MB or pre-v3 assumptions. The application and Ethernet/I2C smoke code contain no board GPIO literals. The network path uses the pinned [ESP-IDF v5.5.4 EMAC configuration API](https://docs.espressif.com/projects/esp-idf/en/v5.5.4/esp32p4/api-reference/network/esp_eth.html) with BSP-supplied RMII data pins and external REF_CLK. Both supported profiles use IP101; no speculative PHY factory is added. The I2C smoke component performs bounded 100 ms address probes, which show ACK only, not codec initialization or sensor identification.
@@ -48,4 +65,4 @@ The [Waveshare acceptance record](../../hardware/p4/waveshare-esp32-p4-eth-32086
 
 ## Current validation status
 
-The files are source-only until built with ESP-IDF and run on hardware. This workspace had no `idf.py`, RISC-V ESP toolchain, board or PoE assembly at authoring time. The listed device gates are **not yet passed**.
+All profiles now build with ESP-IDF v5.5.4: Function-EV default, Waveshare with the pre-v3 and v3.1 overlays, and Waveshare v3.1 with the camera overlay (see `.agent/plans/wp2-2-camera-smoke.md`). Nothing has been flashed or run on a board, and no PoE assembly exists. The listed device gates are **not yet passed**.

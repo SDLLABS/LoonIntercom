@@ -2,9 +2,11 @@
 
 /* Waveshare ESP32-P4-ETH, SKU 32086. GPIOs from the official board schematic.
    IP101GRI RMII, ES8311 codec and NS4150B amplifier are fitted. This is the
-   base Ethernet board; a PoE module and camera are not assumed. */
+   base Ethernet board; a PoE module and camera are not assumed. The camera
+   SCCB shares the internal I2C bus (GPIO7/GPIO8) with the codec. */
 static const struct p4_i2c_probe probes[] = {
     {"ES8311 codec", 0x18},
+    {"possible OV5647 camera (SCCB)", 0x36},
 };
 
 const struct p4_board_config p4_waveshare_esp32_p4_eth_32086 = {
@@ -45,5 +47,8 @@ const struct p4_board_config p4_waveshare_esp32_p4_eth_32086 = {
         .csi_lanes = 2,
         .pin_count = 22,
         .pitch_um = 500,
+        .reset_gpio = -1,
+        .pwdn_gpio = -1,
+        .sccb_freq_hz = 100000,
     },
 };

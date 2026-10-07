@@ -1,6 +1,8 @@
 #include <stdint.h>
 #include "esp_chip_info.h"
 #include "esp_flash.h"
+#include "freertos/FreeRTOS.h"
+#include "freertos/semphr.h"
 #include "esp_heap_caps.h"
 #include "esp_log.h"
 #include "esp_psram.h"
@@ -55,4 +57,41 @@ void p4_board_report_memory(void)
     ESP_LOGI(TAG, "ESP-IDF available PSRAM heap: %lu bytes",
              (unsigned long)heap_caps_get_total_size(MALLOC_CAP_SPIRAM));
     ESP_LOGI(TAG, "available PSRAM heap is not a physical-capacity or memory stress test");
+}
+
+esp_err_t p4_board_i2c_bus(i2c_master_bus_handle_t *out)
+{
+    static i2c_master_bus_handle_t s_bus;
+    static portMUX_TYPE s_lock = portMUX_INITIALIZER_UNLOCKED;
+    static SemaphoreHandle_t s_init_mutex;
+    if (out == NULL) return ESP_ERR_INVALID_ARG;
+
+    taskENTER_CRITICAL(&s_lock);
+    if (s_init_mutex == NULL) {
+        static StaticSemaphore_t storage;
+        s_init_mutex = xSemaphoreCreateMutexStatic(&storage);
+    }
+    taskEXIT_CRITICAL(&s_lock);
+
+    xSemaphoreTake(s_init_mutex, portMAX_DELAY);
+    esp_err_t err = ESP_OK;
+    if (s_bus == NULL) {
+        const struct p4_i2c_config *i2c = &p4_board_get()->i2c;
+        i2c_master_bus_config_t config = {
+            .clk_source = I2C_CLK_SRC_DEFAULT,
+            .i2c_port = i2c->port,
+            .sda_io_num = i2c->sda_gpio,
+            .scl_io_num = i2c->scl_gpio,
+            .glitch_ignore_cnt = 7,
+            .flags.enable_internal_pullup = true,
+        };
+        err = i2c_new_master_bus(&config, &s_bus);
+        if (err != ESP_OK) {
+            s_bus = NULL;
+            ESP_LOGE(TAG, "shared I2C bus init failed: %s", esp_err_to_name(err));
+        }
+    }
+    *out = s_bus;
+    xSemaphoreGive(s_init_mutex);
+    return err;
 }

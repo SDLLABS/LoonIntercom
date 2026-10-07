@@ -18,4 +18,5 @@ if(NOT CMAKE_BUILD_EARLY_EXPANSION)
 endif()
 
 idf_component_register(SRCS ${board_sources} INCLUDE_DIRS "include"
-                       PRIV_REQUIRES spi_flash esp_psram heap esp_system log)
+                       REQUIRES esp_driver_i2c
+                       PRIV_REQUIRES spi_flash esp_psram heap esp_system freertos log)

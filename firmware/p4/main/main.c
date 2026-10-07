@@ -1,5 +1,6 @@
 #include "esp_log.h"
 #include "board_support.h"
+#include "camera_smoke.h"
 #include "net_smoke.h"
 #include "peripheral_smoke.h"
 
@@ -15,5 +16,12 @@ void app_main(void)
     if (err != ESP_OK) {
         ESP_LOGE(TAG, "wired Ethernet start failed: %s", esp_err_to_name(err));
     }
-    ESP_LOGI(TAG, "camera frame, H.264 and audio sample tests require later device gates");
+    err = camera_smoke_start();
+    if (err == ESP_ERR_NOT_SUPPORTED) {
+        ESP_LOGI(TAG, "camera smoke disabled (sdkconfig.camera_ov5647.defaults enables it)");
+    } else if (err != ESP_OK) {
+        /* Media failure must never stop the rest of the unit. */
+        ESP_LOGE(TAG, "camera smoke failed: %s; continuing without video", esp_err_to_name(err));
+    }
+    ESP_LOGI(TAG, "H.264 and audio sample tests require later device gates");
 }
