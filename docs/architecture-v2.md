@@ -127,6 +127,7 @@ WP2 has a [Waveshare ESP32-P4-ETH SKU 32086 bench profile](../hardware/p4/wavesh
 - [ADR-0002: Indoor-only relay authority](adr/0002-indoor-only-relay-authority.md)
 - [ADR-0003: Independent bell failure domain](adr/0003-independent-bell-failure-domain.md)
 - [ADR-0004: Selective OpenChime port policy](adr/0004-selective-openchime-port-policy.md)
+- [ADR-0005: Remote entry by SMS one-time code via an indoor GSM modem](adr/0005-gsm-sms-one-time-code-access.md)
 
 ## Follow-up work packages
 

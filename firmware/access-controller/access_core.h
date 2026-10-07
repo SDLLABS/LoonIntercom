@@ -26,7 +26,12 @@ struct ac_actuator_profile {
 
 enum ac_profile_lookup { AC_PROFILE_FOUND, AC_PROFILE_UNKNOWN, AC_PROFILE_ERROR };
 
-enum ac_principal_kind { AC_PRINCIPAL_P4 = 1, AC_PRINCIPAL_DIRECT_KEYPAD = 2 };
+enum ac_principal_kind { AC_PRINCIPAL_P4 = 1, AC_PRINCIPAL_DIRECT_KEYPAD = 2,
+                         AC_PRINCIPAL_GSM = 3 };
+
+/* SMS path (ADR-0005): command codes bound into the one-time code. */
+#define AC_SMS_CODE_DIGITS 8u
+enum ac_sms_command { AC_SMS_OPEN = 1 };
 enum ac_result {
     AC_OK = 0, AC_MALFORMED, AC_UNCONFIDENTIAL, AC_PEER_MISMATCH, AC_UNKNOWN_PRINCIPAL,
     AC_NO_CHALLENGE, AC_EXPIRED, AC_REPLAY, AC_AUTH_FAILED,
@@ -67,6 +72,14 @@ struct ac_callbacks {
     /* Actuator ID comes only from a validated indoor profile. Board must be
        electrically off before firmware starts. */
     bool (*set_relay)(void *user, uint8_t actuator_id, bool energized);
+    /* Optional; NULL disables the SMS path. Verifies an LSMS1 one-time code
+       for this GSM principal, resource and command, and on success durably
+       advances that principal's counter BEFORE returning true. Must return
+       false if the counter cannot be persisted. Called only after rate
+       limit, busy and resource-profile checks have passed. */
+    bool (*verify_sms_otp)(void *user, const uint8_t principal[8],
+                           uint8_t resource_id, uint8_t command,
+                           const char code[AC_SMS_CODE_DIGITS]);
 };
 
 struct ac_slot {
@@ -103,6 +116,13 @@ enum ac_result ac_handle_request(struct ac_controller *controller,
                                  const uint8_t authenticated_peer[8],
                                  bool authenticated_confidential_channel,
                                  uint64_t now_ms);
+/* SMS entry point for an indoor GSM modem adapter. principal is the indoor
+   allowlist identity the adapter resolved from the sender number; the sender
+   number itself is only a filter, never the credential. */
+enum ac_result ac_handle_sms(struct ac_controller *controller,
+                             const uint8_t principal[8], uint8_t resource_id,
+                             uint8_t command, const char code[AC_SMS_CODE_DIGITS],
+                             uint64_t now_ms);
 void ac_tick(struct ac_controller *controller, uint64_t now_ms);
 void ac_fault(struct ac_controller *controller);
 
