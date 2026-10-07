@@ -1,0 +1,38 @@
+menu "SDLLABS P4 camera bench smoke"
+    config P4_CAMERA_SMOKE
+        bool "MIPI-CSI camera capture smoke test (requires esp_video)"
+        default n
+        help
+            Bench-only: initialise the board's MIPI-CSI camera through
+            esp_video, read the sensor chip ID, stream frames through the ISP
+            and count frames per second. Enable with the
+            sdkconfig.camera_ov5647.defaults overlay. Camera failure is
+            logged and never stops the rest of the application.
+
+    if P4_CAMERA_SMOKE
+        config P4_CAMERA_SMOKE_HTTP
+            bool "Serve /snapshot.jpg and /status over HTTP (bench only, no authentication)"
+            default y
+            help
+                Starts a tiny HTTP server on the wired interface. It has NO
+                authentication and exposes the camera image to anyone on the
+                LAN. Bench use only; never enable on an installed unit.
+
+        config P4_CAMERA_SMOKE_HTTP_PORT
+            int "HTTP port"
+            depends on P4_CAMERA_SMOKE_HTTP
+            range 1 65535
+            default 80
+
+        config P4_CAMERA_SMOKE_JPEG_QUALITY
+            int "JPEG quality for /snapshot.jpg"
+            depends on P4_CAMERA_SMOKE_HTTP
+            range 1 100
+            default 80
+
+        config P4_CAMERA_SMOKE_BUFFERS
+            int "Number of capture buffers"
+            range 2 4
+            default 2
+    endif
+endmenu

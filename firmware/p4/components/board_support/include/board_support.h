@@ -2,6 +2,8 @@
 
 #include <stddef.h>
 #include <stdint.h>
+#include "driver/i2c_master.h"
+#include "esp_err.h"
 
 /* Board-neutral capabilities. Both supported bench profiles use IP101 RMII. */
 struct p4_rmii_pins {
@@ -35,6 +37,9 @@ struct p4_camera_connector {
     uint8_t csi_lanes;
     uint8_t pin_count;
     uint16_t pitch_um;
+    int reset_gpio;       /* -1: connector has no MCU-driven sensor reset */
+    int pwdn_gpio;        /* -1: connector has no MCU-driven power-down */
+    uint32_t sccb_freq_hz; /* camera control bus speed on the shared I2C bus */
 };
 
 struct p4_i2c_probe {
@@ -62,3 +67,8 @@ struct p4_board_config {
 
 const struct p4_board_config *p4_board_get(void);
 void p4_board_report_memory(void);
+
+/* The board's shared internal I2C bus (codec, camera SCCB, probes). Created on
+   first call and kept for the lifetime of the application; never delete it.
+   Callers must not create a second bus on the same port. */
+esp_err_t p4_board_i2c_bus(i2c_master_bus_handle_t *out);
