@@ -1,4 +1,5 @@
 #include <stdint.h>
+#include "esp_chip_info.h"
 #include "esp_flash.h"
 #include "esp_heap_caps.h"
 #include "esp_log.h"
