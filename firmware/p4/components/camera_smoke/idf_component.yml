@@ -1,0 +1,8 @@
+## Pulled only when the camera smoke test is enabled
+## (sdkconfig.camera_ov5647.defaults). Pinned to the releases this code was
+## compiled against; bump deliberately.
+dependencies:
+  espressif/esp_video:
+    version: "2.5.*"
+    rules:
+      - if: "$CONFIG{P4_CAMERA_SMOKE} == True"

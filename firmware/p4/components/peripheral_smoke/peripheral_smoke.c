@@ -12,16 +12,8 @@ void peripheral_smoke_probe_i2c(void)
         ESP_LOGI(TAG, "board profile defines no I2C presence probes");
         return;
     }
-    i2c_master_bus_config_t config = {
-        .clk_source = I2C_CLK_SRC_DEFAULT,
-        .i2c_port = board_i2c->port,
-        .sda_io_num = board_i2c->sda_gpio,
-        .scl_io_num = board_i2c->scl_gpio,
-        .glitch_ignore_cnt = 7,
-        .flags.enable_internal_pullup = true,
-    };
     i2c_master_bus_handle_t bus = NULL;
-    esp_err_t err = i2c_new_master_bus(&config, &bus);
+    esp_err_t err = p4_board_i2c_bus(&bus);
     if (err != ESP_OK) {
         ESP_LOGE(TAG, "I2C bus init failed: %s", esp_err_to_name(err));
         return;
@@ -33,5 +25,5 @@ void peripheral_smoke_probe_i2c(void)
         ESP_LOGI(TAG, "%s address 0x%02x ACK: %s (presence only)",
                  probe->label, probe->address, err == ESP_OK ? "yes" : "no");
     }
-    ESP_ERROR_CHECK(i2c_del_master_bus(bus));
+    /* The bus is shared with the camera and codec; it is not deleted. */
 }

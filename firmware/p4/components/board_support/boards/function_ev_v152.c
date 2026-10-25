@@ -32,4 +32,12 @@ const struct p4_board_config p4_function_ev_v152 = {
         .probes = probes,
         .probe_count = sizeof(probes) / sizeof(probes[0]),
     },
+    /* SCCB shares the I2C bus above, as in Espressif's esp_video board preset.
+       Connector pin count/pitch are not recorded for this EOL reference. */
+    .camera = {
+        .csi_lanes = 2,
+        .reset_gpio = -1,
+        .pwdn_gpio = -1,
+        .sccb_freq_hz = 100000,
+    },
 };

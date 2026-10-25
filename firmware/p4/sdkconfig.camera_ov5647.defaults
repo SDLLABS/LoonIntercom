@@ -1,0 +1,21 @@
+# Camera bench smoke overlay: OV5647 on the 2-lane MIPI-CSI connector.
+# Append AFTER the board profile and the verified revision overlay, e.g.
+#   SDKCONFIG_DEFAULTS="sdkconfig.defaults.waveshare_32086;sdkconfig.revision.v3_1.defaults;sdkconfig.camera_ov5647.defaults"
+# Bench only: serves an unauthenticated /snapshot.jpg on the LAN.
+CONFIG_P4_CAMERA_SMOKE=y
+CONFIG_P4_CAMERA_SMOKE_HTTP=y
+
+CONFIG_ESP_VIDEO_ENABLE_MIPI_CSI_VIDEO_DEVICE=y
+CONFIG_ESP_VIDEO_ENABLE_ISP_VIDEO_DEVICE=y
+# Auto exposure / white balance; without it the RAW image is dark and green.
+CONFIG_ESP_VIDEO_ENABLE_ISP_PIPELINE_CONTROLLER=y
+# H.264 is the next bench step; it needs the esp_h264 component.
+# CONFIG_ESP_VIDEO_ENABLE_HW_H264_VIDEO_DEVICE is not set
+# CONFIG_ESP_VIDEO_ENABLE_USB_UVC_VIDEO_DEVICE is not set
+# CONFIG_ESP_VIDEO_ENABLE_DVP_VIDEO_DEVICE is not set
+# CONFIG_ESP_VIDEO_ENABLE_SPI_VIDEO_DEVICE is not set
+
+CONFIG_CAMERA_OV5647=y
+CONFIG_CAMERA_OV5647_AUTO_DETECT_MIPI_INTERFACE_SENSOR=y
+CONFIG_CAMERA_OV5647_MIPI_RAW10_1920X1080_30FPS=y
+CONFIG_CAMERA_OV5647_MIPI_DEFAULT_FMT_RAW10_1920X1080_30FPS=y
