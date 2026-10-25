@@ -100,6 +100,39 @@ static void record_failure(struct ac_slot *slot, uint64_t now_ms)
     }
 }
 
+static enum ac_result resolve_profile(struct ac_controller *c, uint8_t resource_id,
+                                      struct ac_actuator_profile *profile)
+{
+    enum ac_profile_lookup lookup = c->cb.lookup_profile(c->user, resource_id, profile);
+    if (lookup == AC_PROFILE_UNKNOWN) return AC_UNKNOWN_RESOURCE;
+    if (lookup != AC_PROFILE_FOUND) return AC_PROFILE_FAILED;
+    if (!profile->actuator_id || !profile->pulse_ms ||
+        profile->pulse_ms > AC_MAX_PULSE_MS ||
+        profile->cutoff_ms <= profile->pulse_ms ||
+        profile->cutoff_ms > AC_MAX_CUTOFF_MS)
+        return AC_UNSAFE_PROFILE;
+    return AC_OK;
+}
+
+static enum ac_result actuate(struct ac_controller *c,
+                              const struct ac_actuator_profile *profile,
+                              uint64_t now_ms)
+{
+    if (!c->cb.arm_cutoff(c->user, profile->cutoff_ms)) {
+        ac_fault(c);
+        return AC_HARDWARE_FAULT;
+    }
+    if (!c->cb.set_relay(c->user, profile->actuator_id, true)) {
+        ac_fault(c);
+        return AC_HARDWARE_FAULT;
+    }
+    c->relay_on = true;
+    c->active_actuator_id = profile->actuator_id;
+    c->active_pulse_ms = profile->pulse_ms;
+    c->relay_deadline_ms = deadline(now_ms, profile->pulse_ms);
+    return AC_OK;
+}
+
 enum ac_result ac_handle_request(struct ac_controller *c, const uint8_t *f, size_t len,
                                  const uint8_t authenticated_peer[8], bool confidential,
                                  uint64_t now_ms)
@@ -136,32 +169,47 @@ enum ac_result ac_handle_request(struct ac_controller *c, const uint8_t *f, size
     /* Credential verification may consume a one-time grant; reject busy first. */
     if (c->relay_on) return AC_BUSY;
     struct ac_actuator_profile profile = {0};
-    enum ac_profile_lookup lookup = c->cb.lookup_profile(c->user, f[6], &profile);
-    if (lookup == AC_PROFILE_UNKNOWN) return AC_UNKNOWN_RESOURCE;
-    if (lookup != AC_PROFILE_FOUND) return AC_PROFILE_FAILED;
-    if (!profile.actuator_id || !profile.pulse_ms ||
-        profile.pulse_ms > AC_MAX_PULSE_MS ||
-        profile.cutoff_ms <= profile.pulse_ms ||
-        profile.cutoff_ms > AC_MAX_CUTOFF_MS)
-        return AC_UNSAFE_PROFILE;
+    enum ac_result r = resolve_profile(c, f[6], &profile);
+    if (r != AC_OK) return r;
     if (!c->cb.verify_credential(c->user, f + 10, f + 50, f + 58, f[7], f[6])) {
         record_failure(slot, now_ms);
         return AC_CREDENTIAL_DENIED;
     }
     slot->failures = 0;
-    if (!c->cb.arm_cutoff(c->user, profile.cutoff_ms)) {
-        ac_fault(c);
-        return AC_HARDWARE_FAULT;
+    return actuate(c, &profile, now_ms);
+}
+
+enum ac_result ac_handle_sms(struct ac_controller *c, const uint8_t principal[8],
+                             uint8_t resource_id, uint8_t command,
+                             const char code[AC_SMS_CODE_DIGITS], uint64_t now_ms)
+{
+    if (!c || !principal || !code || c->fault_latched) return AC_HARDWARE_FAULT;
+    if (!c->cb.verify_sms_otp) return AC_CLASS_DENIED;
+    if (command != AC_SMS_OPEN || resource_id == 0 ||
+        resource_id > AC_MAX_RESOURCE_ID)
+        return AC_MALFORMED;
+    for (unsigned i = 0; i < AC_SMS_CODE_DIGITS; ++i)
+        if (code[i] < '0' || code[i] > '9') return AC_MALFORMED;
+    enum ac_principal_kind kind;
+    if (!c->cb.principal_kind(c->user, principal, &kind) || kind != AC_PRINCIPAL_GSM)
+        return AC_UNKNOWN_PRINCIPAL;
+    struct ac_slot *slot = allocate_slot(c, principal);
+    if (!slot) return AC_RATE_LIMITED;
+    /* Every check below runs before the code is verified, so a rate-limited,
+       busy or misconfigured attempt never consumes a counter value. */
+    if (now_ms < slot->retry_after_ms || now_ms < slot->lock_until_ms)
+        return AC_RATE_LIMITED;
+    slot->retry_after_ms = deadline(now_ms, AC_RETRY_MS);
+    if (c->relay_on) return AC_BUSY;
+    struct ac_actuator_profile profile = {0};
+    enum ac_result r = resolve_profile(c, resource_id, &profile);
+    if (r != AC_OK) return r;
+    if (!c->cb.verify_sms_otp(c->user, principal, resource_id, command, code)) {
+        record_failure(slot, now_ms);
+        return AC_CREDENTIAL_DENIED;
     }
-    if (!c->cb.set_relay(c->user, profile.actuator_id, true)) {
-        ac_fault(c);
-        return AC_HARDWARE_FAULT;
-    }
-    c->relay_on = true;
-    c->active_actuator_id = profile.actuator_id;
-    c->active_pulse_ms = profile.pulse_ms;
-    c->relay_deadline_ms = deadline(now_ms, profile.pulse_ms);
-    return AC_OK;
+    slot->failures = 0;
+    return actuate(c, &profile, now_ms);
 }
 
 void ac_fault(struct ac_controller *c)

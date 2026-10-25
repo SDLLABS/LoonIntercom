@@ -130,7 +130,7 @@ static void setup(struct fixture *f)
     f->cutoff_ms = TEST_CUTOFF_MS;
     const struct ac_callbacks cb = {principal_kind, random16, verify_mac,
         lookup_profile, verify_credential, arm_cutoff, force_cutoff_off,
-        force_relays_off, set_relay};
+        force_relays_off, set_relay, NULL};
     assert(ac_init(&f->controller, &cb, f));
     assert(!f->output && !f->cutoff_armed);
 }
